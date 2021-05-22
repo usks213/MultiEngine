@@ -40,7 +40,7 @@ namespace ECS
 		Vector3 GetMax()		{ return m_center + GetHalfSize(); }
 		Vector3 GetMin()		{ return m_center - GetHalfSize(); }
 		Vector3 GetSize()		{ return m_size; }
-		float   GetRadius()		{ return GetHalfSize()->x; }
+		float   GetRadius()		{ return GetHalfSize().x; }
 
 		// ƒZƒbƒgŠÖ”
 		void SetCenter(Vector3 center)	{ m_center = center; }

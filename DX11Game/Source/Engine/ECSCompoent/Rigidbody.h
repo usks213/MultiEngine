@@ -68,36 +68,36 @@ namespace ECS
 		// à⁄ìÆ
 		Vector3 GetForce() { return m_force; }
 		void SetForce(Vector3 force) { m_force = force; }
-		void SetForceX(float forceX) { m_force->x = forceX; }
-		void SetForceY(float forceY) { m_force->y = forceY; }
-		void SetForceZ(float forceZ) { m_force->z = forceZ; }
+		void SetForceX(float forceX) { m_force.x = forceX; }
+		void SetForceY(float forceY) { m_force.y = forceY; }
+		void SetForceZ(float forceZ) { m_force.z = forceZ; }
 		void AddForce(Vector3 force) { m_force += force; }
-		void AddForceX(float forceX) { m_force->x += forceX; }
-		void AddForceY(float forceY) { m_force->y += forceY; }
-		void AddForceZ(float forceZ) { m_force->z += forceZ; }
+		void AddForceX(float forceX) { m_force.x += forceX; }
+		void AddForceY(float forceY) { m_force.y += forceY; }
+		void AddForceZ(float forceZ) { m_force.z += forceZ; }
 		// ãÛãCíÔçR
 		Vector3 GetDrag() { return m_drag; }
 		void SetDrag(Vector3 fDrag) { m_drag = fDrag; }
-		void SetDragX(float fDragX) { m_drag->x = fDragX; }
-		void SetDragY(float fDragY) { m_drag->y = fDragY; }
-		void SetDragZ(float fDragZ) { m_drag->z = fDragZ; }
+		void SetDragX(float fDragX) { m_drag.x = fDragX; }
+		void SetDragY(float fDragY) { m_drag.y = fDragY; }
+		void SetDragZ(float fDragZ) { m_drag.z = fDragZ; }
 
 		// âÒì]
 		Vector3 GetTorque() { return m_torque; }
 		void SetTorque(Vector3 torque) { m_torque = torque; }
-		void SetTorqueX(float torqueX) { m_torque->x = torqueX; }
-		void SetTorqueY(float torqueY) { m_torque->y = torqueY; }
-		void SetTorqueZ(float torqueZ) { m_torque->z = torqueZ; }
+		void SetTorqueX(float torqueX) { m_torque.x = torqueX; }
+		void SetTorqueY(float torqueY) { m_torque.y = torqueY; }
+		void SetTorqueZ(float torqueZ) { m_torque.z = torqueZ; }
 		void AddTorque(Vector3 torque) { m_torque += torque; }
-		void AddTorqueX(float torqueX) { m_torque->x += torqueX; }
-		void AddTorqueY(float torqueY) { m_torque->y += torqueY; }
-		void AddTorqueZ(float torqueZ) { m_torque->z += torqueZ; }
+		void AddTorqueX(float torqueX) { m_torque.x += torqueX; }
+		void AddTorqueY(float torqueY) { m_torque.y += torqueY; }
+		void AddTorqueZ(float torqueZ) { m_torque.z += torqueZ; }
 		// âÒì]íÔçR
 		Vector3 GetTorqueDrag() { return m_torqueDrag; }
 		void SetTorqueDrag(Vector3 fTorqueDrag) { m_torqueDrag = fTorqueDrag; }
-		void SetTorqueDragX(float fTorqueDragX) { m_torqueDrag->x = fTorqueDragX; }
-		void SetTorqueDragY(float fTorqueDragY) { m_torqueDrag->y = fTorqueDragY; }
-		void SetTorqueDragZ(float fTorqueDragZ) { m_torqueDrag->z = fTorqueDragZ; }
+		void SetTorqueDragX(float fTorqueDragX) { m_torqueDrag.x = fTorqueDragX; }
+		void SetTorqueDragY(float fTorqueDragY) { m_torqueDrag.y = fTorqueDragY; }
+		void SetTorqueDragZ(float fTorqueDragZ) { m_torqueDrag.z = fTorqueDragZ; }
 
 		// ï®óùégóp
 		bool GetUsePhysics() { return m_bUsePhysics; }

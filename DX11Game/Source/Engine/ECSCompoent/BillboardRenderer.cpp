@@ -111,12 +111,12 @@ void BillboardRenderer::LateDraw(ID3D11DeviceContext* pDC)
 
 		// スケールを反映
 		Vector3 scale = m_transform.lock()->m_scale;
-		mtxScale = XMMatrixScaling(scale->x, scale->y, 1.0f);
+		mtxScale = XMMatrixScaling(scale.x, scale.y, 1.0f);
 		mtxWorld = XMMatrixMultiply(mtxScale, mtxWorld);
 
 		// 移動を反映
 		Vector3 pos = m_transform.lock()->m_pos;
-		mtxTranslate = XMMatrixTranslation(pos->x, pos->y, pos->z);
+		mtxTranslate = XMMatrixTranslation(pos.x, pos.y, pos.z);
 		mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
 
 		// ワールドマトリックスの設定

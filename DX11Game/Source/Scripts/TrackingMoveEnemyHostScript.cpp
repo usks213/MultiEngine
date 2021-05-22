@@ -108,12 +108,12 @@ void TrackingMoveEnemyHostScript::Update()
 
 	//--- 追尾処理
 	Vector3 dir = target->m_pos - transform().lock()->m_pos;
-	if (dir.magnitude() < 500) return;
-	dir = dir.normalized();
+	if (dir.Length() < 500) return;
+	dir = Mathf::Normalize(dir);
 
 	// 向いてる向き
 	Vector3 cameraDir = CCamera::GetMainCamera()->GetForward();
-	if (Vector3::Dot(cameraDir, dir) >= 0) return;
+	if (Mathf::Dot(cameraDir, dir) >= 0) return;
 
 	// 力を加える
 	m_rb.lock()->SetForce(dir * m_speed);
@@ -172,9 +172,9 @@ void TrackingMoveEnemyHostScript::CreateChild(int nNum)
 	//			float theta = 360.0f / n * j * (XM_PI / 180.0f);
 	//			// 座標
 	//			Vector3 pos;
-	//			pos->x = cosf(phi) * cosf(theta);
-	//			pos->y = cosf(phi) * sinf(theta);
-	//			pos->z = sinf(phi);
+	//			pos.x = cosf(phi) * cosf(theta);
+	//			pos.y = cosf(phi) * sinf(theta);
+	//			pos.z = sinf(phi);
 	//			pos *= 100 * n;
 
 	//			// エネミー生成
@@ -196,18 +196,18 @@ void TrackingMoveEnemyHostScript::CreateChild(int nNum)
 		float theta = rand() % 1000 / 100.0f;
 		// 座標
 		Vector3 pos;
-		pos->x = cosf(phi) * cosf(theta);
-		pos->y = sinf(phi);
-		pos->z = cosf(phi) * sinf(theta);
+		pos.x = cosf(phi) * cosf(theta);
+		pos.y = sinf(phi);
+		pos.z = cosf(phi) * sinf(theta);
 
 		if (n > j * 4)
 		{
 			k++;
 			j += k;
 		}
-		pos->x *= (150 + k * 150);
-		pos->z *= (150 + k * 150);
-		pos->y *= (150 + k * 2 * 150);
+		pos.x *= (150 + k * 150);
+		pos.z *= (150 + k * 150);
+		pos.y *= (150 + k * 2 * 150);
 
 		// エネミー生成
 		const auto& obj = Instantiate<GameObject>(pos + transform().lock()->m_pos);

@@ -65,9 +65,9 @@ void InstancingMeshRenderer::OnCreate()
 
 	// インスタンスシングデータの初期化
 	m_data.mtxWorld = m_transform.lock()->GetWorldMatrix();
-	m_data.pPos = m_transform.lock()->m_pos.GetFloat3();
-	m_data.pRot = m_transform.lock()->m_rot.GetFloat3();
-	m_data.pScale = m_transform.lock()->m_scale.GetFloat3();
+	m_data.pPos = &m_transform.lock()->m_pos;
+	m_data.pRot = &m_transform.lock()->m_rot;
+	m_data.pScale = &m_transform.lock()->m_scale;
 }
 
 //========================================
@@ -688,13 +688,13 @@ HRESULT InstancingMeshRenderer::MakeTetraheron(const std::string tag)
 	{
 		Vector3 halfV = ver[index[i] - 1];
 		halfV /= 2;
-		vertexWk[i].vtx = *halfV.GetFloat3();
+		vertexWk[i].vtx = halfV;
 	}
 
 	// 法線ベクトルの設定
 	for (int i = 0; i < nVertexNum; i += 3)
 	{
-		XMFLOAT3 n = *Vector3::Cross(ver[index[i + 0] - 1], ver[index[i + 1] - 1], ver[index[i + 2] - 1]).GetFloat3();
+		XMFLOAT3 n = Mathf::Cross(ver[index[i + 0] - 1], ver[index[i + 1] - 1], ver[index[i + 2] - 1]);
 		vertexWk[i + 0].nor = n;
 		vertexWk[i + 1].nor = n;
 		vertexWk[i + 2].nor = n;
@@ -778,13 +778,13 @@ HRESULT InstancingMeshRenderer::MakeOctahedron(const std::string tag)
 	{
 		Vector3 halfV = ver[index[i] - 1];
 		halfV /= 2;
-		vertexWk[i].vtx = *halfV.GetFloat3();
+		vertexWk[i].vtx = halfV;
 	}
 
 	// 法線ベクトルの設定
 	for (int i = 0; i < nVertexNum; i += 3)
 	{
-		XMFLOAT3 n = *Vector3::Cross(ver[index[i + 0] - 1], ver[index[i + 1] - 1], ver[index[i + 2] - 1]).GetFloat3();
+		XMFLOAT3 n = Mathf::Cross(ver[index[i + 0] - 1], ver[index[i + 1] - 1], ver[index[i + 2] - 1]);
 		vertexWk[i + 0].nor = n;
 		vertexWk[i + 1].nor = n;
 		vertexWk[i + 2].nor = n;
@@ -910,13 +910,13 @@ HRESULT InstancingMeshRenderer::MakeDodecahedron(const std::string tag)
 	{
 		Vector3 halfV = ver[index[i] - 1];
 		halfV /= 2;
-		vertexWk[i].vtx = *halfV.GetFloat3();
+		vertexWk[i].vtx = halfV;
 	}
 
 	// 法線ベクトルの設定
 	for (int i = 0; i < nVertexNum; i += 3)
 	{
-		XMFLOAT3 n = *Vector3::Cross(ver[index[i + 0] - 1], ver[index[i + 1] - 1], ver[index[i + 2] - 1]).GetFloat3();
+		XMFLOAT3 n = Mathf::Cross(ver[index[i + 0] - 1], ver[index[i + 1] - 1], ver[index[i + 2] - 1]);
 		vertexWk[i + 0].nor = n;
 		vertexWk[i + 1].nor = n;
 		vertexWk[i + 2].nor = n;
@@ -1018,13 +1018,13 @@ HRESULT InstancingMeshRenderer::MakeIcosahedron(const std::string tag)
 	{
 		Vector3 halfV = ver[index[i] - 1];
 		halfV /= 2;
-		vertexWk[i].vtx = *halfV.GetFloat3();
+		vertexWk[i].vtx = halfV;
 	}
 
 	// 法線ベクトルの設定
 	for (int i = 0; i < nVertexNum; i += 3)
 	{
-		XMFLOAT3 n = *Vector3::Cross(ver[index[i + 0] - 1], ver[index[i + 1] - 1], ver[index[i + 2] - 1]).GetFloat3();
+		XMFLOAT3 n = Mathf::Cross(ver[index[i + 0] - 1], ver[index[i + 1] - 1], ver[index[i + 2] - 1]);
 		vertexWk[i + 0].nor = n;
 		vertexWk[i + 1].nor = n;
 		vertexWk[i + 2].nor = n;
@@ -1162,13 +1162,13 @@ HRESULT InstancingMeshRenderer::MakeS08(const std::string tag)
 	{
 		Vector3 halfV = ver[index[i] - 1];
 		halfV /= 2;
-		vertexWk[i].vtx = *halfV.GetFloat3();
+		vertexWk[i].vtx = halfV;
 	}
 
 	// 法線ベクトルの設定
 	for (int i = 0; i < nVertexNum; i += 3)
 	{
-		XMFLOAT3 n = *Vector3::Cross(ver[index[i + 0] - 1], ver[index[i + 1] - 1], ver[index[i + 2] - 1]).GetFloat3();
+		XMFLOAT3 n = Mathf::Cross(ver[index[i + 0] - 1], ver[index[i + 1] - 1], ver[index[i + 2] - 1]);
 		vertexWk[i + 0].nor = n;
 		vertexWk[i + 1].nor = n;
 		vertexWk[i + 2].nor = n;
@@ -1264,13 +1264,13 @@ HRESULT InstancingMeshRenderer::MakeN15(const std::string tag)
 	{
 		Vector3 halfV = ver[index[i] - 1];
 		halfV /= 2;
-		vertexWk[i].vtx = *halfV.GetFloat3();
+		vertexWk[i].vtx = halfV;
 	}
 
 	// 法線ベクトルの設定
 	for (int i = 0; i < nVertexNum; i += 3)
 	{
-		XMFLOAT3 n = *Vector3::Cross(ver[index[i + 0] - 1], ver[index[i + 1] - 1], ver[index[i + 2] - 1]).GetFloat3();
+		XMFLOAT3 n = Mathf::Cross(ver[index[i + 0] - 1], ver[index[i + 1] - 1], ver[index[i + 2] - 1]);
 		vertexWk[i + 0].nor = n;
 		vertexWk[i + 1].nor = n;
 		vertexWk[i + 2].nor = n;
@@ -1516,13 +1516,13 @@ HRESULT InstancingMeshRenderer::MakeS06(const std::string tag)
 	{
 		Vector3 halfV = ver[index[i] - 1];
 		halfV /= 2;
-		vertexWk[i].vtx = *halfV.GetFloat3();
+		vertexWk[i].vtx = halfV;
 	}
 
 	// 法線ベクトルの設定
 	for (int i = 0; i < nVertexNum; i += 3)
 	{
-		XMFLOAT3 n = *Vector3::Cross(ver[index[i + 0] - 1], ver[index[i + 1] - 1], ver[index[i + 2] - 1]).GetFloat3();
+		XMFLOAT3 n = Mathf::Cross(ver[index[i + 0] - 1], ver[index[i + 1] - 1], ver[index[i + 2] - 1]);
 		vertexWk[i + 0].nor = n;
 		vertexWk[i + 1].nor = n;
 		vertexWk[i + 2].nor = n;

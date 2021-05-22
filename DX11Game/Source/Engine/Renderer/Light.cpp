@@ -92,9 +92,9 @@ void CLight::Update()
 	{
 		Vector3 pos = trans->m_pos;
 
-		m_vTarget.x = pos->x;
-		m_vTarget.y = pos->y;
-		m_vTarget.z = pos->z;
+		m_vTarget.x = pos.x;
+		m_vTarget.y = pos.y;
+		m_vTarget.z = pos.z;
 
 		m_vPos.x = m_vTarget.x + LIT_POS_P_X;
 		m_vPos.y = m_vTarget.y + LIT_POS_P_Y;

@@ -77,14 +77,14 @@ namespace ECS
 		// ƒJƒ‰[•ÏX
 		void SetDiffuseColor(Vector3 color) { m_color = color; }
 		void SetDiffuseColor(float r, float g, float b) {
-			m_color->x = r;
-			m_color->y = g;
-			m_color->z = b;
+			m_color.x = r;
+			m_color.y = g;
+			m_color.z = b;
 		}
 		void SetDiffuseColor(float r, float g, float b, float a) {
-			m_color->x = r;
-			m_color->y = g;
-			m_color->z = b;
+			m_color.x = r;
+			m_color.y = g;
+			m_color.z = b;
 			m_fAlpha = a;
 		}
 		void SetAlpha(float alpha) { m_fAlpha = alpha; }

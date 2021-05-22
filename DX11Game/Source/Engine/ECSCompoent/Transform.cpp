@@ -21,6 +21,7 @@
 #include "../ECS/Entity/EntityManager.h"
 
 using namespace ECS;
+using namespace DirectX;
 
 //===== マクロ定義 =====
 
@@ -100,16 +101,16 @@ void Transform::UpdateMatrix()
 	mtxWorld = XMMatrixIdentity();
 
 	// 拡大縮小
-	mtxScale = XMMatrixScaling(m_scale->x, m_scale->y, m_scale->z);
+	mtxScale = XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
 	mtxWorld = XMMatrixMultiply(mtxWorld, mtxScale);
 
 	// 回転を反映
-	mtxRot = XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_rot->x),
-		XMConvertToRadians(m_rot->y), XMConvertToRadians(m_rot->z));
+	mtxRot = XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_rot.x),
+		XMConvertToRadians(m_rot.y), XMConvertToRadians(m_rot.z));
 	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
 
 	// 移動を反映
-	mtxTranslate = XMMatrixTranslation(m_pos->x, m_pos->y, m_pos->z);
+	mtxTranslate = XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);
 	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
 
 	// ワールドマトリックス設定

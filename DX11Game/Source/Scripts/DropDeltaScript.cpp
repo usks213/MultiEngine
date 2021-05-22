@@ -70,7 +70,7 @@ void DropDeltaScript::Start()
 	// 大きさ
 	m_fScale = 100.0f;
 	transform().lock()->m_scale = Vector3(m_fScale, m_fScale, m_fScale);
-	transform().lock()->m_rot->x = 90;
+	transform().lock()->m_rot.x = 90;
 
 	//--- コンポーネンの追加
 
@@ -128,7 +128,7 @@ void DropDeltaScript::Update()
 	}
 
 	// 地面に着いてから追尾
-	if (transform().lock()->m_pos->y <= transform().lock()->m_scale->y / 2)
+	if (transform().lock()->m_pos.y <= transform().lock()->m_scale.y / 2)
 	{
 		m_IsTracking = true;
 	}
@@ -140,10 +140,10 @@ void DropDeltaScript::Update()
 
 	Vector3 vec = player->transform().lock()->m_pos - transform().lock()->m_pos;
 	// 一定距離以下なら
-	if (vec.magnitude() > 1000) return;
+	if (vec.Length() > 1000) return;
 
 	// プレイヤーに近づく
-	m_rb.lock()->AddForce(vec.normalized() * 3);
+	m_rb.lock()->AddForce(Mathf::Normalize(vec) * 3);
 
 }
 

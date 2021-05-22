@@ -49,9 +49,9 @@ namespace ECS
 		void UpdateMatrix();
 
 		// ゲット関数
-		XMFLOAT4X4* GetWorldMatrix() { return &m_mtxWorld; }
+		Matrix* GetWorldMatrix() { return &m_mtxWorld; }
 		// セット関数
-		void SetWorldMatrix(const XMFLOAT4X4& world) { m_mtxWorld = world; }
+		void SetWorldMatrix(const Matrix& world) { m_mtxWorld = world; }
 
 		// ステータス
 		Vector3 m_pos;				// 中心座標
@@ -65,7 +65,7 @@ namespace ECS
 
 	private:
 		// マトリックス
-		XMFLOAT4X4 m_mtxWorld;
+		Matrix m_mtxWorld;
 
 		// 親のゲームオブジェクト
 		std::weak_ptr<GameObject> m_gameObject;

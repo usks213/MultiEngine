@@ -72,7 +72,7 @@ void BombEffectScript::Start()
 
 	// 大きさ
 	transform().lock()->m_scale = Vector3(20, 20, 20);
-	transform().lock()->m_rot->x = 90;
+	transform().lock()->m_rot.x = 90;
 	//--- コンポーネンの追加
 
 	// インスタンシングレンダラー

@@ -37,8 +37,8 @@ Renderer::Renderer()
 	// テクスチャ座標
 	m_texPos = Vector3(0.0f, 0.0f, 0.0f);
 	m_texSize = Vector3(1.0f, 1.0f, 1.0f);
-	XMMATRIX mTex = XMMatrixScaling(m_texSize->x, m_texSize->y, 0.0f);
-	mTex *= XMMatrixTranslation(m_texPos->x, m_texPos->y, 1.0f);
+	XMMATRIX mTex = XMMatrixScaling(m_texSize.x, m_texSize.y, 0.0f);
+	mTex *= XMMatrixTranslation(m_texPos.x, m_texPos.y, 1.0f);
 	XMStoreFloat4x4(&m_mtxTexture, mTex);
 
 	// ブレンドステート
@@ -97,7 +97,7 @@ void Renderer::LayerUpdate()
 	// カメラ座標
 	Vector3 cameraPos = CCamera::GetMainCamera()->GetPos();
 	// 距離を格納
-	m_fLayer = Vector3::Length(m_transform.lock()->m_pos - cameraPos);
+	m_fLayer = Mathf::Length(m_transform.lock()->m_pos - cameraPos);
 }
 
 //========================================
@@ -108,7 +108,7 @@ void Renderer::LayerUpdate()
 void Renderer::UpdateTexMatrix()
 {
 	// テクスチャマトリックス更新
-	XMMATRIX mTex = XMMatrixScaling(m_texSize->x, m_texSize->y, 0.0f);
-	mTex *= XMMatrixTranslation(m_texPos->x, m_texPos->y, 1.0f);
+	XMMATRIX mTex = XMMatrixScaling(m_texSize.x, m_texSize.y, 0.0f);
+	mTex *= XMMatrixTranslation(m_texPos.x, m_texPos.y, 1.0f);
 	XMStoreFloat4x4(&m_mtxTexture, mTex);
 }

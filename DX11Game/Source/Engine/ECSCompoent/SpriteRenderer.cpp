@@ -84,19 +84,19 @@ void SpriteRenderer::LateDraw(ID3D11DeviceContext* pDC)
 	SetBlendState(m_eState);
 
 	// 座標
-	SetPolygonPos(trans->m_pos->x, trans->m_pos->y);
+	SetPolygonPos(trans->m_pos.x, trans->m_pos.y);
 	// 角度
-	SetPolygonAngle(trans->m_rot->z);
+	SetPolygonAngle(trans->m_rot.z);
 	// サイズ
-	SetPolygonSize(trans->m_scale->x, trans->m_scale->y);
+	SetPolygonSize(trans->m_scale.x, trans->m_scale.y);
 	// カラー
-	SetPolygonColor(m_color->x, m_color->y, m_color->z);
+	SetPolygonColor(m_color.x, m_color.y, m_color.z);
 	// アルファ
 	SetPolygonAlpha(m_fAlpha);
 	// テクスチャ座標
-	SetPolygonUV(m_texPos->x, m_texPos->y);
+	SetPolygonUV(m_texPos.x, m_texPos.y);
 	// テクスチャサイズ
-	SetPolygonFrameSize(m_texSize->x, m_texSize->y);
+	SetPolygonFrameSize(m_texSize.x, m_texSize.y);
 	// テクスチャ
 	SetPolygonTexture(m_pTexture);
 

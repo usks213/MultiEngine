@@ -106,13 +106,13 @@ bool DeltaCollider::SpheretoSphere(DeltaCollider* collider, DeltaCollider* other
 	Vector3 pos1 = collider->m_transform.lock()->m_pos + collider->m_bound.GetCenter();
 	Vector3 pos2 = other->m_transform.lock()->m_pos + other->m_bound.GetCenter();
 	// ”¼Œa
-	float radius1 = collider->m_bound.GetRadius() * collider->m_transform.lock()->m_scale->x;
-	float radius2 = other->m_bound.GetRadius() * other->m_transform.lock()->m_scale->x;
+	float radius1 = collider->m_bound.GetRadius() * collider->m_transform.lock()->m_scale.x;
+	float radius2 = other->m_bound.GetRadius() * other->m_transform.lock()->m_scale.x;
 
 	// “ñ“_ŠÔ‹——£
 	Vector3 distance = pos1 - pos2;
 
 	//--- Õ“Ë”»’è
-	if (distance.magnitudeNoSqrt() >= (radius1 + radius2) * (radius1 + radius2)) return false;
+	if (distance.LengthSquared() >= (radius1 + radius2) * (radius1 + radius2)) return false;
 	return true;
 }

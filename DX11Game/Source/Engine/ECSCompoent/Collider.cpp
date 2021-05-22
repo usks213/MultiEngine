@@ -146,18 +146,18 @@ bool Collider::AABBtoAABB(Collider* collider, Collider* other)
 	Vector3 min2 = pos2 + bound2.GetMin() * scale2;
 
 	// 衝突判定
-	//if (min1->x > max2->x) return false;
-	//if (max1->x < min2->x) return false;
-	//if (min1->y > max2->y) return false;
-	//if (max1->y < min2->y) return false;
-	//if (min1->z > max2->z) return false;
-	//if (max1->z < min2->z) return false;
+	//if (min1.x > max2.x) return false;
+	//if (max1.x < min2.x) return false;
+	//if (min1.y > max2.y) return false;
+	//if (max1.y < min2.y) return false;
+	//if (min1.z > max2.z) return false;
+	//if (max1.z < min2.z) return false;
 	// return true;
 
 	// 衝突判定
-	if (min1->x < max2->x && min2->x < max1->x &&
-		min1->y < max2->y && min2->y < max1->y &&
-		min1->z < max2->z && min2->z < max1->z)
+	if (min1.x < max2.x && min2.x < max1.x &&
+		min1.y < max2.y && min2.y < max1.y &&
+		min1.z < max2.z && min2.z < max1.z)
 	{
 		return true;
 	}
@@ -208,105 +208,105 @@ bool Collider::BoxToBox(Collider* collider, Collider* other)
 	Vector3 normal;
 
 	// X軸
-	if (maxLen->x < minLen->x)
+	if (maxLen.x < minLen.x)
 	{
-		len->x = maxLen->x;
-		pos->x = boxMax2->x + boxSize1->x;
-		normal->x = 1.0f;
+		len.x = maxLen.x;
+		pos.x = boxMax2.x + boxSize1.x;
+		normal.x = 1.0f;
 	}
 	else
 	{
-		len->x = minLen->x;
-		pos->x = boxMin2->x - boxSize1->x;
-		normal->x = -1.0f;
+		len.x = minLen.x;
+		pos.x = boxMin2.x - boxSize1.x;
+		normal.x = -1.0f;
 	}
 	// Y軸
-	if (maxLen->y < minLen->y)
+	if (maxLen.y < minLen.y)
 	{
-		len->y = maxLen->y;
-		pos->y = boxMax2->y + boxSize1->y;
-		normal->y = 1.0f;
+		len.y = maxLen.y;
+		pos.y = boxMax2.y + boxSize1.y;
+		normal.y = 1.0f;
 	}
 	else
 	{
-		len->y = minLen->y;
-		pos->y = boxMin2->y - boxSize1->y;
-		normal->y = -1.0f;
+		len.y = minLen.y;
+		pos.y = boxMin2.y - boxSize1.y;
+		normal.y = -1.0f;
 	}
 	// Z軸
-	if (maxLen->z < minLen->z)
+	if (maxLen.z < minLen.z)
 	{
-		len->z = maxLen->z;
-		pos->z = boxMax2->z + boxSize1->y;
-		normal->z = 1.0f;
+		len.z = maxLen.z;
+		pos.z = boxMax2.z + boxSize1.y;
+		normal.z = 1.0f;
 	}
 	else
 	{
-		len->z = minLen->z;
-		pos->z = boxMin2->z - boxSize1->y;
-		normal->z = -1.0f;
+		len.z = minLen.z;
+		pos.z = boxMin2.z - boxSize1.y;
+		normal.z = -1.0f;
 	}
 
 	// 符号
-	len->x = fabsf(len->x);
-	len->y = fabsf(len->y);
-	len->z = fabsf(len->z);
+	len.x = fabsf(len.x);
+	len.y = fabsf(len.y);
+	len.z = fabsf(len.z);
 
 	//--- 押し出し
 	//--- 最短距離軸を出す
 	// X軸
-	if (len->x <= len->y && len->x <= len->z)
+	if (len.x <= len.y && len.x <= len.z)
 	{
 		if (rb1->m_bUsePhysics)
 		{
 			// 押し出し
-			collider->m_transform.lock()->m_pos->x = pos->x;
+			collider->m_transform.lock()->m_pos.x = pos.x;
 		}
 		else
 		{
 			if (rb2->m_bUsePhysics)
 			// 相手も
-			other->m_transform.lock()->m_pos->x = boxPos1->x - (boxSize1->x + boxSize2->x) * normal->x;
+			other->m_transform.lock()->m_pos.x = boxPos1.x - (boxSize1.x + boxSize2.x) * normal.x;
 		}
 		// 法線
-		normal->y = 0.0f;
-		normal->z = 0.0f;
+		normal.y = 0.0f;
+		normal.z = 0.0f;
 	}
 	// Y軸
-	else if (len->y <= len->x && len->y <= len->z)
+	else if (len.y <= len.x && len.y <= len.z)
 	{
 		if (rb1->m_bUsePhysics)
 		{
 			// 押し出し
-			collider->m_transform.lock()->m_pos->y = pos->y; 
+			collider->m_transform.lock()->m_pos.y = pos.y; 
 		}
 		else
 		if (rb2->m_bUsePhysics)
 		{
 			// 相手も
-			other->m_transform.lock()->m_pos->y = boxPos1->y - (boxSize1->y + boxSize2->y) * normal->y;
+			other->m_transform.lock()->m_pos.y = boxPos1.y - (boxSize1.y + boxSize2.y) * normal.y;
 		}
 		// 法線
-		normal->x = 0.0f;
-		normal->z = 0.0f;
+		normal.x = 0.0f;
+		normal.z = 0.0f;
 	}
 	// Z軸
-	else if (len->z <= len->x && len->z <= len->y)
+	else if (len.z <= len.x && len.z <= len.y)
 	{
 		if (rb1->m_bUsePhysics)
 		{
 			// 押し出し
-			collider->m_transform.lock()->m_pos->z = pos->z;
+			collider->m_transform.lock()->m_pos.z = pos.z;
 		}
 		else
 		{
 			if (rb2->m_bUsePhysics)
 			// 相手も
-			other->m_transform.lock()->m_pos->z = boxPos1->z - (boxSize1->z + boxSize2->z) * normal->z;
+			other->m_transform.lock()->m_pos.z = boxPos1.z - (boxSize1.z + boxSize2.z) * normal.z;
 		}
 		// 法線
-		normal->x = 0.0f;
-		normal->y = 0.0f;
+		normal.x = 0.0f;
+		normal.y = 0.0f;
 	}
 
 	////--- 物理
@@ -341,12 +341,12 @@ bool Collider::BoxToSphere(Collider* collider, Collider* other)
 	Vector3 boxMax = boxPos + Vector3(collider->m_bound.GetMax() * collider->m_transform.lock()->m_scale);
 	Vector3 boxMin = boxPos + Vector3(collider->m_bound.GetMin() * collider->m_transform.lock()->m_scale);
 	// 半径
-	float radius = other->m_bound.GetRadius() * other->m_transform.lock()->m_scale->x;
+	float radius = other->m_bound.GetRadius() * other->m_transform.lock()->m_scale.x;
 	// ハーフサイズ
 	Vector3 boxSize = collider->m_bound.GetHalfSize() * collider->m_transform.lock()->m_scale;
 	// 最短距離を計算
 	Vector3 vlen = LenAABBToPoint(boxMin, boxMax, spherePos);
-	float len = vlen.magnitude();
+	float len = vlen.Length();
 
 	//--- 判定
 	// 当たってない
@@ -364,13 +364,13 @@ bool Collider::BoxToSphere(Collider* collider, Collider* other)
 	//// 物理をしない
 	//if (!rb1->GetUsePhysics()) return true;
 	//// 物理計算
-	//rb1->CollisionPhysics(rb2, vlen.normalized());
+	//rb1->CollisionPhysics(rb2, Mathf::Normalize(vlen));
 
 	////--- 押し出し
 	//// 二点間と２半径の差
 	//len = radius - len;
 	//// 押し出す方向
-	//Vector3 vec = vlen.normalized() * len;
+	//Vector3 vec = Mathf::Normalize(vlen) * len;
 	//// 押し出し
 	//collider->m_transform.lock()->m_pos -= vec;
 
@@ -379,13 +379,13 @@ bool Collider::BoxToSphere(Collider* collider, Collider* other)
 	if (rb1->GetUsePhysics())
 	{
 		// 物理計算
-		rb1->CollisionPhysics(rb2, vlen.normalized());
+		rb1->CollisionPhysics(rb2, Mathf::Normalize(vlen));
 
 		//--- 押し出し
 		// 二点間と２半径の差
 		len = radius - len;
 		// 押し出す方向
-		Vector3 vec = vlen.normalized() * len;
+		Vector3 vec = Mathf::Normalize(vlen) * len;
 		// 押し出し
 		collider->m_transform.lock()->m_pos -= vec;
 	}
@@ -394,13 +394,13 @@ bool Collider::BoxToSphere(Collider* collider, Collider* other)
 		if (rb2->GetUsePhysics())
 		{
 			// 物理計算
-			rb2->CollisionPhysics(rb1, vlen.normalized());
+			rb2->CollisionPhysics(rb1, Mathf::Normalize(vlen));
 
 			//--- 押し出し
 			// 二点間と２半径の差
 			len = radius - len;
 			// 押し出す方向
-			Vector3 vec = vlen.normalized() * len;
+			Vector3 vec = Mathf::Normalize(vlen) * len;
 			// 押し出し
 			other->m_transform.lock()->m_pos += vec;
 		}
@@ -424,12 +424,12 @@ bool Collider::SphereToBox(Collider* collider, Collider* other)
 	Vector3 boxMax = boxPos + Vector3(other->m_bound.GetMax() * other->m_transform.lock()->m_scale);
 	Vector3 boxMin = boxPos + Vector3(other->m_bound.GetMin() * other->m_transform.lock()->m_scale);
 	// 半径
-	float radius = collider->m_bound.GetRadius() * collider->m_transform.lock()->m_scale->x;
+	float radius = collider->m_bound.GetRadius() * collider->m_transform.lock()->m_scale.x;
 	// ハーフサイズ
 	Vector3 boxSize = collider->m_bound.GetHalfSize() * collider->m_transform.lock()->m_scale;
 	// 最短距離を計算
 	Vector3 vlen = LenAABBToPoint(boxMin, boxMax, spherePos);
-	float len = vlen.magnitude();
+	float len = vlen.Length();
 
 	//--- 判定
 	// 当たってない
@@ -447,14 +447,14 @@ bool Collider::SphereToBox(Collider* collider, Collider* other)
 	//// 物理をしない
 	//if (!rb1->GetUsePhysics()) return true;
 	//// 物理計算
-	//rb1->CollisionPhysics(rb2, vlen.normalized());
+	//rb1->CollisionPhysics(rb2, Mathf::Normalize(vlen));
 
 
 	////--- 押し出し
 	//// 二点間と２半径の差
 	//len = radius - len;
 	//// 押し出す方向
-	//Vector3 vec = vlen.normalized() * len;
+	//Vector3 vec = Mathf::Normalize(vlen) * len;
 	//// 押し出し
 	//collider->m_transform.lock()->m_pos += vec;
 
@@ -463,13 +463,13 @@ bool Collider::SphereToBox(Collider* collider, Collider* other)
 	if (rb1->GetUsePhysics())
 	{
 		// 物理計算
-		rb1->CollisionPhysics(rb2, vlen.normalized());
+		rb1->CollisionPhysics(rb2, Mathf::Normalize(vlen));
 
 		//--- 押し出し
 		// 二点間と２半径の差
 		len = radius - len;
 		// 押し出す方向
-		Vector3 vec = vlen.normalized() * len;
+		Vector3 vec = Mathf::Normalize(vlen) * len;
 		// 押し出し
 		collider->m_transform.lock()->m_pos += vec;
 	}
@@ -478,13 +478,13 @@ bool Collider::SphereToBox(Collider* collider, Collider* other)
 		if (rb2->GetUsePhysics())
 		{
 			// 物理計算
-			rb2->CollisionPhysics(rb1, vlen.normalized());
+			rb2->CollisionPhysics(rb1, Mathf::Normalize(vlen));
 
 			//--- 押し出し
 			// 二点間と２半径の差
 			len = radius - len;
 			// 押し出す方向
-			Vector3 vec = vlen.normalized() * len;
+			Vector3 vec = Mathf::Normalize(vlen) * len;
 			// 押し出し
 			other->m_transform.lock()->m_pos -= vec;
 		}
@@ -505,14 +505,14 @@ bool Collider::SphereToSphere(Collider* collider, Collider* other)
 	Vector3 pos1 = collider->m_transform.lock()->m_pos + collider->m_bound.GetCenter();
 	Vector3 pos2 = other->m_transform.lock()->m_pos + other->m_bound.GetCenter();
 	// 半径
-	float radius1 = collider->m_bound.GetRadius() * collider->m_transform.lock()->m_scale->x;
-	float radius2 = other->m_bound.GetRadius() * other->m_transform.lock()->m_scale->x;
+	float radius1 = collider->m_bound.GetRadius() * collider->m_transform.lock()->m_scale.x;
+	float radius2 = other->m_bound.GetRadius() * other->m_transform.lock()->m_scale.x;
 
 	// 二点間距離
 	Vector3 distance = pos1 - pos2;
 
 	//--- 衝突判定
-	if (distance.magnitudeNoSqrt() >= (radius1 + radius2) * (radius1 + radius2)) return false;
+	if (distance.LengthSquared() >= (radius1 + radius2) * (radius1 + radius2)) return false;
 
 	
 	//--- 物理
@@ -526,14 +526,14 @@ bool Collider::SphereToSphere(Collider* collider, Collider* other)
 	// 物理をしない
 	if (!rb1->GetUsePhysics()) return true;
 	// 物理計算
-	rb1->CollisionPhysics(rb2, distance.normalized());
+	rb1->CollisionPhysics(rb2, Mathf::Normalize(distance));
 
 
 	//---  押し出し
 	// 二点間と２半径の差
-	float len = (radius1 + radius2) - distance.magnitude();
+	float len = (radius1 + radius2) - distance.Length();
 	// 押し出す方向
-	Vector3 vec = distance.normalized() * len;
+	Vector3 vec = Mathf::Normalize(distance) * len;
 	// 押し出し
 	collider->m_transform.lock()->m_pos += vec;
 
@@ -551,22 +551,22 @@ float LenAABBToPoint(Bounds& box, Vector3& p)
 	// 各軸で点が最小値以下もしくは最大値以上ならば、差を考慮
 
 	// X軸
-	if (p->x < box.GetMin()->x)  
-		SqLen += (p->x - box.GetMin()->x) * (p->x - box.GetMin()->x);
-	if (p->x > box.GetMax()->x)
-		SqLen += (p->x - box.GetMax()->x) * (p->x - box.GetMax()->x);
+	if (p.x < box.GetMin().x)  
+		SqLen += (p.x - box.GetMin().x) * (p.x - box.GetMin().x);
+	if (p.x > box.GetMax().x)
+		SqLen += (p.x - box.GetMax().x) * (p.x - box.GetMax().x);
 	
 	// Y軸
-	if (p->y < box.GetMin()->y)
-		SqLen += (p->y - box.GetMin()->y) * (p->y - box.GetMin()->y);
-	if (p->y > box.GetMax()->y)
-		SqLen += (p->y - box.GetMax()->y) * (p->y - box.GetMax()->y);
+	if (p.y < box.GetMin().y)
+		SqLen += (p.y - box.GetMin().y) * (p.y - box.GetMin().y);
+	if (p.y > box.GetMax().y)
+		SqLen += (p.y - box.GetMax().y) * (p.y - box.GetMax().y);
 
 	// Z軸
-	if (p->z < box.GetMin()->z)
-		SqLen += (p->z - box.GetMin()->z) * (p->z - box.GetMin()->z);
-	if (p->z > box.GetMax()->z)
-		SqLen += (p->z - box.GetMax()->z) * (p->z - box.GetMax()->z);
+	if (p.z < box.GetMin().z)
+		SqLen += (p.z - box.GetMin().z) * (p.z - box.GetMin().z);
+	if (p.z > box.GetMax().z)
+		SqLen += (p.z - box.GetMax().z) * (p.z - box.GetMax().z);
 
 	// 平方根
 	return sqrt(SqLen);
@@ -581,22 +581,22 @@ Vector3 LenAABBToPoint(Vector3& min, Vector3 &max, Vector3& p)
 	// 各軸で点が最小値以下もしくは最大値以上ならば、差を考慮
 
 	// X軸
-	if (p->x < min->x)
-		SqLen->x += (p->x - min->x);
-	if (p->x > max->x)
-		SqLen->x += (p->x - max->x);
+	if (p.x < min.x)
+		SqLen.x += (p.x - min.x);
+	if (p.x > max.x)
+		SqLen.x += (p.x - max.x);
 
 	// Y軸
-	if (p->y < min->y)
-		SqLen->y += (p->y - min->y);
-	if (p->y > max->y)
-		SqLen->y += (p->y - max->y);
+	if (p.y < min.y)
+		SqLen.y += (p.y - min.y);
+	if (p.y > max.y)
+		SqLen.y += (p.y - max.y);
 
 	// Z軸
-	if (p->z < min->z)
-		SqLen->z += (p->z - min->z);
-	if (p->z > max->z)
-		SqLen->z += (p->z - max->z);
+	if (p.z < min.z)
+		SqLen.z += (p.z - min.z);
+	if (p.z > max.z)
+		SqLen.z += (p.z - max.z);
 
 	return SqLen;
 }

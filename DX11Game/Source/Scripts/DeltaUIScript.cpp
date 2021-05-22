@@ -105,7 +105,7 @@ void DeltaUIScript::Start()
 	for (int i = 0; i < MAX_DELTA; i++)
 	{
 		Vector3 pos = transform().lock()->m_pos;
-		pos->x -= (MAX_DELTA - i) * DELTA_OFFSET_X;
+		pos.x -= (MAX_DELTA - i) * DELTA_OFFSET_X;
 
 		const auto& obj = Instantiate<GameObject>(pos);
 		m_data.push_back(obj->AddComponent<DeltaUIData>());
@@ -170,8 +170,8 @@ void DeltaUIScript::UpdateTexCoord()
 		data->m_nAnimNo = tmp % 10;
 
 		data->m_sprite.lock()->SetTexPos(
-			Vector3{ data->m_sprite.lock()->GetTexSize()->x * (data->m_nAnimNo % ANIM_DELTA_SPLIT_X) ,
-					 data->m_sprite.lock()->GetTexSize()->y * (data->m_nAnimNo / ANIM_DELTA_SPLIT_X),
+			Vector3{ data->m_sprite.lock()->GetTexSize().x * (data->m_nAnimNo % ANIM_DELTA_SPLIT_X) ,
+					 data->m_sprite.lock()->GetTexSize().y * (data->m_nAnimNo / ANIM_DELTA_SPLIT_X),
 					 0 });
 
 		if (data->m_nAnimNo == 0 && (m_data.size() - i) > nCnt)

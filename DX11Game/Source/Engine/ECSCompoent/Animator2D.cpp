@@ -135,8 +135,8 @@ void Animator2D::AnimationUpdate()
 	if (0 == m_nFrame % m_nSpeed)
 	{
 		// テクスチャ座標の更新
-		texPos->x = texSize->x * (pAnimation->GetAnimNoArray()[m_nCurrentAnimNo] % m_nSplitX);
-		texPos->y = texSize->y * (pAnimation->GetAnimNoArray()[m_nCurrentAnimNo] / m_nSplitX);
+		texPos.x = texSize.x * (pAnimation->GetAnimNoArray()[m_nCurrentAnimNo] % m_nSplitX);
+		texPos.y = texSize.y * (pAnimation->GetAnimNoArray()[m_nCurrentAnimNo] / m_nSplitX);
 		m_renderer.lock()->SetTexPos(texPos);
 		m_renderer.lock()->UpdateTexMatrix();
 
@@ -210,8 +210,8 @@ void Animator2D::SetAnimation(const std::string name, int nSpeed, int nSplitX, i
 	m_nSplitY = nSplitY;
 
 	Vector3 texSize;
-	texSize->x = 1.0f / nSplitX;
-	texSize->y = 1.0f / nSplitY;
+	texSize.x = 1.0f / nSplitX;
+	texSize.y = 1.0f / nSplitY;
 
 	m_renderer.lock()->SetTexSize(texSize);
 }
@@ -296,7 +296,7 @@ void Animator2D::AddAnimationDefault(const std::string name, int nMaxFrame)
 void Animator2D::SetSplit(int nSplitX, int nSplitY) {
 	m_nSplitX = nSplitX; m_nSplitY = m_nSplitY;
 	Vector3 texSize;
-	texSize->x = 1.0f / nSplitX;
-	texSize->y = 1.0f / nSplitY;
+	texSize.x = 1.0f / nSplitX;
+	texSize.y = 1.0f / nSplitY;
 	m_renderer.lock()->SetTexSize(texSize);
 }

@@ -89,7 +89,7 @@ void EnemyBaseScript::Start()
 	rb->SetTorqueDrag({ 0,0,0 });
 	// 回転
 	Vector3 v = { rand() % 100 / 100.0f, rand() % 100 / 100.0f, rand() % 100 / 100.0f };
-	v = v.normalized();
+	v = Mathf::Normalize(v);
 	rb->AddTorque(v * 3);
 	// リジッドボディ保存
 	m_rb = rb;

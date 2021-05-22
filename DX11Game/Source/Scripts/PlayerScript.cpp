@@ -140,34 +140,34 @@ void PlayerScript::Update()
 	const float jump = 20.0f;
 
 	Vector3 forward = CCamera::GetMainCamera()->GetForward() * speed;
-	forward->y = 0.0f;
-	Vector3 right = forward.RotationY(-90);
+	forward.y = 0.0f;
+	Vector3 right = Mathf::RotationY(forward , -90);
 
 	// 移動
 	if (GetKeyPress(VK_W))
 	{
-		//transform().lock()->m_pos->z += 1.0f;
+		//transform().lock()->m_pos.z += 1.0f;
 		m_rb.lock()->AddForce(forward);
 	}
 	if (GetKeyPress(VK_S))
 	{
-		//transform().lock()->m_pos->z -= 1.0f;
+		//transform().lock()->m_pos.z -= 1.0f;
 		m_rb.lock()->AddForce(forward * -1.0f);
 	}
 	if (GetKeyPress(VK_D))
 	{
-		//transform().lock()->m_pos->x += 1.0f;
+		//transform().lock()->m_pos.x += 1.0f;
 		m_rb.lock()->AddForce(right);
 	}
 	if (GetKeyPress(VK_A))
 	{
-		//transform().lock()->m_pos->x -= 1.0f;
+		//transform().lock()->m_pos.x -= 1.0f;
 		m_rb.lock()->AddForce(right * -1.0f);
 	}
 
 	// ジャンプ
 	if (GetKeyTrigger(VK_SPACE) && 
-		(transform().lock()->m_pos->y <= transform().lock()->m_scale->y / 2 || m_nJump > 0))
+		(transform().lock()->m_pos.y <= transform().lock()->m_scale.y / 2 || m_nJump > 0))
 	{
 		m_rb.lock()->SetForceY(jump + m_nJump);
 		// サウンド
@@ -188,10 +188,10 @@ void PlayerScript::Update()
 		test->AddComponent<BulletScript>();
 		const auto& rb = test->GetComponent<Rigidbody>();
 
-		Vector3 dir = CCamera::GetMainCamera()->GetForward().normalized();
+		Vector3 dir = Mathf::Normalize(CCamera::GetMainCamera()->GetForward());
 
 		test->transform().lock()->m_pos = transform().lock()->m_pos + dir * 500;
-		rb->AddForce(dir * 100 + Vector3::WallVerticalVector(m_rb.lock()->GetForce(), dir));
+		rb->AddForce(dir * 100 + Mathf::WallVerticalVector(m_rb.lock()->GetForce(), dir));
 		rb->AddTorque(dir * 10);
 
 		m_nShotCnt = 5;
@@ -215,7 +215,7 @@ void PlayerScript::LateUpdate()
 	// デバック表示
 	PrintDebugProc("DeltaCount:%d\n", m_nDeltaCount);
 
-	if (!m_bGround && transform().lock()->m_pos->y <= transform().lock()->m_scale->y / 2)
+	if (!m_bGround && transform().lock()->m_pos.y <= transform().lock()->m_scale.y / 2)
 	{
 		m_bGround = true;
 		// 画面揺れ
@@ -321,7 +321,7 @@ void PlayerScript::OnDeltaCollisionEnter(DeltaCollider* collider)
 		Vector3 vec = collider->transform().lock()->m_pos - transform().lock()->m_pos;
 		Vector3 forward = CCamera::GetMainCamera()->GetForward();
 
-		if (Vector3::Dot(vec.normalized(), forward.normalized()) < -0.3f)
+		if (Mathf::Dot(Mathf::Normalize(vec), Mathf::Normalize(forward)) < -0.3f)
 		{
 			// ダメージ
 			if (m_nDamageCnt > 0) return;

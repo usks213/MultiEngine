@@ -92,7 +92,7 @@ void GameWorld::Start()
 	CCamera::GetMainCamera()->Update();
 	Vector3 dir = CCamera::GetMainCamera()->GetForward();
 	dir *= 1500;
-	dir->y = 700;
+	dir.y = 700;
 	crystal->transform().lock()->m_pos = dir;
 	crystal->AddComponent<StartCrystalScript>()->SetPlayer(player);
 
@@ -119,7 +119,7 @@ void GameWorld::Start()
 	//renderer->SetAmbientTexture("data/texture/skydome.png");
 	////renderer->SetTexSize({ 100, 100, 0 });
 	////renderer->UpdateTexMatrix();
-	//plane->transform().lock()->m_pos->y = -1;
+	//plane->transform().lock()->m_pos.y = -1;
 	
 	// ƒJ[ƒ\ƒ‹
 	const auto& cursor = GetEntityManager()->CreateEntity<GameObject>();

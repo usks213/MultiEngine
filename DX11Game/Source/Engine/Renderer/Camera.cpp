@@ -98,7 +98,7 @@ void CCamera::Update()
 	const auto& trans = m_targetTrans.lock();
 	if (!trans) return;
 
-	XMFLOAT3 pos = *trans->m_pos.GetFloat3();
+	XMFLOAT3 pos = trans->m_pos;
 
 	// カメラ移動
 	m_vPos.x = pos.x;
@@ -150,7 +150,7 @@ void CCamera::Update()
 
 		//===== 水平 =====
 		XMMATRIX mtx = XMMatrixRotationY(
-			XMConvertToRadians(axis->x * 0.1f));
+			XMConvertToRadians(axis.x * 0.1f));
 
 		// 更新
 		XMVECTOR v = XMVectorSet(
@@ -165,7 +165,7 @@ void CCamera::Update()
 			XMVectorSet(m_mtxWorld._11,
 				m_mtxWorld._12,
 				m_mtxWorld._13, 0.0f),
-			XMConvertToRadians(axis->y * 0.1f));
+			XMConvertToRadians(axis.y * 0.1f));
 
 		// バックアップ
 		XMFLOAT3 back = m_vRelTarget;
@@ -245,10 +245,10 @@ void CCamera::Update()
 	}
 
 	// カメラの向き
-	m_vForward->x = m_vRelTarget.x;
-	m_vForward->y = m_vRelTarget.y;
-	m_vForward->z = m_vRelTarget.z;
-	m_vForward = m_vForward.normalized();
+	m_vForward.x = m_vRelTarget.x;
+	m_vForward.y = m_vRelTarget.y;
+	m_vForward.z = m_vRelTarget.z;
+	m_vForward = Mathf::Normalize(m_vForward);
 
 	// 画面揺れ
 	static float fOs = 50;
@@ -259,8 +259,8 @@ void CCamera::Update()
 	{
 		//// 右ベクトル
 		//Vector3 up = Vector3{ 0.0f, 1.0f, 0.0f };
-		//m_vRight = Vector3::Cross(m_vForward, up).normalized();
-		//up = Vector3::Cross(m_vForward, m_vRight).normalized();
+		//m_vRight = Mathf::Cross(m_vForward, up).normalized();
+		//up = Mathf::Cross(m_vForward, m_vRight).normalized();
 
 		//// 揺らすオフセット
 		//const float fOs = 100;
@@ -284,7 +284,7 @@ void CCamera::Update()
 			fSpeed *= -1;
 			bUp = true;
 		}
-		m_vShakeOffset->y = -yOff;
+		m_vShakeOffset.y = -yOff;
 
 		m_nShakeFrame--;
 	}
@@ -298,9 +298,9 @@ void CCamera::Update()
 	}
 
 	// カメラ移動
-	m_vPos.x = pos.x + m_vShakeOffset->x;
-	m_vPos.y = pos.y + m_vShakeOffset->y;
-	m_vPos.z = pos.z + m_vShakeOffset->z;
+	m_vPos.x = pos.x + m_vShakeOffset.x;
+	m_vPos.y = pos.y + m_vShakeOffset.y;
+	m_vPos.z = pos.z + m_vShakeOffset.z;
 
 	// 注視点移動
 	m_vTarget.x = (m_vPos.x + m_vRelTarget.x);

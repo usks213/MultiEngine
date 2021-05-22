@@ -79,7 +79,7 @@ void TitleWorld::Start()
 	const auto& titleSpr = title->AddComponent<SpriteRenderer>();
 	titleSpr->SetDiffuseTexture("data/texture/FadeDelta.png");
 	titleSpr->SetLayer(titleSpr->eBG1);
-	title->transform().lock()->m_pos->y = SCREEN_CENTER_Y / 6;
+	title->transform().lock()->m_pos.y = SCREEN_CENTER_Y / 6;
 	title->transform().lock()->m_scale = Vector3{ SCREEN_WIDTH, SCREEN_HEIGHT, 1 };
 
 	// スコア
@@ -89,7 +89,7 @@ void TitleWorld::Start()
 	// タイトルボタン
 	const auto& button = GetEntityManager()->CreateEntity<GameObject>();
 	button->AddComponent<TitleButtonScript>();
-	button->transform().lock()->m_pos->y = -SCREEN_CENTER_Y / 3;
+	button->transform().lock()->m_pos.y = -SCREEN_CENTER_Y / 3;
 
 	// カーソルの表示
 	SetShowCursor(true);

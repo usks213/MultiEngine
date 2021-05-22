@@ -75,7 +75,7 @@ void BombCrystalScript::Start()
 	// 大きさ
 	m_fScale = 200.0f;
 	transform().lock()->m_scale = Vector3(m_fScale, m_fScale, m_fScale);
-	transform().lock()->m_rot->x = 90;
+	transform().lock()->m_rot.x = 90;
 
 	//--- コンポーネンの追加
 
@@ -171,9 +171,9 @@ void BombCrystalScript::OnDeltaCollisionEnter(DeltaCollider* collider)
 				float theta = 360.0f / n * j * (XM_PI / 180.0f);
 				// 座標
 				Vector3 pos;
-				pos->x = cosf(phi) * cosf(theta);
-				pos->y = cosf(phi) * sinf(theta);
-				pos->z = sinf(phi);
+				pos.x = cosf(phi) * cosf(theta);
+				pos.y = cosf(phi) * sinf(theta);
+				pos.z = sinf(phi);
 				pos *= 100;
 
 				// エフェクト生成
@@ -182,7 +182,7 @@ void BombCrystalScript::OnDeltaCollisionEnter(DeltaCollider* collider)
 				const auto& effect = obj->AddComponent<BombEffectScript>();
 				// リジッドボディ
 				const auto& rb = obj->GetComponent<Rigidbody>();
-				rb->AddForce(pos.normalized() * 30);
+				rb->AddForce(Mathf::Normalize(pos) * 30);
 			}
 		}
 
@@ -220,9 +220,9 @@ void BombCrystalScript::OnDeltaCollisionStay(DeltaCollider* collider)
 				float theta = 360.0f / n * j * (XM_PI / 180.0f);
 				// 座標
 				Vector3 pos;
-				pos->x = cosf(phi) * cosf(theta);
-				pos->y = cosf(phi) * sinf(theta);
-				pos->z = sinf(phi);
+				pos.x = cosf(phi) * cosf(theta);
+				pos.y = cosf(phi) * sinf(theta);
+				pos.z = sinf(phi);
 				pos *= 100;
 
 				// エフェクト生成
@@ -231,7 +231,7 @@ void BombCrystalScript::OnDeltaCollisionStay(DeltaCollider* collider)
 				const auto& effect = obj->AddComponent<BombEffectScript>();
 				// リジッドボディ
 				const auto& rb = obj->GetComponent<Rigidbody>();
-				rb->AddForce(pos.normalized() * 30);
+				rb->AddForce(Mathf::Normalize(pos) * 30);
 			}
 		}
 

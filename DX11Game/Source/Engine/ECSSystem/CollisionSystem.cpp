@@ -171,8 +171,8 @@ void CollisionSystem::OnUpdate()
 
 			// ‚±‚±‚Å‹óŠÔ‚Ì“o˜^‚ğ‚·‚é
 			// ¶ã‚Æ‰E‰º‚ğo‚·
-			wLeftTop = CCell<Collider>::GetPointElem(boxMin1->x, boxMin1->z);
-			wRightDown = CCell<Collider>::GetPointElem(boxMax1->x, boxMax1->z);
+			wLeftTop = CCell<Collider>::GetPointElem(boxMin1.x, boxMin1.z);
+			wRightDown = CCell<Collider>::GetPointElem(boxMax1.x, boxMax1.z);
 			// XOR‚ğ‚Æ‚é	
 			Def = wLeftTop ^ wRightDown;
 			unsigned int HiLevel = 0;

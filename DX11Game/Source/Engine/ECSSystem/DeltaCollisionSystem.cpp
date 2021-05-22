@@ -91,7 +91,7 @@ void DeltaCollisionSystem::OnUpdate()
 	// カメラ座標
 	Vector3 cameraPos = CCamera::GetMainCamera()->GetPos();
 	// オフセット
-	CCell<DeltaCollider>::SetOffSet(cameraPos->x, cameraPos->z);
+	CCell<DeltaCollider>::SetOffSet(cameraPos.x, cameraPos.z);
 
 	// 空間分割 + 状態更新
 	std::for_each(m_ComponentList.begin(), m_ComponentList.end(),
@@ -105,8 +105,8 @@ void DeltaCollisionSystem::OnUpdate()
 
 			// ここで空間の登録をする
 			// 左上と右下を出す
-			wLeftTop = CCell<DeltaCollider>::GetPointElem(boxMin1->x, boxMin1->z);
-			wRightDown = CCell<DeltaCollider>::GetPointElem(boxMax1->x, boxMax1->z);
+			wLeftTop = CCell<DeltaCollider>::GetPointElem(boxMin1.x, boxMin1.z);
+			wRightDown = CCell<DeltaCollider>::GetPointElem(boxMax1.x, boxMax1.z);
 			if (wLeftTop >= nMaxCell - 1 || wRightDown >= nMaxCell - 1)
 			{
 				// 削除

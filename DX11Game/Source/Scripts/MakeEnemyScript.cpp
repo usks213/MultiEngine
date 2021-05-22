@@ -132,18 +132,18 @@ void MakeEnemyScript::Update()
 	{
 		//--- エネミーを生成する座標
 		float height = (rand() % 5 - 2) * 100;
-		if (playerPos->y < 600) playerPos->y = 100;
+		if (playerPos.y < 600) playerPos.y = 100;
 		Vector3 spawnPos = { 3000, height, 0 };
 		Vector3 temp = playerPos;
-		//temp->y = 0;
-		spawnPos = spawnPos.RotationY(rand() % 360) + temp;
+		//temp.y = 0;
+		spawnPos = Mathf::RotationY(spawnPos, rand() % 360) + temp;
 
 		//--- ボムクリスタルの生成
 		if (rand() % 100 < 50)
 		{
 			float bombRand = 1.0f - (rand() % 26 / 100.0f);
 			Vector3 bombPos = spawnPos * bombRand;
-			bombPos->y = playerPos->y + (7) * 100;
+			bombPos.y = playerPos.y + (7) * 100;
 			const auto& bomb = Instantiate<GameObject>(bombPos);
 			bomb->AddComponent<BombCrystalScript>();
 		}
@@ -161,24 +161,24 @@ void MakeEnemyScript::Update()
 			int SpawnNum = m_nSpawnNum + 3;
 
 			// 生成座標
-			Vector3 pos = (playerPos - spawnPos).normalized() * SpawnNum * 200;
-			pos->y = 0;
+			Vector3 pos = Mathf::Normalize(playerPos - spawnPos) * SpawnNum * 200;
+			pos.y = 0;
 			Vector3 backPos = pos;
 			// 生成数の半分だけ角度をずらす
 			float addAngle = 45.0f / SpawnNum;
-			pos = pos.RotationY(-addAngle * (SpawnNum / 2));
+			pos = Mathf::RotationY(pos ,-addAngle * (SpawnNum / 2));
 			Vector3 center = spawnPos;
-			center->y = 0;
+			center.y = 0;
 
 			for (int i = 0; i < SpawnNum; i++)
 			{
 				// エネミー生成
-				const auto& obj = Instantiate<GameObject>(pos.RotationY(addAngle * i) - backPos + spawnPos);
+				const auto& obj = Instantiate<GameObject>(Mathf::RotationY(pos, addAngle * i) - backPos + spawnPos);
 				// コンポーネントの追加
 				obj->AddComponent<StraightMoveEnemyScript>()->SetPlayer(player);
 				// 進む向き
 				const auto& rb = obj->GetComponent<Rigidbody>();
-				Vector3 dir = (temp - center).normalized();
+				Vector3 dir = Mathf::Normalize(temp - center);
 				rb->AddForce(dir * 20);
 			}
 		}
@@ -196,17 +196,17 @@ void MakeEnemyScript::Update()
 						// 生成座標
 						Vector3 pos = { x * 40.0f, 0, 0 };
 						float angle = 360.0f / x * i;
-						pos = pos.RotationY(angle);
+						pos = Mathf::RotationY(pos, angle);
 						Vector3 center = spawnPos;
-						center->y += y * 200;
+						center.y += y * 200;
 						// エネミー生成
 						const auto& obj = Instantiate<GameObject>(pos + center);
 						// コンポーネントの追加
 						obj->AddComponent<GroupMoveEnemyScript>()->SetPlayer(player);
 						// 進む向き
 						const auto& rb = obj->GetComponent<Rigidbody>();
-						center->y = 0;
-						Vector3 dir = (temp - center).normalized();
+						center.y = 0;
+						Vector3 dir = Mathf::Normalize(temp - center);
 						rb->AddForce(dir * 20);
 					}
 		}

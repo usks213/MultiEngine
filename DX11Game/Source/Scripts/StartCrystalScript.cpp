@@ -77,7 +77,7 @@ void StartCrystalScript::Start()
 	// スケール
 	m_fScale = 300.0f;
 	transform().lock()->m_scale = Vector3{ m_fScale,m_fScale,m_fScale };
-	transform().lock()->m_rot->x = 90;
+	transform().lock()->m_rot.x = 90;
 
 	//--- コンポーネンの追加
 
