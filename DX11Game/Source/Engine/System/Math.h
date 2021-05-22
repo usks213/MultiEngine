@@ -1,7 +1,14 @@
 #pragma once
 
-#include <DirectXMath.h>
-#include <cmath>
+#include <d3d11.h>
+#include <SimpleMath.h>
+
+#ifdef min
+#undef min
+#endif
+#ifdef max
+#undef max
+#endif
 
 using namespace DirectX;
 
