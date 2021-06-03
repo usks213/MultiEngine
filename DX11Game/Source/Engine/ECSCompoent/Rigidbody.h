@@ -83,21 +83,28 @@ namespace ECS
 		void SetDragZ(float fDragZ) { m_drag.z = fDragZ; }
 
 		// 回転
-		Vector3 GetTorque() { return m_torque; }
-		void SetTorque(Vector3 torque) { m_torque = torque; }
-		void SetTorqueX(float torqueX) { m_torque.x = torqueX; }
-		void SetTorqueY(float torqueY) { m_torque.y = torqueY; }
-		void SetTorqueZ(float torqueZ) { m_torque.z = torqueZ; }
-		void AddTorque(Vector3 torque) { m_torque += torque; }
-		void AddTorqueX(float torqueX) { m_torque.x += torqueX; }
-		void AddTorqueY(float torqueY) { m_torque.y += torqueY; }
-		void AddTorqueZ(float torqueZ) { m_torque.z += torqueZ; }
+		//Vector3 GetTorque() { return m_torque; }
+		//void SetTorque(Vector3 torque) { m_torque = torque; }
+		//void SetTorqueX(float torqueX) { m_torque.x = torqueX; }
+		//void SetTorqueY(float torqueY) { m_torque.y = torqueY; }
+		//void SetTorqueZ(float torqueZ) { m_torque.z = torqueZ; }
+		//void AddTorque(Vector3 torque) { m_torque += torque; }
+		//void AddTorqueX(float torqueX) { m_torque.x += torqueX; }
+		//void AddTorqueY(float torqueY) { m_torque.y += torqueY; }
+		//void AddTorqueZ(float torqueZ) { m_torque.z += torqueZ; }
+		// クォータニオン版
+		Quaternion GetTorque() { return m_torque; }
+		void SetTorque(Quaternion torque) { m_torque = torque; }
+		void AddTorque(Quaternion torque) { m_torque *= torque; }
 		// 回転抵抗
-		Vector3 GetTorqueDrag() { return m_torqueDrag; }
-		void SetTorqueDrag(Vector3 fTorqueDrag) { m_torqueDrag = fTorqueDrag; }
-		void SetTorqueDragX(float fTorqueDragX) { m_torqueDrag.x = fTorqueDragX; }
-		void SetTorqueDragY(float fTorqueDragY) { m_torqueDrag.y = fTorqueDragY; }
-		void SetTorqueDragZ(float fTorqueDragZ) { m_torqueDrag.z = fTorqueDragZ; }
+		//Vector3 GetTorqueDrag() { return m_torqueDrag; }
+		//void SetTorqueDrag(Vector3 fTorqueDrag) { m_torqueDrag = fTorqueDrag; }
+		//void SetTorqueDragX(float fTorqueDragX) { m_torqueDrag.x = fTorqueDragX; }
+		//void SetTorqueDragY(float fTorqueDragY) { m_torqueDrag.y = fTorqueDragY; }
+		//void SetTorqueDragZ(float fTorqueDragZ) { m_torqueDrag.z = fTorqueDragZ; }
+		float GetTorqueDrag() { return m_torqueDrag; }
+		void SetTorqueDrag(float fTorqueDrag) { m_torqueDrag = fTorqueDrag; }
+
 
 		// 物理使用
 		bool GetUsePhysics() { return m_bUsePhysics; }
@@ -122,9 +129,12 @@ namespace ECS
 		Vector3 m_forceBackUp;
 		Vector3 m_drag;
 		// 回転
-		Vector3 m_angularVelocity;
-		Vector3 m_torque;
-		Vector3 m_torqueDrag;
+		//Vector3 m_angularVelocity;
+		//Vector3 m_torque;
+		//Vector3 m_torqueDrag;
+		Quaternion m_angularVelocity;
+		Quaternion m_torque;
+		float m_torqueDrag;
 
 		// 物理使用
 		bool m_bUsePhysics;

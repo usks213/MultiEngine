@@ -12,18 +12,21 @@
 #undef max
 #endif
 
-using Vector2 = DirectX::SimpleMath::Vector2;    // 2次元浮動小数点値ベクトル
-using Vector3 = DirectX::SimpleMath::Vector3;    // 3次元浮動小数点値ベクトル
-using Vector4 = DirectX::SimpleMath::Vector4;    // 4次元浮動小数点値ベクトル
+using namespace DirectX::SimpleMath;
 
-using Quaternion = DirectX::SimpleMath::Quaternion; // クォータニオン
-using Matrix = DirectX::SimpleMath::Matrix;			// 行列
-using Color = DirectX::SimpleMath::Color;			// 色
 
-using Rect = DirectX::SimpleMath::Rectangle;		// 矩形
-using Plane = DirectX::SimpleMath::Plane;			// 平面
-using Ray = DirectX::SimpleMath::Ray;				// レイ
-using Viewport = DirectX::SimpleMath::Viewport;		// ビューポート
+//using Vector2 = DirectX::SimpleMath::Vector2;    // 2次元浮動小数点値ベクトル
+//using Vector3 = DirectX::SimpleMath::Vector3;    // 3次元浮動小数点値ベクトル
+//using Vector4 = DirectX::SimpleMath::Vector4;    // 4次元浮動小数点値ベクトル
+//
+//using Quaternion = DirectX::SimpleMath::Quaternion; // クォータニオン
+//using Matrix = DirectX::SimpleMath::Matrix;			// 行列
+//using Color = DirectX::SimpleMath::Color;			// 色
+//
+//using Rect = DirectX::SimpleMath::Rectangle;		// 矩形
+//using Plane = DirectX::SimpleMath::Plane;			// 平面
+//using Ray = DirectX::SimpleMath::Ray;				// レイ
+//using Viewport = DirectX::SimpleMath::Viewport;		// ビューポート
 //using Resolution = Vector2Int;                    // 解像度
 
 using Int = int;								// 32ビット符号付き整数値
@@ -31,6 +34,7 @@ using Uint8 = unsigned char;					//  8ビット符号なし整数値
 using Uint16 = unsigned short;                  // 16ビット符号なし整数値
 using Uint32 = uint32_t;                        // 32ビット符号なし整数値
 using Int32 = int32_t;							// 32ビット符号付き整数値
+
 
 namespace Mathf
 {

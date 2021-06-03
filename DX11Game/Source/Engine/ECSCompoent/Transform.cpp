@@ -36,8 +36,7 @@ Transform::Transform()
 {
 	m_pos = Vector3{ 0.0f, 0.0f, 0.0f };
 	m_scale = Vector3{ 1.0f, 1.0f, 1.0f };
-	m_rot = Vector3{ 0.0f, 0.0f, 0.0f };
-
+	m_rot = Quaternion::CreateFromYawPitchRoll(0,0,0);
 }
 
 //========================================
@@ -105,8 +104,10 @@ void Transform::UpdateMatrix()
 	mtxWorld = XMMatrixMultiply(mtxWorld, mtxScale);
 
 	// ‰ñ“]‚ð”½‰f
-	mtxRot = XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_rot.x),
-		XMConvertToRadians(m_rot.y), XMConvertToRadians(m_rot.z));
+	/*mtxRot = XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_rot.x),
+		XMConvertToRadians(m_rot.y), XMConvertToRadians(m_rot.z));*/
+	Matrix r = Matrix::CreateFromQuaternion(m_rot);
+	mtxRot = XMLoadFloat4x4(&r);
 	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
 
 	// ˆÚ“®‚ð”½‰f

@@ -86,11 +86,12 @@ void EnemyBaseScript::Start()
 	rb->SetStaticFriction(0);
 	rb->SetDynamicFriction(0);
 	rb->SetMass(1);
-	rb->SetTorqueDrag({ 0,0,0 });
+	rb->SetTorqueDrag(0);
 	// 回転
 	Vector3 v = { rand() % 100 / 100.0f, rand() % 100 / 100.0f, rand() % 100 / 100.0f };
-	v = Mathf::Normalize(v);
-	rb->AddTorque(v * 3);
+	Quaternion q = Quaternion::CreateFromAxisAngle(Mathf::Normalize(v),
+		XMConvertToRadians(v.Length() * 3));
+	rb->AddTorque(q);
 	// リジッドボディ保存
 	m_rb = rb;
 

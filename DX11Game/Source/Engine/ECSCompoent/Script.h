@@ -108,7 +108,10 @@ namespace ECS
 
 		// ’l‚ð‘ã“ü
 		trans->m_pos = pos;
-		trans->m_rot = rot;
+		trans->m_rot = Quaternion::CreateFromYawPitchRoll(
+			DirectX::XMConvertToRadians(rot.y), 
+			DirectX::XMConvertToRadians(rot.x),
+			DirectX::XMConvertToRadians(rot.z));
 		trans->m_scale = scale;
 
 		return obj;

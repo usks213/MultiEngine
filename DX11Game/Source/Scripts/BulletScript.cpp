@@ -85,7 +85,7 @@ void BulletScript::Start()
 	rb->SetStaticFriction(0);
 	rb->SetDynamicFriction(0);
 	rb->SetMass(10);
-	rb->SetTorqueDrag({ 0,0,0 });
+	rb->SetTorqueDrag(0);
 
 	// ECSコライダー
 	gameObject().lock()->AddComponent<DeltaCollider>();

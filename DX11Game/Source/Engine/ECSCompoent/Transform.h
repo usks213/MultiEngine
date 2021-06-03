@@ -10,6 +10,7 @@
 //	2020/07/22	トランスフォームクラスの作成
 //	2020/09/23	コンポーネント化
 //	2020/12/23	ECS用に再設計
+//	2021/05/25	回転をクォータニオン化
 //
 //===================================================================
 
@@ -56,7 +57,8 @@ namespace ECS
 		// ステータス
 		Vector3 m_pos;				// 中心座標
 		Vector3 m_scale;			// 縦横サイズ
-		Vector3 m_rot;				// オブジェクトの回転角度
+		//Vector3 m_rot;				// オブジェクトの回転角度
+		Quaternion m_rot;
 
 		// ゲームオブジェクトセット
 		void SetGameObject(std::weak_ptr<GameObject>& gameObject) { m_gameObject = gameObject; }

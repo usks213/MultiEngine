@@ -33,7 +33,7 @@ struct InstancingMesh {
 struct InstancingMeshData {
 	XMFLOAT4X4* mtxWorld = nullptr;					// ワールドマトリックス
 	XMFLOAT3* pPos;
-	XMFLOAT3* pRot;
+	Quaternion* pRot;
 	XMFLOAT3* pScale;
 	//XMFLOAT4X4* mtxTexture = nullptr;					// テクスチャ マトリックス
 	//MATERIAL material;					// マテリアル

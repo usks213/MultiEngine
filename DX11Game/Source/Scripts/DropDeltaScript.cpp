@@ -70,7 +70,7 @@ void DropDeltaScript::Start()
 	// 大きさ
 	m_fScale = 100.0f;
 	transform().lock()->m_scale = Vector3(m_fScale, m_fScale, m_fScale);
-	transform().lock()->m_rot.x = 90;
+	transform().lock()->m_rot = Quaternion::CreateFromYawPitchRoll(0, XMConvertToRadians(90), 0);
 
 	//--- コンポーネンの追加
 
@@ -84,9 +84,10 @@ void DropDeltaScript::Start()
 	rb->SetStaticFriction(0);
 	rb->SetDynamicFriction(0);
 	rb->SetMass(1);
-	rb->SetTorqueDrag({ 0,0,0 });
+	rb->SetTorqueDrag(0);
 	// 回転
-	rb->AddTorqueY(rand() % 3 + 1);
+	Quaternion q = Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(rand() % 3 + 1), 0, 0);
+	rb->AddTorque(q);
 	m_rb = rb;
 
 	// ECSコライダー

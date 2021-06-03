@@ -42,9 +42,9 @@ Rigidbody::Rigidbody()
 	m_force				= Vector3{ 0.0f, 0.0f, 0.0f };
 	m_drag				= Vector3{ 0.05f, 0.0f, 0.05f };
 	// 回転
-	m_angularVelocity	= Vector3{ 0.0f, 0.0f, 0.0f };
-	m_torque			= Vector3{ 0.0f, 0.0f, 0.0f };
-	m_torqueDrag		= Vector3{ 0.05f, 0.05f, 0.05f };
+	m_angularVelocity	= Quaternion::CreateFromYawPitchRoll(0, 0, 0);
+	m_torque			= Quaternion::CreateFromYawPitchRoll(0, 0, 0);
+	m_torqueDrag		= 0.05f;
 	// 物理使用
 	m_bUsePhysics		= true;
 	// 重力
@@ -122,34 +122,42 @@ void Rigidbody::Update()
 	const auto& pTrans = transform().lock();
 	// 座標・回転
 	Vector3 pos = pTrans->m_pos;
-	Vector3 rot = pTrans->m_rot;
+	Quaternion rot = pTrans->m_rot;
 	Vector3 scale = pTrans->m_scale;
 
 	//===== 回転 =====
 
-	// 移動量
-	m_angularVelocity.x = 0;
-	m_angularVelocity.y = 0;
-	m_angularVelocity.z = 0;
+	// 回転量
+	//m_angularVelocity.x = 0;
+	//m_angularVelocity.y = 0;
+	//m_angularVelocity.z = 0;
+	m_angularVelocity = Quaternion::CreateFromYawPitchRoll(0,0,0);
 
 	// 外力
-	m_angularVelocity.x += m_torque.x;
-	m_angularVelocity.y += m_torque.y;
-	m_angularVelocity.z += m_torque.z;
+	//m_angularVelocity.x += m_torque.x;
+	//m_angularVelocity.y += m_torque.y;
+	//m_angularVelocity.z += m_torque.z;
+	m_angularVelocity *= m_torque;
 
 	// 回転の更新
-	rot.x += m_angularVelocity.x;
-	rot.y += m_angularVelocity.y;
-	rot.z += m_angularVelocity.z;
-	pTrans->m_rot = rot;
+	//rot.x += m_angularVelocity.x;
+	//rot.y += m_angularVelocity.y;
+	//rot.z += m_angularVelocity.z;
+	//pTrans->m_rot = rot;
+	//pTrans->m_rot *= Quaternion::CreateFromYawPitchRoll(
+	//	DirectX::XMConvertToRadians(m_angularVelocity.y),
+	//	DirectX::XMConvertToRadians(m_angularVelocity.x),
+	//	DirectX::XMConvertToRadians(m_angularVelocity.z));
+	pTrans->m_rot *= m_angularVelocity;
 
 	// 抵抗で加速度を減らす	fDrag(0.0f ～ 1.0f)
-	m_torque.x *= (1.0f - m_torqueDrag.x);
-	if (fabsf(m_torque.x) < 0.01f) m_torque.x = 0.0f;
-	m_torque.y *= (1.0f - m_torqueDrag.y);
-	if (fabsf(m_torque.y) < 0.01f) m_torque.y = 0.0f;
-	m_torque.z *= (1.0f - m_torqueDrag.z);
-	if (fabsf(m_torque.z) < 0.01f) m_torque.z = 0.0f;
+	m_torque *= (1.0f - m_torqueDrag);
+	//m_torque.x *= (1.0f - m_torqueDrag.x);
+	//if (fabsf(m_torque.x) < 0.01f) m_torque.x = 0.0f;
+	//m_torque.y *= (1.0f - m_torqueDrag.y);
+	//if (fabsf(m_torque.y) < 0.01f) m_torque.y = 0.0f;
+	//m_torque.z *= (1.0f - m_torqueDrag.z);
+	//if (fabsf(m_torque.z) < 0.01f) m_torque.z = 0.0f;
 
 
 	//===== 移動 =====

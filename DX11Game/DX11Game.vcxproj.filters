@@ -553,7 +553,4 @@
       <Filter>ソース\スクリプト</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
 </Project>

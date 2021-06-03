@@ -192,7 +192,7 @@ void PlayerScript::Update()
 
 		test->transform().lock()->m_pos = transform().lock()->m_pos + dir * 500;
 		rb->AddForce(dir * 100 + Mathf::WallVerticalVector(m_rb.lock()->GetForce(), dir));
-		rb->AddTorque(dir * 10);
+		rb->AddTorque(Quaternion::CreateFromAxisAngle(dir, XMConvertToRadians(dir.Length() * 10)));
 
 		m_nShotCnt = 5;
 

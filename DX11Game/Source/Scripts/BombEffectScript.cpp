@@ -72,7 +72,7 @@ void BombEffectScript::Start()
 
 	// 大きさ
 	transform().lock()->m_scale = Vector3(20, 20, 20);
-	transform().lock()->m_rot.x = 90;
+	transform().lock()->m_rot = Quaternion::CreateFromYawPitchRoll(0, XMConvertToRadians(90), 0);
 	//--- コンポーネンの追加
 
 	// インスタンシングレンダラー
@@ -89,7 +89,7 @@ void BombEffectScript::Start()
 	rb->SetStaticFriction(0);
 	rb->SetDynamicFriction(0);
 	rb->SetMass(1);
-	rb->SetTorqueDrag({ 0,0,0 });
+	rb->SetTorqueDrag(0);
 
 	// 生存時間
 	m_nExitTime = 180;
