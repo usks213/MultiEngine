@@ -45,7 +45,7 @@ struct TAssimpMaterial {
 	ID3D11ShaderResourceView*	pTexEmmisive;	// 発光テクスチャ
 	ID3D11ShaderResourceView*	pTexTransparent;// 透過テクスチャ
 	ID3D11ShaderResourceView*	pTexNormal;// 法線テクスチャ
-	ID3D11ShaderResourceView*	pTexAmbient;// 法線テクスチャ
+	ID3D11ShaderResourceView*	pTexAmbient;// 環境テクスチャ
 	TAssimpMaterial()
 	{
 		Ka = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 0);
@@ -57,9 +57,11 @@ struct TAssimpMaterial {
 		pTexSpecular = nullptr;
 		pTexTransparent = nullptr;
 		pTexNormal = nullptr;
+		pTexAmbient = nullptr;
 	}
 	void Release()
 	{
+		SAFE_RELEASE(pTexAmbient);
 		SAFE_RELEASE(pTexNormal);
 		SAFE_RELEASE(pTexTransparent);
 		SAFE_RELEASE(pTexSpecular);
@@ -218,6 +220,11 @@ public:
 
 	void SetBoneMatrix(ID3D11DeviceContext* pDC, XMFLOAT4X4 mtxBone[]);
 
+	UINT GetVertexCount() { return (UINT)m_aVertex.size(); }
+	UINT GetIndexCount() { return (UINT)m_aIndex.size(); }
+	std::vector<TAssimpVertex>& GetVertex() { return m_aVertex; }
+	std::vector<UINT>& GetIndex() { return m_aIndex; }
+
 private:
 	bool SetupMesh(ID3D11Device* pDevice);
 };
@@ -280,6 +287,9 @@ public:
 	DirectX::XMFLOAT3& GetBBox() { return m_vBBox; }
 	DirectX::XMFLOAT3& GetCenter() { return m_vCenter; }
 
+	void GetVertexCount(UINT* pVertex, UINT* pIndex);
+	void GetVertex(TAssimpVertex* pVertex, UINT* pIndex);
+
 private:
 	void ScaleAsset();
 	void CalculateBounds(aiNode* piNode, aiVector3D* p_avOut, const aiMatrix4x4& piMatrix);
@@ -291,4 +301,6 @@ private:
 	ID3D11ShaderResourceView* getTextureFromModel(ID3D11Device* pDevice, int textureindex);
 	void LoadTexture(ID3D11Device* pDevice, aiString& szPath, ID3D11ShaderResourceView** ppTexture);
 	bool HasAlphaPixels(ID3D11ShaderResourceView* pTexture);
+	void GetVertexCount(aiNode* piNode, UINT* pVertex, UINT* pIndex);
+	void GetVertex(aiNode* piNode, TAssimpVertex* pVertex, UINT& nVtxCnt, UINT* pIndex, UINT& nIdxCnt);
 };

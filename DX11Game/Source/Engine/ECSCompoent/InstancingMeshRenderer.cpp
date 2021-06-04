@@ -665,7 +665,7 @@ HRESULT InstancingMeshRenderer::MakeTetraheron(const std::string tag)
 	int			indexWk[nIndexNum];	// インデックス格納ワーク
 
 	// 使いまわす頂点座標
-	XMFLOAT3 ver[4] = {
+	Vector3 ver[4] = {
 		XMFLOAT3(-0.81649658, - 0.47140452,   0.33333333),
 		XMFLOAT3( 0.81649658, - 0.47140452,   0.33333333),
 		XMFLOAT3( 0.00000000,   0.00000000, - 1.00000000),

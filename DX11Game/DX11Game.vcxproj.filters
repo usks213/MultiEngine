@@ -68,6 +68,9 @@
     <Filter Include="ソース\スクリプト\デルタ">
       <UniqueIdentifier>{8ccb7f78-1cbc-4bde-b112-818ad56ac2c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース\スクリプト\テスト">
+      <UniqueIdentifier>{bf749d88-cd37-4631-ba3b-a32401cb066d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11Game.rc">
@@ -325,6 +328,12 @@
     <ClCompile Include="Source\Scripts\FieldScript.cpp">
       <Filter>ソース\スクリプト</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\ECSWorld\TestWorld.cpp">
+      <Filter>ソース\エンジン\ECSWorld</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\ExplosionScript.cpp">
+      <Filter>ソース\スクリプト\テスト</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Engine\main.h">
@@ -551,6 +560,12 @@
     </ClInclude>
     <ClInclude Include="Source\Scripts\FieldScript.h">
       <Filter>ソース\スクリプト</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\ECSWorld\TestWorld.h">
+      <Filter>ソース\エンジン\ECSWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\ExplosionScript.h">
+      <Filter>ソース\スクリプト\テスト</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

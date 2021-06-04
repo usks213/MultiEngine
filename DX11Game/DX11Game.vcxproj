@@ -300,6 +300,7 @@
     <ClCompile Include="Source\Engine\ECSSystem\TransformSystem.cpp" />
     <ClCompile Include="Source\Engine\ECSWorld\GameWorld.cpp" />
     <ClCompile Include="Source\Engine\ECSWorld\MasterWorld.cpp" />
+    <ClCompile Include="Source\Engine\ECSWorld\TestWorld.cpp" />
     <ClCompile Include="Source\Engine\ECSWorld\TitleWorld.cpp" />
     <ClCompile Include="Source\Engine\ECS\Component\IComponent.cpp" />
     <ClCompile Include="Source\Engine\ECS\Entity\EntityManager.cpp" />
@@ -331,6 +332,7 @@
     <ClCompile Include="Source\Scripts\DropDeltaScript.cpp" />
     <ClCompile Include="Source\Scripts\EnemyBaseScript.cpp" />
     <ClCompile Include="Source\Scripts\EnemyEffectScript.cpp" />
+    <ClCompile Include="Source\Scripts\ExplosionScript.cpp" />
     <ClCompile Include="Source\Scripts\FadeScript.cpp" />
     <ClCompile Include="Source\Scripts\FieldScript.cpp" />
     <ClCompile Include="Source\Scripts\GameOverScript.cpp" />
@@ -373,6 +375,7 @@
     <ClInclude Include="Source\Engine\ECSSystem\TransformSystem.h" />
     <ClInclude Include="Source\Engine\ECSWorld\GameWorld.h" />
     <ClInclude Include="Source\Engine\ECSWorld\MasterWorld.h" />
+    <ClInclude Include="Source\Engine\ECSWorld\TestWorld.h" />
     <ClInclude Include="Source\Engine\ECSWorld\TitleWorld.h" />
     <ClInclude Include="Source\Engine\ECS\Component\IComponent.h" />
     <ClInclude Include="Source\Engine\ECS\Entity\EntityManager.h" />
@@ -408,6 +411,7 @@
     <ClInclude Include="Source\Scripts\DropDeltaScript.h" />
     <ClInclude Include="Source\Scripts\EnemyBaseScript.h" />
     <ClInclude Include="Source\Scripts\EnemyEffectScript.h" />
+    <ClInclude Include="Source\Scripts\ExplosionScript.h" />
     <ClInclude Include="Source\Scripts\FadeScript.h" />
     <ClInclude Include="Source\Scripts\FieldScript.h" />
     <ClInclude Include="Source\Scripts\GameOverScript.h" />

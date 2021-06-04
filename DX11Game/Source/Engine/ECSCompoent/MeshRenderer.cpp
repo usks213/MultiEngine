@@ -711,6 +711,89 @@ HRESULT MeshRenderer::MakeSkyDome2(std::string tag,
 
 //========================================
 //
+// 任意のメッシュ作成
+//
+//========================================
+HRESULT MeshRenderer::MakeAnyVertex(const std::string tag, XMFLOAT3* pVertex, int* pIndex, 
+	int nVertexCount, int nIndexCount)
+{
+	// メッシュの検索
+	const auto& itr = m_meshPool.find(tag);
+	if (m_meshPool.end() != itr)
+	{
+		m_mesh = itr->second;
+		return S_OK;
+	}
+
+	// 新規作成
+	m_mesh = new MESH();
+
+	// プールに格納
+	m_meshPool.emplace(tag, m_mesh);
+
+	// プリミティブ設定
+	m_mesh->primitiveType = PT_TRIANGLESTRIP;
+
+	VERTEX_3D*	pVertexWk = new VERTEX_3D[nVertexCount];	// 頂点情報格納ワーク
+	int*		pIndexWk = new int[nIndexCount];			// インデックス格納ワーク
+
+	// 頂点数
+	m_mesh->nNumVertex = nVertexCount;
+
+	// 頂点座標の設定
+	for (int i = 0; i < nVertexCount; ++i)
+	{
+		Vector3 halfV = pVertex[pIndex[i]];
+		halfV /= 2;
+		pVertexWk[i].vtx = halfV;
+	}
+
+	// 法線ベクトルの設定
+	for (int i = 0; i < nVertexCount; i += 3)
+	{
+		XMFLOAT3 n = Mathf::Cross(pVertex[pIndex[i + 0]], pVertex[pIndex[i + 1]], pVertex[pIndex[i + 2]]);
+		pVertexWk[i + 0].nor = n;
+		pVertexWk[i + 1].nor = n;
+		pVertexWk[i + 2].nor = n;
+	}
+
+	// 拡散反射光の設定
+	for (int i = 0; i < nVertexCount; i++)
+	{
+		pVertexWk[i].diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+
+	// テクスチャ座標の設定
+	for (int i = 0; i < nVertexCount; i += 4)
+	{
+		pVertexWk[0 + i].tex = XMFLOAT2(0.0f, 0.0f);
+		pVertexWk[1 + i].tex = XMFLOAT2(1.0f, 0.0f);
+		pVertexWk[2 + i].tex = XMFLOAT2(0.0f, 1.0f);
+
+		if(nVertexCount >= 4)
+			pVertexWk[3 + i].tex = XMFLOAT2(1.0f, 1.0f);
+	}
+
+	// インデックス数
+	m_mesh->nNumIndex = nIndexCount;
+
+	// インデックス配列の設定
+	for (int i = 0; i < nIndexCount; ++i)
+	{
+		pIndexWk[i] = i;
+	}
+
+	ID3D11Device* pDevice = GetDevice();
+	auto hr = MakeMeshVertex(pDevice, m_mesh, pVertexWk, pIndexWk);
+	// 一時配列の解放
+	delete[] pVertexWk;
+	delete[] pIndexWk;
+
+	return hr;
+}
+
+//========================================
+//
 // ベースカラーテクスチャのセット
 //
 //========================================

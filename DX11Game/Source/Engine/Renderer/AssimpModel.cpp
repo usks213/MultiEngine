@@ -722,15 +722,18 @@ void CAssimpMesh::DrawShadow(ID3D11DeviceContext* pDC, XMFLOAT4X4& m44World, EBy
 	pDC->PSSetConstantBuffers(1, 1, &m_pConstantBuffer1);
 
 	// テクスチャをシェーダに渡す
-	if (pMaterial->pTexture) {
+	if (pMaterial->pTexture)
 		pDC->PSSetShaderResources(0, 1, &pMaterial->pTexture);
-		if (pMaterial->pTexEmmisive)
-			pDC->PSSetShaderResources(1, 1, &pMaterial->pTexEmmisive);
-		if (pMaterial->pTexTransparent)
-			pDC->PSSetShaderResources(2, 1, &pMaterial->pTexTransparent);
-		if (pMaterial->pTexSpecular)
-			pDC->PSSetShaderResources(3, 1, &pMaterial->pTexSpecular);
-	}
+	if (pMaterial->pTexEmmisive)
+		pDC->PSSetShaderResources(1, 1, &pMaterial->pTexEmmisive);
+	if (pMaterial->pTexTransparent)
+		pDC->PSSetShaderResources(2, 1, &pMaterial->pTexTransparent);
+	if (pMaterial->pTexSpecular)
+		pDC->PSSetShaderResources(3, 1, &pMaterial->pTexSpecular);
+	if (pMaterial->pTexNormal)
+		pDC->PSSetShaderResources(4, 1, &pMaterial->pTexNormal);
+	if (pMaterial->pTexAmbient)
+		pDC->PSSetShaderResources(5, 1, &pMaterial->pTexAmbient);
 	// シャドウマップ
 	pDC->PSSetShaderResources(4, 1, &g_pShadowResourceView);
 
@@ -1509,4 +1512,65 @@ double CAssimpModel::GetAnimDuration(int nAnimIndex)
 		}
 	}
 	return 0.0;
+}
+
+// 頂点数/インデックス数取得
+void CAssimpModel::GetVertexCount(UINT* pVertex, UINT* pIndex)
+{
+	if (pVertex && pIndex) {
+		*pVertex = 0;
+		*pIndex = 0;
+		if (m_pScene && m_pScene->mRootNode) {
+			GetVertexCount(m_pScene->mRootNode, pVertex, pIndex);
+		}
+	}
+}
+
+// 頂点配列/インデックス配列取得
+void CAssimpModel::GetVertex(TAssimpVertex* pVertex, UINT* pIndex)
+{
+	if (pVertex && pIndex && m_pScene && m_pScene->mRootNode) {
+		UINT nVertex = 0, nIndex = 0;
+		GetVertex(m_pScene->mRootNode, pVertex, nVertex, pIndex, nIndex);
+	}
+}
+
+// 頂点数/インデックス数取得
+void CAssimpModel::GetVertexCount(aiNode* piNode, UINT* pVertex, UINT* pIndex)
+{
+	// メッシュ毎の値を加算
+	for (UINT i = 0; i < piNode->mNumMeshes; ++i) {
+		const aiMesh* mesh = m_pScene->mMeshes[piNode->mMeshes[i]];
+		CAssimpMesh& helper = m_aMesh[piNode->mMeshes[i]];
+		*pVertex += helper.GetVertexCount();
+		*pIndex += helper.GetIndexCount();
+	}
+	// 全ての子ノードを検索
+	for (UINT i = 0; i < piNode->mNumChildren; ++i)
+		GetVertexCount(piNode->mChildren[i], pVertex, pIndex);
+}
+
+// 頂点配列/インデックス配列取得
+void CAssimpModel::GetVertex(aiNode* piNode, TAssimpVertex* pVertex, UINT& nVtxCnt, UINT* pIndex, UINT& nIdxCnt)
+{
+	// メッシュ毎の値を加算
+	for (UINT i = 0; i < piNode->mNumMeshes; ++i) {
+		const aiMesh* mesh = m_pScene->mMeshes[piNode->mMeshes[i]];
+		CAssimpMesh& helper = m_aMesh[piNode->mMeshes[i]];
+		UINT nVertex = helper.GetVertexCount();
+		std::vector<TAssimpVertex>& vertex = helper.GetVertex();
+		for (UINT j = 0; j < nVertex; ++j) {
+			pVertex[nVtxCnt + j] = vertex[j];
+		}
+		UINT nIndex = helper.GetIndexCount();
+		std::vector<UINT>& index = helper.GetIndex();
+		for (UINT j = 0; j < nIndex; ++j) {
+			pIndex[nIdxCnt + j] = nVtxCnt + index[j];
+		}
+		nVtxCnt += nVertex;
+		nIdxCnt += nIndex;
+	}
+	// 全ての子ノードを検索
+	for (UINT i = 0; i < piNode->mNumChildren; ++i)
+		GetVertex(piNode->mChildren[i], pVertex, nVtxCnt, pIndex, nIdxCnt);
 }

@@ -43,7 +43,9 @@ namespace ECS
 		bool ModelLoad(std::string filename);
 		// モデルの解放
 		void ModelRelese();
-		
+		// モデル取得
+		CAssimpModel* GetModel() { return m_model; }
+
 		//--- マテリアル
 		TAssimpMaterial* GetMaterial();
 
@@ -56,6 +58,12 @@ namespace ECS
 		// ベースカラーテクスチャのセット
 		void SetDiffuseTexture(const char* filename);
 		void SetDiffuseTexture(const wchar_t* filename);
+		// ノーマルマップ
+		void SetNormalTexture(const char* filename);
+		void SetNormalTexture(const wchar_t* filename);
+		// 環境マップ
+		void SetAmbientTexture(const char* filename);
+		void SetAmbientTexture(const wchar_t* filename);
 
 		// アニメーションインデックス
 		void SetAnimIndex(int nIndex)

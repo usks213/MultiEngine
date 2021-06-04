@@ -109,6 +109,7 @@
 // ワールド
 #include "ECSWorld/GameWorld.h"
 #include "ECSWorld/TitleWorld.h"
+#include "ECSWorld/TestWorld.h"
 
 
 
@@ -655,7 +656,7 @@ HRESULT Init(HWND hWnd, BOOL bWindow)
 	WorldManager::Create();
 
 	// ゲームワールドの追加
-	WorldManager::GetInstance()->LoadWorld<TitleWorld>("Title");
+	WorldManager::GetInstance()->LoadWorld<TestWorld>("Test");
 	
 	return hr;
 }

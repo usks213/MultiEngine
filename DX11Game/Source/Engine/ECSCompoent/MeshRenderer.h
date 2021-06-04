@@ -59,6 +59,10 @@ namespace ECS
 			float fTexSizeX = 1.0f, float fTexSizeY = 1.0f,
 			float fPosX = 0.0f, float fPosY = 0.0f, float fPosZ = 0.0f);
 
+		// 任意のメッシュ作成
+		HRESULT MakeAnyVertex(const std::string tag, XMFLOAT3* pVertex, int* pIndex,
+			int nVertexCount, int nIndexCount);
+
 		//--- マテリアル
 		// カラー変更
 		void SetDiffuseColor(XMFLOAT4 color) { m_material.Diffuse = color; }

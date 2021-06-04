@@ -26,6 +26,8 @@ Texture2D    g_texture			: register(t0);	// テクスチャ
 Texture2D    g_texEmissive		: register(t1);	// 発光テクスチャ
 Texture2D    g_texTransparent	: register(t2);	// 透過テクスチャ
 Texture2D    g_texSpecular		: register(t3);	// 鏡面反射テクスチャ
+Texture2D    g_texNormal		: register(t4);	// 法線テクスチャ
+Texture2D    g_texAmbient		: register(t5);	// 環境テクスチャ
 SamplerState g_sampler			: register(s0);	// サンプラ
 
 
@@ -117,8 +119,8 @@ float4 main(VS_OUTPUT input) : SV_Target0
         
         // 環境マップ
         float3 r = 2.0f * N * dot(N, V) - V;
-      //  Diff = g_texture.Sample(g_sampler, -envMapEquirect(r));
-        Diff *= sc;
+        //Diff = g_texAmbient.Sample(g_sampler, -envMapEquirect(r));
+        //Diff *= sc;
         
 		// Half Lambert
 		float PI = 3.14159265359f;

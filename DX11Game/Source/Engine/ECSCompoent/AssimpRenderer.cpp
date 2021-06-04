@@ -126,6 +126,41 @@ void AssimpRenderer::SetDiffuseTexture(const wchar_t* filename)
 		pMat->pTexture = CTexture::GetTexture(GetDevice(), filename);
 }
 
+// ノーマルマップ
+void AssimpRenderer::SetNormalTexture(const char* filename)
+{
+	// マテリアル取得
+	auto pMat = GetMaterial();
+	// テクスチャ
+	if (pMat)
+		pMat->pTexNormal = CTexture::GetTexture(GetDevice(), filename);
+}
+void AssimpRenderer::SetNormalTexture(const wchar_t* filename)
+{
+	// マテリアル取得
+	auto pMat = GetMaterial();
+	// テクスチャ
+	if (pMat)
+		pMat->pTexNormal = CTexture::GetTexture(GetDevice(), filename);
+}
+// 環境マップ
+void AssimpRenderer::SetAmbientTexture(const char* filename)
+{
+	// マテリアル取得
+	auto pMat = GetMaterial();
+	// テクスチャ
+	if (pMat)
+		pMat->pTexAmbient = CTexture::GetTexture(GetDevice(), filename);
+}
+void AssimpRenderer::SetAmbientTexture(const wchar_t* filename)
+{
+	// マテリアル取得
+	auto pMat = GetMaterial();
+	// テクスチャ
+	if (pMat)
+		pMat->pTexAmbient = CTexture::GetTexture(GetDevice(), filename);
+}
+
 //========================================
 //
 // モデルロード
