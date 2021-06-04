@@ -83,11 +83,18 @@
 //	2021/01/23	マルチサンプリング(MSAA)対応
 //
 //	2021/01/28	dGPU対応 アダプターでGPUを選択
+//
+//	2021/05/22	DirectXTK導入 SimpleMath対応
+//
+//	2021/06/03	回転制御のQuaternion化
+//
+//	2021/06/04	imgui導入
 //				
 //
 //======================================================================
 #include "main.h"
 #include <dxgi.h>
+#include <imgui.h>
 
 // システム
 #include "System/input.h"
@@ -110,7 +117,6 @@
 #include "ECSWorld/GameWorld.h"
 #include "ECSWorld/TitleWorld.h"
 #include "ECSWorld/TestWorld.h"
-
 
 
 

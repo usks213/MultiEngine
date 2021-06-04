@@ -95,7 +95,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\DirectXTex;..\..\Assimp\include;$(ProjectDir)lib\DirectXTK</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\DirectXTex;..\..\Assimp\include;$(ProjectDir)lib\DirectXTK;$(ProjectDir)lib\imgui</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <SDLCheck>false</SDLCheck>
@@ -116,7 +116,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\DirectXTex;..\..\Assimp\include;$(ProjectDir)lib\DirectXTK</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\DirectXTex;..\..\Assimp\include;$(ProjectDir)lib\DirectXTK;$(ProjectDir)lib\imgui</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <SDLCheck>false</SDLCheck>
@@ -139,7 +139,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\DirectXTex;..\..\Assimp\include;$(ProjectDir)lib\DirectXTK</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\DirectXTex;..\..\Assimp\include;$(ProjectDir)lib\DirectXTK;$(ProjectDir)lib\imgui</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <SDLCheck>false</SDLCheck>
@@ -164,7 +164,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\DirectXTex;..\..\Assimp\include;$(ProjectDir)lib\DirectXTK</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\DirectXTex;..\..\Assimp\include;$(ProjectDir)lib\DirectXTK;$(ProjectDir)lib\imgui</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <SDLCheck>false</SDLCheck>
@@ -274,6 +274,11 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="lib\imgui\imgui.cpp" />
+    <ClCompile Include="lib\imgui\imgui_demo.cpp" />
+    <ClCompile Include="lib\imgui\imgui_draw.cpp" />
+    <ClCompile Include="lib\imgui\imgui_tables.cpp" />
+    <ClCompile Include="lib\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Source\Engine\ECSCompoent\Animator2D.cpp" />
     <ClCompile Include="Source\Engine\ECSCompoent\Animation2D.cpp" />
     <ClCompile Include="Source\Engine\ECSCompoent\AssimpRenderer.cpp" />
@@ -349,6 +354,12 @@
     <ClCompile Include="Source\Scripts\TrackingMoveEnemyHostScript.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="lib\imgui\imconfig.h" />
+    <ClInclude Include="lib\imgui\imgui.h" />
+    <ClInclude Include="lib\imgui\imgui_internal.h" />
+    <ClInclude Include="lib\imgui\imstb_rectpack.h" />
+    <ClInclude Include="lib\imgui\imstb_textedit.h" />
+    <ClInclude Include="lib\imgui\imstb_truetype.h" />
     <ClInclude Include="Source\Engine\ECSCompoent\Animator2D.h" />
     <ClInclude Include="Source\Engine\ECSCompoent\Animation2D.h" />
     <ClInclude Include="Source\Engine\ECSCompoent\AssimpRenderer.h" />

@@ -71,6 +71,9 @@
     <Filter Include="ソース\スクリプト\テスト">
       <UniqueIdentifier>{bf749d88-cd37-4631-ba3b-a32401cb066d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ライブラリ">
+      <UniqueIdentifier>{10c524d9-100b-455f-891a-5e709fb6e40c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11Game.rc">
@@ -334,6 +337,21 @@
     <ClCompile Include="Source\Scripts\ExplosionScript.cpp">
       <Filter>ソース\スクリプト\テスト</Filter>
     </ClCompile>
+    <ClCompile Include="lib\imgui\imgui.cpp">
+      <Filter>ライブラリ</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_demo.cpp">
+      <Filter>ライブラリ</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_draw.cpp">
+      <Filter>ライブラリ</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_tables.cpp">
+      <Filter>ライブラリ</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_widgets.cpp">
+      <Filter>ライブラリ</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Engine\main.h">
@@ -566,6 +584,24 @@
     </ClInclude>
     <ClInclude Include="Source\Scripts\ExplosionScript.h">
       <Filter>ソース\スクリプト\テスト</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imconfig.h">
+      <Filter>ライブラリ</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imgui.h">
+      <Filter>ライブラリ</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imgui_internal.h">
+      <Filter>ライブラリ</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imstb_rectpack.h">
+      <Filter>ライブラリ</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imstb_textedit.h">
+      <Filter>ライブラリ</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imstb_truetype.h">
+      <Filter>ライブラリ</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
