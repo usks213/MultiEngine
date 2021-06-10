@@ -26,6 +26,7 @@
 #include "../../ECSSystem/DeltaCollisionSystem.h"
 #include "../../ECSSystem/RigidbodySystem.h"
 #include "../../ECSSystem/ScriptSystem.h"
+#include "../../ECSSystem/CameraSystem.h"
 
 using namespace ECS;
 
@@ -58,6 +59,7 @@ World::World(std::string name)
 	AddSystem<DeltaCollisionSystem>();
 	AddSystem<RigidbodySystem>();
 	AddSystem<ScriptSystem>();
+	AddSystem<CameraSystem>();
 }
 
 

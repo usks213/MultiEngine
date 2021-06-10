@@ -286,6 +286,7 @@
     <ClCompile Include="Source\Engine\ECSCompoent\AssimpRenderer.cpp" />
     <ClCompile Include="Source\Engine\ECSCompoent\BillboardRenderer.cpp" />
     <ClCompile Include="Source\Engine\ECSCompoent\BoxCollider.cpp" />
+    <ClCompile Include="Source\Engine\ECSCompoent\Camera.cpp" />
     <ClCompile Include="Source\Engine\ECSCompoent\Collider.cpp" />
     <ClCompile Include="Source\Engine\ECSCompoent\DeltaCollider.cpp" />
     <ClCompile Include="Source\Engine\ECSCompoent\InstancingMeshRenderer.cpp" />
@@ -299,6 +300,7 @@
     <ClCompile Include="Source\Engine\ECSCompoent\Transform.cpp" />
     <ClCompile Include="Source\Engine\ECSEntity\GameObject.cpp" />
     <ClCompile Include="Source\Engine\ECSSystem\Animation2DSystem.cpp" />
+    <ClCompile Include="Source\Engine\ECSSystem\CameraSystem.cpp" />
     <ClCompile Include="Source\Engine\ECSSystem\CollisionSystem.cpp" />
     <ClCompile Include="Source\Engine\ECSSystem\DeltaCollisionSystem.cpp" />
     <ClCompile Include="Source\Engine\ECSSystem\RendererSystem.cpp" />
@@ -320,7 +322,6 @@
     <ClCompile Include="Source\Engine\ECS\World\WorldManager.cpp" />
     <ClCompile Include="Source\Engine\main.cpp" />
     <ClCompile Include="Source\Engine\Renderer\AssimpModel.cpp" />
-    <ClCompile Include="Source\Engine\Renderer\Camera.cpp" />
     <ClCompile Include="Source\Engine\Renderer\instancingMesh .cpp" />
     <ClCompile Include="Source\Engine\Renderer\Light.cpp" />
     <ClCompile Include="Source\Engine\Renderer\mesh.cpp" />
@@ -370,6 +371,7 @@
     <ClInclude Include="Source\Engine\ECSCompoent\AssimpRenderer.h" />
     <ClInclude Include="Source\Engine\ECSCompoent\BillboardRenderer.h" />
     <ClInclude Include="Source\Engine\ECSCompoent\BoxCollider.h" />
+    <ClInclude Include="Source\Engine\ECSCompoent\Camera.h" />
     <ClInclude Include="Source\Engine\ECSCompoent\Collider.h" />
     <ClInclude Include="Source\Engine\ECSCompoent\DeltaCollider.h" />
     <ClInclude Include="Source\Engine\ECSCompoent\InstancingMeshRenderer.h" />
@@ -383,6 +385,7 @@
     <ClInclude Include="Source\Engine\ECSCompoent\Transform.h" />
     <ClInclude Include="Source\Engine\ECSEntity\GameObject.h" />
     <ClInclude Include="Source\Engine\ECSSystem\Animation2DSystem.h" />
+    <ClInclude Include="Source\Engine\ECSSystem\CameraSystem.h" />
     <ClInclude Include="Source\Engine\ECSSystem\CollisionSystem.h" />
     <ClInclude Include="Source\Engine\ECSSystem\DeltaCollisionSystem.h" />
     <ClInclude Include="Source\Engine\ECSSystem\RendererSystem.h" />
@@ -406,7 +409,6 @@
     <ClInclude Include="Source\Engine\ECS\World\WorldManager.h" />
     <ClInclude Include="Source\Engine\main.h" />
     <ClInclude Include="Source\Engine\Renderer\AssimpModel.h" />
-    <ClInclude Include="Source\Engine\Renderer\Camera.h" />
     <ClInclude Include="Source\Engine\Renderer\instancingMesh.h" />
     <ClInclude Include="Source\Engine\Renderer\Light.h" />
     <ClInclude Include="Source\Engine\Renderer\mesh.h" />

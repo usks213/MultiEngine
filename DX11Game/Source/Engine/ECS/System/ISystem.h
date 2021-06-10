@@ -85,6 +85,7 @@ namespace ECS
 			eRigidbody,
 			eCollision,
 			eTransform,
+			eCamera,
 			eRenderer,
 
 			eMaxUpdateOrder,

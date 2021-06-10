@@ -197,7 +197,7 @@ bool AssimpRenderer::ModelLoad(std::string filename)
 
 	// ƒ‰ƒCƒg‚ÆƒJƒƒ‰
 	m_model->SetLight(CLight::GetMainLight());
-	m_model->SetCamera(CCamera::GetMainCamera());
+	//m_model->SetCamera(Camera::GetMainCamera());
 
 	return b;
 }

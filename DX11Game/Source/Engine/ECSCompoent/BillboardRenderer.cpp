@@ -18,7 +18,7 @@
 #include "../ECS/Entity/EntityManager.h"
 
 #include "Transform.h"
-#include "../Renderer/Camera.h"
+#include "../ECSCompoent/Camera.h"
 #include "../System/Texture.h"
 
 using namespace ECS;
@@ -91,7 +91,7 @@ void BillboardRenderer::LateDraw(ID3D11DeviceContext* pDC)
 		// マトリックス作成
 		XMMATRIX mtxWorld, mtxScale, mtxTranslate;
 		// カメラ行列取得
-		XMFLOAT4X4& mtxView = CCamera::GetMainCamera()->GetViewMatrix();
+		XMFLOAT4X4& mtxView = Camera::main()->GetViewMatrix();
 		// ワールドマトリックスの初期化
 		mtxWorld = XMMatrixIdentity();
 		XMFLOAT4X4* m_mtxWorld = m_transform.lock()->GetWorldMatrix();

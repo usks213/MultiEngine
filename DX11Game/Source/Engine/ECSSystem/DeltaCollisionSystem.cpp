@@ -23,7 +23,7 @@
 
 #include "../main.h"
 #include "../ECSCompoent/Transform.h"
-#include "../Renderer/Camera.h"
+#include "../ECSCompoent/Camera.h"
 #include "../ECSEntity/GameObject.h"
 
 using namespace ECS;
@@ -89,7 +89,9 @@ void DeltaCollisionSystem::OnUpdate()
 	DWORD wLeftTop = 0;
 	DWORD wRightDown = 0;
 	// カメラ座標
-	Vector3 cameraPos = CCamera::GetMainCamera()->GetPos();
+	const auto& camera = Camera::main();
+	if (!camera) return;
+	Vector3 cameraPos = Camera::main()->transform().lock()->m_pos;
 	// オフセット
 	CCell<DeltaCollider>::SetOffSet(cameraPos.x, cameraPos.z);
 

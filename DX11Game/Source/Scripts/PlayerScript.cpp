@@ -37,7 +37,7 @@
 #include "../Engine/ECSCompoent/DeltaCollider.h"
 
 // レンダラー
-#include "../Engine/Renderer/Camera.h"
+#include "../Engine/ECSCompoent/Camera.h"
 #include "../Engine/Renderer/Light.h"
 #include "../Engine/Renderer/PostProcessing.h"
 
@@ -99,7 +99,7 @@ void PlayerScript::Start()
 	const auto& collider = gameObject().lock()->AddComponent<DeltaCollider>();
 
 	// カメラ
-	CCamera::GetMainCamera()->SetCameraTarget(gameObject().lock()->transform().lock());
+	//Camera::GetMainCamera()->SetCameraTarget(gameObject().lock()->transform().lock());
 	// ライト
 	CLight::GetMainLight()->SetLightTarget(gameObject().lock()->transform().lock());
 
@@ -139,7 +139,9 @@ void PlayerScript::Update()
 	const float speed = 1.0f;
 	const float jump = 20.0f;
 
-	Vector3 forward = CCamera::GetMainCamera()->GetForward() * speed;
+	const auto& camera = Camera::main();
+	Vector3 forward = 
+		Matrix::CreateFromQuaternion(camera->transform().lock()->m_rot).Forward() * speed;
 	forward.y = 0.0f;
 	Vector3 right = Mathf::RotationY(forward , -90);
 
@@ -173,7 +175,7 @@ void PlayerScript::Update()
 		// サウンド
 		CSound::PlaySE("Jump.wav", 0.7f);
 		// 画面揺れ
-		CCamera::GetMainCamera()->SetShakeFrame(8);
+		//Camera::GetMainCamera()->SetShakeFrame(8);
 		m_bGround = false;
 	}
 	m_nJump--;
@@ -188,7 +190,9 @@ void PlayerScript::Update()
 		test->AddComponent<BulletScript>();
 		const auto& rb = test->GetComponent<Rigidbody>();
 
-		Vector3 dir = Mathf::Normalize(CCamera::GetMainCamera()->GetForward());
+		const auto& camera = Camera::main();
+		Vector3 dir =
+			Mathf::Normalize(Matrix::CreateFromQuaternion(camera->transform().lock()->m_rot).Forward());
 
 		test->transform().lock()->m_pos = transform().lock()->m_pos + dir * 500;
 		rb->AddForce(dir * 100 + Mathf::WallVerticalVector(m_rb.lock()->GetForce(), dir));
@@ -219,7 +223,7 @@ void PlayerScript::LateUpdate()
 	{
 		m_bGround = true;
 		// 画面揺れ
-		CCamera::GetMainCamera()->SetShakeFrame(6);
+		//Camera::GetMainCamera()->SetShakeFrame(6);
 		// サウンド
 		CSound::PlaySE("PlayerGround.wav", 1.0f);
 	}
@@ -302,7 +306,7 @@ void PlayerScript::OnDeltaCollisionEnter(DeltaCollider* collider)
 	{
 		m_nJump = 15;
 		// 画面揺れ
-		CCamera::GetMainCamera()->SetShakeFrame(6);
+		//Camera::GetMainCamera()->SetShakeFrame(6);
 		// 回復
 		m_fHP += m_fHeel * 60.0f;
 	}
@@ -310,7 +314,7 @@ void PlayerScript::OnDeltaCollisionEnter(DeltaCollider* collider)
 	{
 		m_bShot = true;
 		// 画面揺れ
-		CCamera::GetMainCamera()->SetShakeFrame(6);
+		//Camera::GetMainCamera()->SetShakeFrame(6);
 		// BGM
 		CSound::PlayBGM("GameBGM.mp3", 0.3f);
 
@@ -319,7 +323,7 @@ void PlayerScript::OnDeltaCollisionEnter(DeltaCollider* collider)
 	{
 		// 当たった角度を計算
 		Vector3 vec = collider->transform().lock()->m_pos - transform().lock()->m_pos;
-		Vector3 forward = CCamera::GetMainCamera()->GetForward();
+		Vector3 forward = Camera::main()->transform().lock()->forward();
 
 		if (Mathf::Dot(Mathf::Normalize(vec), Mathf::Normalize(forward)) < -0.3f)
 		{
@@ -332,7 +336,7 @@ void PlayerScript::OnDeltaCollisionEnter(DeltaCollider* collider)
 			m_nHeelCnt = m_nHeelInteral;
 
 			// 画面揺れ
-			CCamera::GetMainCamera()->SetShakeFrame(16);
+			//Camera::GetMainCamera()->SetShakeFrame(16);
 
 			// サウンド
 			CSound::PlaySE("PlayerDamage.wav", 1.0f);

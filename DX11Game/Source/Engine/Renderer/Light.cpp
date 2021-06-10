@@ -1,6 +1,6 @@
 #include "Light.h"
 #include "../System/input.h"
-#include "Camera.h"
+
 
 using namespace DirectX;
 
@@ -17,6 +17,8 @@ using namespace DirectX;
 #define	LIT_POS_R_Y			(0.0f)					// カメラの注視点初期位置(Y座標)
 #define	LIT_POS_R_Z			(0.0f)					// カメラの注視点初期位置(Z座標)
 
+#define	VIEW_NEAR_Z			(50.0f)								// ビュー平面のNearZ値
+#define	VIEW_FAR_Z			(5000.0f * 1.5f)					// ビュー平面のFarZ値
 
 CLight* CLight::m_mainLight = nullptr;
 

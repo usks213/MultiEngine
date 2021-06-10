@@ -19,7 +19,7 @@
 
 #include "../ECSEntity/GameObject.h"
 #include "Transform.h"
-#include "../Renderer/Camera.h"
+#include "../ECSCompoent/Camera.h"
 #include "../System/Texture.h"
 #include "../System/debugproc.h"
 
@@ -40,7 +40,7 @@ std::map<const std::string, std::vector<InstancingMeshData*>, std::less<>> Insta
 InstancingMeshRenderer::InstancingMeshRenderer()
 {
 	m_mesh = nullptr;
-	m_fLayer = VIEW_FAR_Z - 100;
+	m_fLayer = Camera::main()->GetFarZ() - 100;
 }
 
 //========================================

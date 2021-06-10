@@ -17,7 +17,7 @@
 #include "Renderer.h"
 #include <map>
 #include <string>
-#include "../Renderer/Camera.h"
+#include "../ECSCompoent/Camera.h"
 
 
 //===== É}ÉNÉçíËã` =====
@@ -51,7 +51,7 @@ namespace ECS
 			eDefault,
 
 			// îwåi
-			eBG3 = (int)VIEW_FAR_Z + 1,
+			eBG3 = (int)std::numeric_limits<int>::max() - 10,
 			eBG2,
 			eBG1,
 

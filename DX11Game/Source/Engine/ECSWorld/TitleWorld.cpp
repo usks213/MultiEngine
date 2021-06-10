@@ -18,7 +18,7 @@
 // ƒVƒXƒeƒ€
 #include "../ECS/Entity/EntityManager.h"
 #include "../ECSEntity/GameObject.h"
-#include "../Renderer/Camera.h"
+#include "../ECSCompoent/Camera.h"
 #include "../System/Sound.h"
 #include "../System/Input.h"
 #include "../Renderer/PostProcessing.h"

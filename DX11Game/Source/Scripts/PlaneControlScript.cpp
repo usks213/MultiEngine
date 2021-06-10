@@ -86,7 +86,7 @@ void PlaneControlScript::Start()
 
 
 	// ƒJƒƒ‰ŒÅ’è
-	CCamera::GetMainCamera()->SetCameraTarget(transform());
+
 
 	// ‰Šú‰»
 	m_speed = 2.0f;
@@ -157,6 +157,17 @@ void PlaneControlScript::Update()
 		m_nShotCnt = 6;
 	}
 
+	// ƒJƒƒ‰‚ð’Ç”ö
+	const auto& camera = Camera::main();
+	Vector3 vec = 
+		transform().lock()->m_pos - camera->transform().lock()->m_pos;
+	camera->transform().lock()->forward(Mathf::Normalize(vec));
+
+	if (Mathf::Length(vec) > camera->GetFarZ() * 0.2f)
+	{
+		camera->transform().lock()->m_pos += 
+			Mathf::Normalize(vec) * (Mathf::Length(vec) - camera->GetFarZ() * 0.2f);
+	}
 }
 
 //========================================
@@ -166,6 +177,7 @@ void PlaneControlScript::Update()
 //========================================
 void PlaneControlScript::LateUpdate()
 {
+
 }
 
 //========================================

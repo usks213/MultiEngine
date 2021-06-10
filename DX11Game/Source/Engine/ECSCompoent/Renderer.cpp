@@ -19,7 +19,7 @@
 
 #include "Transform.h"
 #include "../main.h"
-#include "../Renderer/Camera.h"
+#include "../ECSCompoent/Camera.h"
 
 using namespace ECS;
 
@@ -95,7 +95,7 @@ void Renderer::LayerUpdate()
 	if (!m_bUpdateLayer) return;
 
 	// ƒJƒƒ‰À•W
-	Vector3 cameraPos = CCamera::GetMainCamera()->GetPos();
+	Vector3 cameraPos = Camera::main()->transform().lock()->m_pos;
 	// ‹——£‚ðŠi”[
 	m_fLayer = Mathf::Length(m_transform.lock()->m_pos - cameraPos);
 }

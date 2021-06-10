@@ -18,7 +18,7 @@
 #include "../ECS/Entity/EntityManager.h"
 
 #include "Transform.h"
-#include "../Renderer/Camera.h"
+#include "../ECSCompoent/Camera.h"
 #include "../System/Texture.h"
 #include "../System/polygon.h"
 

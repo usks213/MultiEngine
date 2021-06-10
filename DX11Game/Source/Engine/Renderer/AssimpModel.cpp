@@ -569,7 +569,7 @@ void CAssimpMesh::Draw(ID3D11DeviceContext* pDC, XMFLOAT4X4& m44World, EByOpacit
 	if (SUCCEEDED(pDC->Map(m_pConstantBuffer0, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData))) {
 		SHADER_GLOBAL sg;
 		CLight* pLight = m_pModel->GetLight();
-		CCamera* pCamera = m_pModel->GetCamera();
+		const auto& pCamera = ECS::Camera::main();
 		XMMATRIX mtxWorld = XMLoadFloat4x4(&m44World);
 		XMMATRIX mtxView = XMLoadFloat4x4(&pCamera->GetViewMatrix());
 		XMMATRIX mtxProj = XMLoadFloat4x4(&pCamera->GetProjMatrix());
@@ -578,7 +578,7 @@ void CAssimpMesh::Draw(ID3D11DeviceContext* pDC, XMFLOAT4X4& m44World, EByOpacit
 		sg.mTex = XMMatrixTranspose(mtxTex);
 		sg.mWVP = mtxWorld * mtxView * mtxProj;
 		sg.mWVP = XMMatrixTranspose(sg.mWVP);
-		sg.vEye = XMLoadFloat3(&pCamera->GetPos());
+		sg.vEye = XMLoadFloat3(&pCamera->transform().lock()->m_pos);
 
 		mtxView = XMLoadFloat4x4(&pLight->GetViewMatrix());
 		sg.mLitWVP = mtxWorld * mtxView * mtxProj;
@@ -678,7 +678,7 @@ void CAssimpMesh::DrawShadow(ID3D11DeviceContext* pDC, XMFLOAT4X4& m44World, EBy
 	if (SUCCEEDED(pDC->Map(m_pConstantBuffer0, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData))) {
 		SHADER_GLOBAL sg;
 		CLight* pLight = m_pModel->GetLight();
-		CCamera* pCamera = m_pModel->GetCamera();
+		const auto& pCamera = ECS::Camera::main();
 		XMMATRIX mtxWorld = XMLoadFloat4x4(&m44World);
 		XMMATRIX mtxView = XMLoadFloat4x4(&pLight->GetViewMatrix());
 		XMMATRIX mtxProj = XMLoadFloat4x4(&pCamera->GetProjMatrix());
@@ -687,7 +687,7 @@ void CAssimpMesh::DrawShadow(ID3D11DeviceContext* pDC, XMFLOAT4X4& m44World, EBy
 		sg.mTex = XMMatrixTranspose(mtxTex);
 		sg.mWVP = mtxWorld * mtxView * mtxProj;
 		sg.mWVP = XMMatrixTranspose(sg.mWVP);
-		sg.vEye = XMLoadFloat3(&pCamera->GetPos());
+		sg.vEye = XMLoadFloat3(&pCamera->transform().lock()->m_pos);
 		//sg.mWVP = XMMatrixTranspose(mtxWorld * XMLoadFloat4x4(&pLight->GetViewMatrix()) * XMLoadFloat4x4(&pCamera->GetProjMatrix()));
 		//sg.mLitWVP = XMMatrixTranspose(mtxWorld * XMLoadFloat4x4(&pLight->GetViewMatrix()) * XMLoadFloat4x4(&pCamera->GetProjMatrix()));
 		sg.mLitWVP = sg.mWVP;
@@ -793,7 +793,7 @@ void CAssimpMesh::DrawShadow(ID3D11DeviceContext* pDC, XMFLOAT4X4& m44World, EBy
 	//D3D11_MAPPED_SUBRESOURCE pData;
 	//if (SUCCEEDED(pDC->Map(m_pConstantBuffer0, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData))) {
 	//	SHADER_GLOBAL sg;
-	//	CCamera* pCamera = m_pModel->GetCamera();
+	//	Camera* pCamera = m_pModel->GetCamera();
 	//	CLight* pLight = m_pModel->GetLight();
 	//	XMMATRIX mtxWorld = XMLoadFloat4x4(&m44World);
 	//	XMMATRIX mtxView = XMLoadFloat4x4(&pCamera->GetProjMatrix());
@@ -835,7 +835,7 @@ ID3D11SamplerState* CAssimpModel::m_pSampleLinear;
 
 
 // コンストラクタ
-CAssimpModel::CAssimpModel() : m_pMaterial(nullptr), m_pLight(nullptr), m_pCamera(nullptr), m_pAnimator(nullptr), m_pScene(nullptr)
+CAssimpModel::CAssimpModel() : m_pMaterial(nullptr), m_pLight(nullptr), m_pAnimator(nullptr), m_pScene(nullptr)
 {
 	XMStoreFloat4x4(&m_mtxTexture, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_mtxWorld, XMMatrixIdentity());

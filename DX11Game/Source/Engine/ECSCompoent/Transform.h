@@ -60,6 +60,15 @@ namespace ECS
 		//Vector3 m_rot;				// オブジェクトの回転角度
 		Quaternion m_rot;
 
+		void forward(Vector3 forward) {
+			Matrix mtx = Matrix::CreateFromQuaternion(m_rot);
+			mtx.Forward(forward);
+			m_rot = Quaternion::CreateFromRotationMatrix(mtx);
+		}
+		Vector3 forward() {
+			return Matrix::CreateFromQuaternion(m_rot).Forward();
+		}
+
 		// ゲームオブジェクトセット
 		void SetGameObject(std::weak_ptr<GameObject>& gameObject) { m_gameObject = gameObject; }
 		// ゲームオブジェクトの取得

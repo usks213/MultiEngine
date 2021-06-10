@@ -67,7 +67,7 @@ void TransformSystem::OnCreate()
 //	更新時コールバック
 //
 //===================================
-void TransformSystem::OnUpdate()
+void TransformSystem::OnLateUpdate()
 {
 	std::for_each(m_ComponentList.begin(), m_ComponentList.end(),
 		[](Transform* trans)

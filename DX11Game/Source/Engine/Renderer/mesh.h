@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../main.h"
-#include "Camera.h"
+#include "../ECSCompoent/Camera.h"
 #include "Light.h"
 
 //*****************************************************************************
@@ -72,7 +72,6 @@ void UpdateMesh(MESH* pMesh);
 void DrawMesh(ID3D11DeviceContext* pDeviceContext, MESH* pMesh, int nTranslucntType = TT_NOAFFECT);
 HRESULT MakeMeshVertex(ID3D11Device* pDevice, MESH* pMesh, VERTEX_3D vertexWk[], int indexWk[]);
 void ReleaseMesh(MESH* pMesh);
-void SetMeshCamera(CCamera* pCamera);
 void SetMeshLight(CLight* pLight);
 HRESULT UpdateMeshVertex(ID3D11DeviceContext* pDeviceContext, MESH* pMesh, VERTEX_3D vertex[]);
 void ClearShadowBuffer();
@@ -98,7 +97,6 @@ public:
 	void DrawMesh(ID3D11DeviceContext* pDeviceContext, MESH* pMesh, int nTranslucntType = TT_NOAFFECT);
 	HRESULT MakeMeshVertex(ID3D11Device* pDevice, MESH* pMesh, VERTEX_3D vertexWk[], int indexWk[]);
 	void ReleaseMesh(MESH* pMesh);
-	void SetMeshCamera(CCamera* pCamera);
 	void SetMeshLight(CLight* pLight);
 	HRESULT UpdateMeshVertex(ID3D11DeviceContext* pDeviceContext, MESH* pMesh, VERTEX_3D vertex[]);
 	void ClearShadowBuffer();

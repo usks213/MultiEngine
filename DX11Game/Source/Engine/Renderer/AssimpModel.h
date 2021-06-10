@@ -13,7 +13,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include "Camera.h"
+#include "../ECSCompoent/Camera.h"
 #include "Light.h"
 
 // É}ÉNÉç
@@ -242,7 +242,6 @@ private:
 
 	TAssimpMaterial* m_pMaterial;
 	CLight* m_pLight;
-	CCamera* m_pCamera;
 
 	DirectX::XMFLOAT3 m_vBBox;
 	DirectX::XMFLOAT3 m_vCenter;
@@ -269,8 +268,6 @@ public:
 	void DrawNode(ID3D11DeviceContext* pDC, aiNode* piNode, const aiMatrix4x4& piMatrix, EByOpacity byOpacity, bool bShadowMode = false);
 	void SetLight(CLight* pLight) { m_pLight = pLight; }
 	CLight* GetLight() { return m_pLight; }
-	void SetCamera(CCamera* pCamera) { m_pCamera = pCamera; }
-	CCamera* GetCamera() { return m_pCamera; }
 	DirectX::XMFLOAT4X4& GetWorldMatrix() { return m_mtxWorld; }
 	void SetMaterial(TAssimpMaterial* pMaterial = nullptr) { m_pMaterial = pMaterial; }
 	TAssimpMaterial* GetMaterial() { return m_pMaterial; }

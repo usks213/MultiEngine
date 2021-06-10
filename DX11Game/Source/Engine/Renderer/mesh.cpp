@@ -58,7 +58,6 @@ static ID3D11InputLayout*			g_pInputLayout;			// 頂点フォーマット
 static ID3D11PixelShader*			g_pPixelShader;			// ピクセルシェーダ
 
 static MATERIAL						g_material;				// マテリアル
-static CCamera*						g_pCamera;				// カメラ
 static CLight*						g_pLight;				// ライト
 
 
@@ -281,7 +280,7 @@ void DrawMeshShadow(ID3D11DeviceContext* pDeviceContext, MESH* pMesh, int nTrans
 
 		SHADER_GLOBAL cb;
 		XMMATRIX mtxWorld = XMLoadFloat4x4(&pMesh->mtxWorld);
-		cb.mWVP = XMMatrixTranspose(mtxWorld * XMLoadFloat4x4(&g_pLight->GetViewMatrix()) * XMLoadFloat4x4(&g_pCamera->GetProjMatrix()));
+		cb.mWVP = XMMatrixTranspose(mtxWorld * XMLoadFloat4x4(&g_pLight->GetViewMatrix()) * XMLoadFloat4x4(&ECS::Camera::main()->GetProjMatrix()));
 		cb.mLightWVP = XMMatrixTranspose(mtxWorld * XMLoadFloat4x4(&g_pLight->GetViewMatrix()) * XMLoadFloat4x4(&g_pLight->GetProjMatrix()));
 		cb.mW = XMMatrixTranspose(mtxWorld);
 		cb.mTex = XMMatrixTranspose(XMLoadFloat4x4(&pMesh->mtxTexture));
@@ -350,19 +349,22 @@ void DrawMesh(ID3D11DeviceContext* pDeviceContext, MESH* pMesh, int nTranslucntT
 	pDeviceContext->PSSetSamplers(0, 2, pState);
 	pDeviceContext->PSSetShaderResources(0, 4, pResource);
 
+	const auto& camera = ECS::Camera::main();
+	camera->GetFogFarZ();
 	SHADER_GLOBAL cb;
 	XMMATRIX mtxWorld = XMLoadFloat4x4(&pMesh->mtxWorld);
-	cb.mWVP = XMMatrixTranspose(mtxWorld * XMLoadFloat4x4(&g_pCamera->GetViewMatrix()) * XMLoadFloat4x4(&g_pCamera->GetProjMatrix()));
-	cb.mLightWVP = XMMatrixTranspose(mtxWorld * XMLoadFloat4x4(&g_pLight->GetViewMatrix()) * XMLoadFloat4x4(&g_pCamera->GetProjMatrix()) * SHADOW_BIAS);
+	cb.mWVP = XMMatrixTranspose(mtxWorld * XMLoadFloat4x4(&camera->GetViewMatrix()) * XMLoadFloat4x4(&camera->GetProjMatrix()));
+	cb.mLightWVP = XMMatrixTranspose(mtxWorld * XMLoadFloat4x4(&g_pLight->GetViewMatrix()) * XMLoadFloat4x4(&camera->GetProjMatrix()) * SHADOW_BIAS);
 	cb.mW = XMMatrixTranspose(mtxWorld);
 	cb.mTex = XMMatrixTranspose(XMLoadFloat4x4(&pMesh->mtxTexture));
-	XMFLOAT2 fog = { FOG_FAR_Z / (FOG_FAR_Z - FOG_NEAR_Z), -1 / (FOG_FAR_Z - FOG_NEAR_Z) };
+	XMFLOAT2 fog = { camera->GetFogFarZ() / (camera->GetFogFarZ() - camera->GetFogNearZ()), 
+		-1 / (camera->GetFogFarZ() - camera->GetFogNearZ()) };
 	cb.vFog = XMLoadFloat2(&fog);
 	pDeviceContext->UpdateSubresource(g_pConstantBuffer[0], 0, nullptr, &cb, 0, 0);
 	pDeviceContext->VSSetConstantBuffers(0, 1, &g_pConstantBuffer[0]);
 
 	SHADER_GLOBAL2 cb2;
-	cb2.vEye = XMLoadFloat3(&g_pCamera->GetPos());
+	cb2.vEye = XMLoadFloat3(&camera->transform().lock()->m_pos);
 	cb2.vLightDir = XMLoadFloat3(&g_pLight->GetDir());
 	cb2.vLa = XMLoadFloat4(&g_pLight->GetAmbient());
 	cb2.vLd = XMLoadFloat4(&g_pLight->GetDiffuse());
@@ -456,13 +458,13 @@ void ReleaseMesh(MESH* pMesh)
 	SAFE_RELEASE(pMesh->pIndexBuffer);
 }
 
-//=============================================================================
-// カメラの設定
-//=============================================================================
-void SetMeshCamera(CCamera* pCamera)
-{
-	g_pCamera = pCamera;
-}
+////=============================================================================
+//// カメラの設定
+////=============================================================================
+//void SetMeshCamera(Camera* pCamera)
+//{
+//	g_pCamera = pCamera;
+//}
 
 //=============================================================================
 // ライトの設定

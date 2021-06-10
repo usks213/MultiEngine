@@ -19,7 +19,7 @@
 // システム
 #include "../ECS/Entity/EntityManager.h"
 #include "../ECSEntity/GameObject.h"
-#include "../Renderer/Camera.h"
+#include "../ECSCompoent/Camera.h"
 #include "../System/Sound.h"
 
 // コンポーネント
@@ -75,6 +75,11 @@ void GameWorld::Start()
 {
 	//--- ゲームオブジェクトを追加
 
+	// カメラ
+	const auto& cameraObj = GetEntityManager()->CreateEntity<GameObject>();
+	const auto& camera = cameraObj->AddComponent<Camera>();
+	camera->SetMainCamera(camera);
+
 	// プレイヤー
 	const auto& player = GetEntityManager()->CreateEntity<GameObject>();
 	const auto & playerScript = player->AddComponent<PlayerScript>();
@@ -89,8 +94,7 @@ void GameWorld::Start()
 
 	// スタートクリスタル
 	const auto& crystal = GetEntityManager()->CreateEntity<GameObject>();
-	CCamera::GetMainCamera()->Update();
-	Vector3 dir = CCamera::GetMainCamera()->GetForward();
+	Vector3 dir = camera->GetViewMatrix().Forward();
 	dir *= 1500;
 	dir.y = 700;
 	crystal->transform().lock()->m_pos = dir;
@@ -102,11 +106,12 @@ void GameWorld::Start()
 	skyRn->MakeSkyDome("Sky", 100);
 	skyRn->SetDiffuseTexture("data/texture/skydome.png");
 	skyRn->SetLighting(false);
-	skyRn->SetLayer(VIEW_FAR_Z);
+	skyRn->SetLayer(camera->GetFarZ());
 	skyRn->SetUpdateLayer(false);
 	//skyRn->SetRendererBlendState(BS_ALPHABLEND);
 	//sky->transform().lock()->m_scale = Vector3{ VIEW_FAR_Z * 1.5f, VIEW_FAR_Z * 1.5f, VIEW_FAR_Z * 1.5f };
-	sky->transform().lock()->m_scale = Vector3{ FOG_FAR_Z * 2.5f, FOG_FAR_Z * 2.5f, FOG_FAR_Z * 2.5f };
+	sky->transform().lock()->m_scale = 
+		Vector3{ camera->GetFogFarZ() * 2.5f, camera->GetFogFarZ() * 2.5f, camera->GetFogFarZ() * 2.5f };
 	sky->AddComponent<SkyDomeScript>()->SetTarget(player);
 
 	// 床

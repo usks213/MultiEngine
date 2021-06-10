@@ -11,6 +11,8 @@
 #include "../System/polygon.h"
 #include "../System/input.h"
 
+using namespace ECS;
+
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
@@ -87,7 +89,6 @@ static ID3D11InputLayout*			g_pInputLayout;			// 頂点フォーマット
 static ID3D11PixelShader*			g_pPixelShader;			// ピクセルシェーダ
 
 static MATERIAL						g_material;				// マテリアル
-static CCamera*						g_pCamera;				// カメラ
 static CLight*						g_pLight;				// ライト
 
 static const XMMATRIX SHADOW_BIAS = XMMATRIX(
@@ -234,7 +235,7 @@ void DrawInstancingMeshShadow(ID3D11DeviceContext* pDeviceContext, InstancingMes
 
 		// 共通シェーダーデータ
 		SHADER_GLOBAL cb;
-		cb.mVP = XMMatrixTranspose(XMLoadFloat4x4(&g_pLight->GetViewMatrix()) * XMLoadFloat4x4(&g_pCamera->GetProjMatrix()));
+		cb.mVP = XMMatrixTranspose(XMLoadFloat4x4(&g_pLight->GetViewMatrix()) * XMLoadFloat4x4(&Camera::main()->GetProjMatrix()));
 		cb.mLightVP = XMMatrixTranspose(XMLoadFloat4x4(&g_pLight->GetViewMatrix()) * XMLoadFloat4x4(&g_pLight->GetProjMatrix()));
 		cb.mTexture = XMMatrixTranspose(XMLoadFloat4x4(pInstancingMesh->mtxTexture));
 		pDeviceContext->UpdateSubresource(g_pConstantBuffer[0], 0, nullptr, &cb, 0, 0);
@@ -242,7 +243,7 @@ void DrawInstancingMeshShadow(ID3D11DeviceContext* pDeviceContext, InstancingMes
 
 		//================== インスタンシングデータ ==================
 		// カメラ行列取得
-		XMFLOAT4X4& mtxView = CCamera::GetMainCamera()->GetViewMatrix();
+		XMFLOAT4X4& mtxView = Camera::GetMainCamera()->GetViewMatrix();
 
 		int count = (int)InstancingList.size();
 		int n = (count - 1) / MAX_INSTANCE + 1;
@@ -330,17 +331,20 @@ void DrawInstancingMesh(ID3D11DeviceContext* pDeviceContext, InstancingMesh* pIn
 	pDeviceContext->PSSetSamplers(0, 2, pState);
 	pDeviceContext->PSSetShaderResources(0, 3, pResource);
 
+	const auto& camera = Camera::main();
 	SHADER_GLOBAL cb;
-	cb.mVP = XMMatrixTranspose(XMLoadFloat4x4(&g_pCamera->GetViewMatrix()) * XMLoadFloat4x4(&g_pCamera->GetProjMatrix()));
-	cb.mLightVP = XMMatrixTranspose(XMLoadFloat4x4(&g_pLight->GetViewMatrix()) * XMLoadFloat4x4(&g_pCamera->GetProjMatrix()) * SHADOW_BIAS);
+	cb.mVP = XMMatrixTranspose(XMLoadFloat4x4(&Camera::main()->GetViewMatrix()) * XMLoadFloat4x4(&camera->GetProjMatrix()));
+	cb.mLightVP = XMMatrixTranspose(XMLoadFloat4x4(&g_pLight->GetViewMatrix()) * XMLoadFloat4x4(&camera->GetProjMatrix()) * SHADOW_BIAS);
 	cb.mTexture = XMMatrixTranspose(XMLoadFloat4x4(pInstancingMesh->mtxTexture));
-	XMFLOAT2 fog = { FOG_FAR_Z / (FOG_FAR_Z - FOG_NEAR_Z), -1 / (FOG_FAR_Z - FOG_NEAR_Z) };
+	XMFLOAT2 fog = { camera->GetFogFarZ() / 
+		(camera->GetFogFarZ() - camera->GetFogNearZ()),
+		-1 / (camera->GetFogFarZ() - camera->GetFogNearZ()) };
 	cb.vFog = XMLoadFloat2(&fog);
 	pDeviceContext->UpdateSubresource(g_pConstantBuffer[0], 0, nullptr, &cb, 0, 0);
 	pDeviceContext->VSSetConstantBuffers(0, 1, &g_pConstantBuffer[0]);
 
 	SHADER_GLOBAL2 cb2;
-	cb2.vEye = XMLoadFloat3(&g_pCamera->GetPos());
+	cb2.vEye = XMLoadFloat3(&camera->transform().lock()->m_pos);
 	cb2.vLightDir = XMLoadFloat3(&g_pLight->GetDir());
 	cb2.vLa = XMLoadFloat4(&g_pLight->GetAmbient());
 	cb2.vLd = XMLoadFloat4(&g_pLight->GetDiffuse());
@@ -372,7 +376,7 @@ void DrawInstancingMesh(ID3D11DeviceContext* pDeviceContext, InstancingMesh* pIn
 
 	//================== インスタンシングデータ ==================
 			// カメラ行列取得
-	XMFLOAT4X4& mtxView = CCamera::GetMainCamera()->GetViewMatrix();
+	XMFLOAT4X4& mtxView = Camera::GetMainCamera()->GetViewMatrix();
 
 	int count = (int)InstancingList.size();
 	int n = (count - 1) / MAX_INSTANCE + 1;
@@ -484,13 +488,13 @@ void ReleaseInstancingMesh(InstancingMesh* pInstancingMesh)
 	SAFE_RELEASE(pInstancingMesh->pIndexBuffer);
 }
 
-//=============================================================================
-// カメラの設定
-//=============================================================================
-void SetInstancingMeshCamera(CCamera* pCamera)
-{
-	g_pCamera = pCamera;
-}
+////=============================================================================
+//// カメラの設定
+////=============================================================================
+//void SetInstancingMeshCamera(Camera* pCamera)
+//{
+//	g_pCamera = pCamera;
+//}
 
 //=============================================================================
 // ライトの設定

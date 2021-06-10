@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../main.h"
-#include "Camera.h"
+#include "../ECSCompoent/Camera.h"
 #include "Light.h"
 #include "mesh.h"
 #include <vector>
@@ -50,7 +50,7 @@ void DrawInstancingMesh(ID3D11DeviceContext* pDeviceContext, InstancingMesh* pIn
 	std::vector<InstancingMeshData*>& InstancingList, int nTranslucntType = TT_NOAFFECT);
 HRESULT MakeInstancingMeshVertex(ID3D11Device* pDevice, InstancingMesh* pInstancingMesh, VERTEX_3D vertexWk[], int indexWk[]);
 void ReleaseInstancingMesh(InstancingMesh* pInstancingMesh);
-void SetInstancingMeshCamera(CCamera* pCamera);
+//void SetInstancingMeshCamera(Camera* pCamera);
 void SetInstancingMeshLight(CLight* pLight);
 HRESULT UpdateInstancingMeshVertex(ID3D11DeviceContext* pDeviceContext, InstancingMesh* pInstancingMesh, VERTEX_3D vertex[]);
 void DrawInstancingMeshShadow(ID3D11DeviceContext* pDeviceContext, InstancingMesh* pInstancingMesh,

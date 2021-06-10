@@ -109,7 +109,7 @@
 #include "System/Sound.h"
 
 // レンダラー
-#include "Renderer/Camera.h"
+#include "ECSCompoent/Camera.h"
 #include "Renderer/Light.h"
 #include "Renderer/mesh.h"
 #include "Renderer/instancingMesh.h"
@@ -172,7 +172,6 @@ DXGI_SAMPLE_DESC			g_MSAA;					// マルチサンプリング
 
 int							g_nCountFPS;			// FPSカウンタ
 
-CCamera						g_camera;				// カメラ
 CLight						g_light;				// 光源
 
 PostProcessing g_post;
@@ -651,23 +650,17 @@ HRESULT Init(HWND hWnd, BOOL bWindow)
 	hr = InitMesh();
 	if (FAILED(hr))
 		return hr;
-	SetMeshCamera(&g_camera);
 	SetMeshLight(&g_light);
 
 	// インスタンシングメッシュ初期化
 	hr = InitInstancingMesh();
 	if (FAILED(hr))
 		return hr;
-	SetInstancingMeshCamera(&g_camera);
 	SetInstancingMeshLight(&g_light);
 
 	// ライト
 	g_light.Init();
 	CLight::SetMainLight(&g_light);
-
-	// カメラ
-	g_camera.Init();
-	CCamera::SetMainCamera(&g_camera);
 
 	// ポストエフェクト
 	g_post.Init(g_pDevice);
@@ -802,8 +795,6 @@ void Update(void)
 	// ワールドの更新
 	WorldManager::GetInstance()->Update();
 
-	// カメラ更新
-	g_camera.Update();
 	// ライトの更新
 	g_light.Update();
 

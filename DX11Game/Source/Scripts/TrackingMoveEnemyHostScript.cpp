@@ -112,7 +112,7 @@ void TrackingMoveEnemyHostScript::Update()
 	dir = Mathf::Normalize(dir);
 
 	// Œü‚¢‚Ä‚éŒü‚«
-	Vector3 cameraDir = CCamera::GetMainCamera()->GetForward();
+	Vector3 cameraDir = Camera::main()->transform().lock()->forward();
 	if (Mathf::Dot(cameraDir, dir) >= 0) return;
 
 	// —Í‚ð‰Á‚¦‚é
