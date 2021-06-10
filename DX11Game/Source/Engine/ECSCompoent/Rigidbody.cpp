@@ -44,7 +44,7 @@ Rigidbody::Rigidbody()
 	// âÒì]
 	m_angularVelocity	= Quaternion::CreateFromYawPitchRoll(0, 0, 0);
 	m_torque			= Quaternion::CreateFromYawPitchRoll(0, 0, 0);
-	m_torqueDrag		= 0.05f;
+	m_torqueDrag		= 0.0f;
 	// ï®óùégóp
 	m_bUsePhysics		= true;
 	// èdóÕ

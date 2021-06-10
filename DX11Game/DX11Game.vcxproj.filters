@@ -352,6 +352,15 @@
     <ClCompile Include="lib\imgui\imgui_widgets.cpp">
       <Filter>ライブラリ</Filter>
     </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_impl_dx11.cpp">
+      <Filter>ライブラリ</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_impl_win32.cpp">
+      <Filter>ライブラリ</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\PlaneControlScript.cpp">
+      <Filter>ソース\スクリプト\テスト</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Engine\main.h">
@@ -603,5 +612,17 @@
     <ClInclude Include="lib\imgui\imstb_truetype.h">
       <Filter>ライブラリ</Filter>
     </ClInclude>
+    <ClInclude Include="lib\imgui\imgui_impl_dx11.h">
+      <Filter>ライブラリ</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imgui_impl_win32.h">
+      <Filter>ライブラリ</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\PlaneControlScript.h">
+      <Filter>ソース\スクリプト\テスト</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>

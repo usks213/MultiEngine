@@ -93,8 +93,14 @@
 //
 //======================================================================
 #include "main.h"
+
+// ライブラリ
 #include <dxgi.h>
-#include <imgui.h>
+
+// imgui
+#include "imgui.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_dx11.h"
 
 // システム
 #include "System/input.h"
@@ -142,6 +148,9 @@ HRESULT Init(HWND hWnd, BOOL bWindow);
 void Uninit(void);
 void Update(void);
 void Draw(void);
+
+IMGUI_IMPL_API LRESULT   ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 
 //*****************************************************************************
 // グローバル変数:
@@ -299,6 +308,9 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
 //=============================================================================
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam))
+		true;
+
 	switch (uMsg) {
 	case WM_CREATE:					//----- ウィンドウが生成された
 		return OnCreate(hWnd, (LPCREATESTRUCT)lParam);
@@ -606,6 +618,12 @@ HRESULT Init(HWND hWnd, BOOL bWindow)
 	g_pDevice->CreateDepthStencilState(&dsd2, &g_pDSS[1]);
 
 
+	// imgui初期化
+	ImGui::CreateContext();
+	ImGui_ImplWin32_Init(GetMainWnd());
+	ImGui_ImplDX11_Init(g_pDevice, g_pDeviceContext);
+
+
 	// サウンド初期化
 	CSound::Init();
 	CSound::SetVolume(1.0f);
@@ -709,6 +727,10 @@ void Uninit(void)
 	// サウンド終了処理
 	CSound::Fin();
 
+	// imgui終了処理
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 
 	// 深度ステンシルステート解放
 	for (int i = 0; i < _countof(g_pDSS); ++i) {
@@ -743,6 +765,27 @@ void Uninit(void)
 //=============================================================================
 void Update(void)
 {
+	// imguiの更新
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+
+	//test
+	auto world = WorldManager::GetInstance()->GetCurrentWorld().lock();
+	if (world)
+	{
+		auto entityMnr = world->GetEntityManager();
+
+		ImGui::Begin("State", nullptr);
+		for (auto entity : entityMnr->GetEntityPool())
+		{
+			ImGui::LabelText("", "%p", entity.lock().get());
+		}
+		ImGui::Spacing();
+		ImGui::End();
+	}
+
+
 	// 入力処理更新
 	UpdateInput();	// 必ずUpdate関数の先頭で実行.
 
@@ -816,6 +859,10 @@ void Draw(void)
 	DrawDebugProc();
 	SetBlendState(BS_NONE);
 //#endif // _DEBUG
+	
+	// imgui
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	// バックバッファとフロントバッファの入れ替え
 	g_pSwapChain->Present(g_uSyncInterval, 0);

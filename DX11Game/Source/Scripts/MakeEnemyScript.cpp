@@ -115,7 +115,17 @@ void MakeEnemyScript::Update()
 	m_nSpawnCount = m_nSpawnInterval;
 
 	// ƒfƒ‹ƒ^”‚ðŽæ“¾
-	int nDelta = player->GetComponent<PlayerScript>()->GetDeltaCount();
+	int nDelta;
+	const auto& ps = player->GetComponent<PlayerScript>();
+	if (ps)
+	{
+		nDelta = ps->GetDeltaCount();
+	}
+	else
+	{
+		nDelta = 10000;
+	}
+
 	for(int i = 1; i < m_nSpawnNum; i++)
 		nDelta -= i * 5;
 	// ¶¬”‚ðŒvŽZ

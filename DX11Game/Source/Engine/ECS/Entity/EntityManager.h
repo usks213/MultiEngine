@@ -25,6 +25,9 @@
 //===== クラス定義 =====
 namespace ECS
 {
+	// エンティティプール
+	using EntityPool = std::list<std::weak_ptr<IEntity>>;
+
 	class EntityManager final
 	{
 	public:
@@ -34,8 +37,6 @@ namespace ECS
 		~EntityManager();
 
 	private:
-		// エンティティプール
-		using EntityPool = std::list<std::weak_ptr<IEntity>>;
 		// エンティティプール
 		EntityPool m_EntityList;
 
@@ -59,6 +60,8 @@ namespace ECS
 		// エンティティプールのクリア
 		void ClearEntityPool();
 
+		// エンティティプールを取得
+		EntityPool& GetEntityPool() { return m_EntityList; }
 		// エンティティの数を取得
 		int GetEntityCount() { return static_cast<int>(m_EntityList.size()); }
 		// ワールドの取得

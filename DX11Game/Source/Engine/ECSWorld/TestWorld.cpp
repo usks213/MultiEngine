@@ -33,6 +33,7 @@
 #include "../../Scripts/DeltaUIScript.h"
 #include "../../Scripts/FieldScript.h"
 #include "../../Scripts/ExplosionScript.h"
+#include "../../Scripts/PlaneControlScript.h"
 
 
 using namespace ECS;
@@ -77,7 +78,8 @@ void TestWorld::Start()
 
 	// プレイヤー
 	const auto& player = GetEntityManager()->CreateEntity<GameObject>();
-	const auto & playerScript = player->AddComponent<PlayerScript>();
+	//const auto & playerScript = player->AddComponent<PlayerScript>();
+	player->AddComponent<PlaneControlScript>();
 
 	// スカイドーム
 	const auto& sky = GetEntityManager()->CreateEntity<GameObject>();
@@ -96,16 +98,21 @@ void TestWorld::Start()
 	const auto& plane = GetEntityManager()->CreateEntity<GameObject>();
 	plane->AddComponent<FieldScript>()->SetTarget(player);
 	
-	// カーソル
-	const auto& cursor = GetEntityManager()->CreateEntity<GameObject>();
-	const auto& cursorRn = cursor->AddComponent<SpriteRenderer>();
-	cursorRn->SetDiffuseTexture("data/texture/Cursor.png");
-	cursorRn->SetLayer(cursorRn->eUI1);
-	cursor->transform().lock()->m_scale = Vector3{ 64 * SCREEN_SCALE_X,64 * SCREEN_SCALE_Y,32 };
+	//// カーソル
+	//const auto& cursor = GetEntityManager()->CreateEntity<GameObject>();
+	//const auto& cursorRn = cursor->AddComponent<SpriteRenderer>();
+	//cursorRn->SetDiffuseTexture("data/texture/Cursor.png");
+	//cursorRn->SetLayer(cursorRn->eUI1);
+	//cursor->transform().lock()->m_scale = Vector3{ 64 * SCREEN_SCALE_X,64 * SCREEN_SCALE_Y,32 };
 
-	// 爆発
-	const auto& ex = GetEntityManager()->CreateEntity<GameObject>();
-	const auto& exsc = ex->AddComponent<ExplosionScript>();
+	//// 爆発
+	//const auto& ex = GetEntityManager()->CreateEntity<GameObject>();
+	//const auto& exsc = ex->AddComponent<PlaneControlScript>();
+
+	// エネミー
+	const auto& makerobj = GetEntityManager()->CreateEntity<GameObject>();
+	const auto& maker = makerobj->AddComponent<MakeEnemyScript>();
+	maker->SetPlayer(player);
 
 }
 

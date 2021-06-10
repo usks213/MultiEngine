@@ -94,6 +94,8 @@ namespace ECS
 
 		// マスターワールド取得
 		World* GetMasterWorld() { return m_masterWorld.get(); }
+		// 現在のワールド取得
+		std::weak_ptr<World> GetCurrentWorld() { return m_currentWorld; }
 
 		// ワールド切替
 		template <class T>

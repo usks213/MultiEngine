@@ -133,7 +133,7 @@ void DropDeltaScript::Update()
 	{
 		m_IsTracking = true;
 	}
-	if (!m_IsTracking) return;
+	// debug if (!m_IsTracking) return;
 
 	// ‹ß‚¢ƒvƒŒƒCƒ„[‚É’Ç”ö
 	const auto& player = m_player.lock();

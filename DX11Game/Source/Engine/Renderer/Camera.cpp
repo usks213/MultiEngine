@@ -12,7 +12,7 @@
 // マクロ定義
 //*****************************************************************************
 #define	CAM_POS_P_X			(0.0f)					// カメラの視点初期位置(X座標)
-#define	CAM_POS_P_Y			(0.0f)				// カメラの視点初期位置(Y座標)
+#define	CAM_POS_P_Y			(500.0f)				// カメラの視点初期位置(Y座標)
 #define	CAM_POS_P_Z			(0.0f)				// カメラの視点初期位置(Z座標)
 #define	CAM_POS_R_X			(0.0f)					// カメラの注視点初期位置(X座標)
 #define	CAM_POS_R_Y			(0.0f)					// カメラの注視点初期位置(Y座標)
@@ -100,212 +100,229 @@ void CCamera::Update()
 
 	XMFLOAT3 pos = trans->m_pos;
 
-	// カメラ移動
-	m_vPos.x = pos.x;
-	m_vPos.y = pos.y;
-	m_vPos.z = pos.z;
+	m_vTarget = pos;
 
-	// カメラ移動
-	if (GetKeyPress(VK_Q)) {
-		m_fLengthInterval -= 5.0f;
-		if (m_fLengthInterval < CAM_DIST_MIN)
-			m_fLengthInterval = CAM_DIST_MIN;
-		XMFLOAT3 vDir;
-		XMStoreFloat3(&vDir, XMVector3Normalize(
-			XMVectorSet(m_vPos.x - m_vTarget.x,
-				m_vPos.y - m_vTarget.y, m_vPos.z - m_vTarget.z,
-				0.0f)));
-		m_vRelPos.x = m_vTarget.x + vDir.x * m_fLengthInterval - pos.x;
-		m_vRelPos.y = m_vTarget.y + vDir.y * m_fLengthInterval - pos.y;
-		m_vRelPos.z = m_vTarget.z + vDir.z * m_fLengthInterval - pos.z;
-	}
-	if (GetKeyPress(VK_E)) {
-		m_fLengthInterval += 5.0f;
-		if (m_fLengthInterval > CAM_DIST_MAX)
-			m_fLengthInterval = CAM_DIST_MAX;
-		XMFLOAT3 vDir;
-		XMStoreFloat3(&vDir, XMVector3Normalize(
-			XMVectorSet(m_vPos.x - m_vTarget.x,
-				m_vPos.y - m_vTarget.y, m_vPos.z - m_vTarget.z,
-				0.0f)));
-		m_vRelPos.x = m_vTarget.x + vDir.x * m_fLengthInterval - pos.x;
-		m_vRelPos.y = m_vTarget.y + vDir.y * m_fLengthInterval - pos.y;
-		m_vRelPos.z = m_vTarget.z + vDir.z * m_fLengthInterval - pos.z;
-	}
-
-	if (GetKeyTrigger(VK_RETURN)) m_bCursorFlg ^= 1;
-	if (!m_bCursorFlg)
+	Vector3 vec = pos - m_vPos;
+	if(Mathf::Length(vec) > VIEW_FAR_Z * 0.2f)
 	{
-		// マウス
-		m_vOldPos = Vector3{ (float)SCREEN_CENTER_X, (float)SCREEN_CENTER_Y, 0.0f };
-		m_vCurPos = Vector3{ (float)GetMousePosition()->x, (float)GetMousePosition()->y, 0.0f };
-
-		// 移動量
-		Vector3 axis = m_vCurPos - m_vOldPos;
-
-		// 戻す
-		//m_vCurPos = Vector3{ (float)SCREEN_CENTER_X, (float)SCREEN_CENTER_Y, 0.0f };
-		SetCursorPos(SCREEN_CENTER_X, SCREEN_CENTER_Y);
-		SetShowCursor(false);
-
-		//===== 水平 =====
-		XMMATRIX mtx = XMMatrixRotationY(
-			XMConvertToRadians(axis.x * 0.1f));
-
-		// 更新
-		XMVECTOR v = XMVectorSet(
-			m_vRelTarget.x, m_vRelTarget.y, m_vRelTarget.z, 1.0f);
-		v = XMVector3TransformCoord(v, mtx);
-		v = XMVector3Normalize(v);
-		XMStoreFloat3(&m_vRelTarget, v);
-
-
-		//===== 垂直 =====
-		mtx = XMMatrixRotationAxis(
-			XMVectorSet(m_mtxWorld._11,
-				m_mtxWorld._12,
-				m_mtxWorld._13, 0.0f),
-			XMConvertToRadians(axis.y * 0.1f));
-
-		// バックアップ
-		XMFLOAT3 back = m_vRelTarget;
-
-		// 更新
-		v = XMVectorSet(
-			m_vRelTarget.x, m_vRelTarget.y, m_vRelTarget.z, 1.0f);
-		v = XMVector3TransformCoord(v, mtx);
-		v = XMVector3Normalize(v);
-		XMStoreFloat3(&m_vRelTarget, v);
-
-		// 補正 
-		if (m_vRelTarget.y > 0.99f || m_vRelTarget.y < -0.99f)
-		{
-			m_vRelTarget = back;
-		}
-	}
-	else
-	{
-		SetShowCursor(true);
+		m_vPos = m_vPos + Mathf::Normalize(vec) * (Mathf::Length(vec) - VIEW_FAR_Z * 0.2f);
 	}
 
-	// カメラ操作
-	if (GetKeyPress(VK_RIGHT)) {
-		XMMATRIX mtx = XMMatrixRotationY(
-			XMConvertToRadians(CAM_ROT_SPEED));
-		XMStoreFloat3(&m_vRelPos,
-			XMVector3TransformCoord(
-				XMLoadFloat3(&m_vRelPos), mtx));
-		XMStoreFloat3(&m_vRelTarget,
-			XMVector3TransformCoord(
-				XMLoadFloat3(&m_vRelTarget), mtx));
-		m_vAngle.y += CAM_ROT_SPEED;
-		if (m_vAngle.y >= 180.0f)
-			m_vAngle.y -= 360.0f;
-	}
-	if (GetKeyPress(VK_LEFT)) {
-		XMMATRIX mtx = XMMatrixRotationY(
-			XMConvertToRadians(-CAM_ROT_SPEED));
-		XMStoreFloat3(&m_vRelPos,
-			XMVector3TransformCoord(
-				XMLoadFloat3(&m_vRelPos), mtx));
-		XMStoreFloat3(&m_vRelTarget,
-			XMVector3TransformCoord(
-				XMLoadFloat3(&m_vRelTarget), mtx));
-		m_vAngle.y -= CAM_ROT_SPEED;
-		if (m_vAngle.y < -180.0f)
-			m_vAngle.y += 360.0f;
-	}
-	if (GetKeyPress(VK_DOWN) && m_vAngle.x + 1 < 80.0f) {
-		XMMATRIX mtx = XMMatrixRotationAxis(
-			XMVectorSet(m_mtxWorld._11,
-				m_mtxWorld._12,
-				m_mtxWorld._13, 0.0f),
-			XMConvertToRadians(CAM_ROT_SPEED));
-		XMStoreFloat3(&m_vRelPos,
-			XMVector3TransformCoord(
-				XMLoadFloat3(&m_vRelPos), mtx));
-		XMStoreFloat3(&m_vRelTarget,
-			XMVector3TransformCoord(
-				XMLoadFloat3(&m_vRelTarget), mtx));
-		m_vAngle.x += CAM_ROT_SPEED;
-	}
-	if (GetKeyPress(VK_UP) && m_vAngle.x - 1 > -80.0f) {
-		XMMATRIX mtx = XMMatrixRotationAxis(
-			XMVectorSet(m_mtxWorld._11,
-				m_mtxWorld._12,
-				m_mtxWorld._13, 0.0f),
-			XMConvertToRadians(-CAM_ROT_SPEED));
-		XMStoreFloat3(&m_vRelPos,
-			XMVector3TransformCoord(
-				XMLoadFloat3(&m_vRelPos), mtx));
-		XMStoreFloat3(&m_vRelTarget,
-			XMVector3TransformCoord(
-				XMLoadFloat3(&m_vRelTarget), mtx));
-		m_vAngle.x -= CAM_ROT_SPEED;
-	}
-
-	// カメラの向き
-	m_vForward.x = m_vRelTarget.x;
-	m_vForward.y = m_vRelTarget.y;
-	m_vForward.z = m_vRelTarget.z;
-	m_vForward = Mathf::Normalize(m_vForward);
-
-	// 画面揺れ
-	static float fOs = 50;
-	static float fSpeed = 2000 / 60.0f;
-	static float yOff = 0;
-	static bool  bUp = true;
-	if (m_nShakeFrame > 0)
-	{
-		//// 右ベクトル
-		//Vector3 up = Vector3{ 0.0f, 1.0f, 0.0f };
-		//m_vRight = Mathf::Cross(m_vForward, up).normalized();
-		//up = Mathf::Cross(m_vForward, m_vRight).normalized();
-
-		//// 揺らすオフセット
-		//const float fOs = 100;
-		//const float fspeed = 50 / 60;
-
-		//int ra1 = rand() % 100 - 50;
-		//int ra2 = rand() % 100 - 50;
-		//m_vShakeOffset = m_vRight * ra1;
-		//m_vShakeOffset = up * ra2;
-
-		yOff += fSpeed;
-		if (yOff > fOs && bUp)
-		{
-			fOs *= 0.8f;
-			fSpeed *= -1;
-			bUp = false;
-		}
-		if (yOff < -fOs && !bUp)
-		{
-			fOs *= 0.8f;
-			fSpeed *= -1;
-			bUp = true;
-		}
-		m_vShakeOffset.y = -yOff;
-
-		m_nShakeFrame--;
-	}
-	else
-	{
-		m_vShakeOffset = Vector3{ 0,0,0 };
-		fOs = 50;
-		fSpeed = 2000 / 60.0f;
-		yOff = 0;
-		bUp = true;
-	}
+	// UPベクトル更新
+	//m_vUp = Matrix::CreateFromQuaternion(trans->m_rot).Up();
 
 	// カメラ移動
-	m_vPos.x = pos.x + m_vShakeOffset.x;
-	m_vPos.y = pos.y + m_vShakeOffset.y;
-	m_vPos.z = pos.z + m_vShakeOffset.z;
+	//m_vPos.x = pos.x;
+	//m_vPos.y = pos.y;
+	//m_vPos.z = pos.z;
 
-	// 注視点移動
-	m_vTarget.x = (m_vPos.x + m_vRelTarget.x);
-	m_vTarget.y = (m_vPos.y + m_vRelTarget.y);
-	m_vTarget.z = (m_vPos.z + m_vRelTarget.z);
+	//// カメラ移動
+	//if (GetKeyPress(VK_Q)) {
+	//	m_fLengthInterval -= 5.0f;
+	//	if (m_fLengthInterval < CAM_DIST_MIN)
+	//		m_fLengthInterval = CAM_DIST_MIN;
+	//	XMFLOAT3 vDir;
+	//	XMStoreFloat3(&vDir, XMVector3Normalize(
+	//		XMVectorSet(m_vPos.x - m_vTarget.x,
+	//			m_vPos.y - m_vTarget.y, m_vPos.z - m_vTarget.z,
+	//			0.0f)));
+	//	m_vRelPos.x = m_vTarget.x + vDir.x * m_fLengthInterval - pos.x;
+	//	m_vRelPos.y = m_vTarget.y + vDir.y * m_fLengthInterval - pos.y;
+	//	m_vRelPos.z = m_vTarget.z + vDir.z * m_fLengthInterval - pos.z;
+	//}
+	//if (GetKeyPress(VK_E)) {
+	//	m_fLengthInterval += 5.0f;
+	//	if (m_fLengthInterval > CAM_DIST_MAX)
+	//		m_fLengthInterval = CAM_DIST_MAX;
+	//	XMFLOAT3 vDir;
+	//	XMStoreFloat3(&vDir, XMVector3Normalize(
+	//		XMVectorSet(m_vPos.x - m_vTarget.x,
+	//			m_vPos.y - m_vTarget.y, m_vPos.z - m_vTarget.z,
+	//			0.0f)));
+	//	m_vRelPos.x = m_vTarget.x + vDir.x * m_fLengthInterval - pos.x;
+	//	m_vRelPos.y = m_vTarget.y + vDir.y * m_fLengthInterval - pos.y;
+	//	m_vRelPos.z = m_vTarget.z + vDir.z * m_fLengthInterval - pos.z;
+	//}
+
+	//if (GetMouseButton(MOUSEBUTTON_L))
+	//	m_bCursorFlg = 1;
+	//else
+	//	m_bCursorFlg = 0;
+
+	//m_vOldPos = m_vCurPos;
+	//m_vCurPos = Vector3{ (float)GetMousePosition()->x, (float)GetMousePosition()->y, 0.0f };
+
+	//if (m_bCursorFlg)
+	//{
+	//	// マウス
+	//	//m_vOldPos = Vector3{ (float)SCREEN_CENTER_X, (float)SCREEN_CENTER_Y, 0.0f };
+
+	//	// 移動量
+	//	Vector3 axis = m_vCurPos - m_vOldPos;
+
+	//	// 戻す
+	//	//m_vCurPos = Vector3{ (float)SCREEN_CENTER_X, (float)SCREEN_CENTER_Y, 0.0f };
+	//	//SetCursorPos(SCREEN_CENTER_X, SCREEN_CENTER_Y);
+	//	//SetShowCursor(false);
+
+	//	//===== 水平 =====
+	//	XMMATRIX mtx = XMMatrixRotationY(
+	//		XMConvertToRadians(axis.x * 0.1f));
+
+	//	// 更新
+	//	XMVECTOR v = XMVectorSet(
+	//		m_vRelTarget.x, m_vRelTarget.y, m_vRelTarget.z, 1.0f);
+	//	v = XMVector3TransformCoord(v, mtx);
+	//	v = XMVector3Normalize(v);
+	//	XMStoreFloat3(&m_vRelTarget, v);
+
+
+	//	//===== 垂直 =====
+	//	mtx = XMMatrixRotationAxis(
+	//		XMVectorSet(m_mtxWorld._11,
+	//			m_mtxWorld._12,
+	//			m_mtxWorld._13, 0.0f),
+	//		XMConvertToRadians(axis.y * 0.1f));
+
+	//	// バックアップ
+	//	XMFLOAT3 back = m_vRelTarget;
+
+	//	// 更新
+	//	v = XMVectorSet(
+	//		m_vRelTarget.x, m_vRelTarget.y, m_vRelTarget.z, 1.0f);
+	//	v = XMVector3TransformCoord(v, mtx);
+	//	v = XMVector3Normalize(v);
+	//	XMStoreFloat3(&m_vRelTarget, v);
+
+	//	// 補正 
+	//	if (m_vRelTarget.y > 0.99f || m_vRelTarget.y < -0.99f)
+	//	{
+	//		m_vRelTarget = back;
+	//	}
+	//}
+	//else
+	//{
+	//	SetShowCursor(true);
+	//}
+
+	//// カメラ操作
+	//if (GetKeyPress(VK_RIGHT)) {
+	//	XMMATRIX mtx = XMMatrixRotationY(
+	//		XMConvertToRadians(CAM_ROT_SPEED));
+	//	XMStoreFloat3(&m_vRelPos,
+	//		XMVector3TransformCoord(
+	//			XMLoadFloat3(&m_vRelPos), mtx));
+	//	XMStoreFloat3(&m_vRelTarget,
+	//		XMVector3TransformCoord(
+	//			XMLoadFloat3(&m_vRelTarget), mtx));
+	//	m_vAngle.y += CAM_ROT_SPEED;
+	//	if (m_vAngle.y >= 180.0f)
+	//		m_vAngle.y -= 360.0f;
+	//}
+	//if (GetKeyPress(VK_LEFT)) {
+	//	XMMATRIX mtx = XMMatrixRotationY(
+	//		XMConvertToRadians(-CAM_ROT_SPEED));
+	//	XMStoreFloat3(&m_vRelPos,
+	//		XMVector3TransformCoord(
+	//			XMLoadFloat3(&m_vRelPos), mtx));
+	//	XMStoreFloat3(&m_vRelTarget,
+	//		XMVector3TransformCoord(
+	//			XMLoadFloat3(&m_vRelTarget), mtx));
+	//	m_vAngle.y -= CAM_ROT_SPEED;
+	//	if (m_vAngle.y < -180.0f)
+	//		m_vAngle.y += 360.0f;
+	//}
+	//if (GetKeyPress(VK_DOWN) && m_vAngle.x + 1 < 80.0f) {
+	//	XMMATRIX mtx = XMMatrixRotationAxis(
+	//		XMVectorSet(m_mtxWorld._11,
+	//			m_mtxWorld._12,
+	//			m_mtxWorld._13, 0.0f),
+	//		XMConvertToRadians(CAM_ROT_SPEED));
+	//	XMStoreFloat3(&m_vRelPos,
+	//		XMVector3TransformCoord(
+	//			XMLoadFloat3(&m_vRelPos), mtx));
+	//	XMStoreFloat3(&m_vRelTarget,
+	//		XMVector3TransformCoord(
+	//			XMLoadFloat3(&m_vRelTarget), mtx));
+	//	m_vAngle.x += CAM_ROT_SPEED;
+	//}
+	//if (GetKeyPress(VK_UP) && m_vAngle.x - 1 > -80.0f) {
+	//	XMMATRIX mtx = XMMatrixRotationAxis(
+	//		XMVectorSet(m_mtxWorld._11,
+	//			m_mtxWorld._12,
+	//			m_mtxWorld._13, 0.0f),
+	//		XMConvertToRadians(-CAM_ROT_SPEED));
+	//	XMStoreFloat3(&m_vRelPos,
+	//		XMVector3TransformCoord(
+	//			XMLoadFloat3(&m_vRelPos), mtx));
+	//	XMStoreFloat3(&m_vRelTarget,
+	//		XMVector3TransformCoord(
+	//			XMLoadFloat3(&m_vRelTarget), mtx));
+	//	m_vAngle.x -= CAM_ROT_SPEED;
+	//}
+
+	//// カメラの向き
+	//m_vForward.x = m_vRelTarget.x;
+	//m_vForward.y = m_vRelTarget.y;
+	//m_vForward.z = m_vRelTarget.z;
+	//m_vForward = Mathf::Normalize(m_vForward);
+
+	//// 画面揺れ
+	//static float fOs = 50;
+	//static float fSpeed = 2000 / 60.0f;
+	//static float yOff = 0;
+	//static bool  bUp = true;
+	//if (m_nShakeFrame > 0)
+	//{
+	//	//// 右ベクトル
+	//	//Vector3 up = Vector3{ 0.0f, 1.0f, 0.0f };
+	//	//m_vRight = Mathf::Cross(m_vForward, up).normalized();
+	//	//up = Mathf::Cross(m_vForward, m_vRight).normalized();
+
+	//	//// 揺らすオフセット
+	//	//const float fOs = 100;
+	//	//const float fspeed = 50 / 60;
+
+	//	//int ra1 = rand() % 100 - 50;
+	//	//int ra2 = rand() % 100 - 50;
+	//	//m_vShakeOffset = m_vRight * ra1;
+	//	//m_vShakeOffset = up * ra2;
+
+	//	yOff += fSpeed;
+	//	if (yOff > fOs && bUp)
+	//	{
+	//		fOs *= 0.8f;
+	//		fSpeed *= -1;
+	//		bUp = false;
+	//	}
+	//	if (yOff < -fOs && !bUp)
+	//	{
+	//		fOs *= 0.8f;
+	//		fSpeed *= -1;
+	//		bUp = true;
+	//	}
+	//	m_vShakeOffset.y = -yOff;
+
+	//	m_nShakeFrame--;
+	//}
+	//else
+	//{
+	//	m_vShakeOffset = Vector3{ 0,0,0 };
+	//	fOs = 50;
+	//	fSpeed = 2000 / 60.0f;
+	//	yOff = 0;
+	//	bUp = true;
+	//}
+
+	//// カメラ移動
+	//m_vPos.x = pos.x + m_vShakeOffset.x;
+	//m_vPos.y = pos.y + m_vShakeOffset.y;
+	//m_vPos.z = pos.z + m_vShakeOffset.z;
+
+	//// 注視点移動
+	//m_vTarget.x = (m_vPos.x + m_vRelTarget.x);
+	//m_vTarget.y = (m_vPos.y + m_vRelTarget.y);
+	//m_vTarget.z = (m_vPos.z + m_vRelTarget.z);
 
 	// マトリックス更新
 	UpdateMatrix();

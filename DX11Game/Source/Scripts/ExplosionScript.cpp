@@ -1,15 +1,10 @@
-//==================================================================
-//								ExplosionScript.h
-//	課題爆発エフェクト
-//
-//==================================================================
-//	author :	AT12A 05 宇佐美晃之
-//==================================================================
-//	開発履歴
-//
-//	2021/05/14	課題爆発エフェクトクラス作成
-//
-//===================================================================
+/*****************************************************************//**
+ * \file   ExplosionScript.cpp
+ * \brief  課題爆発エフェクト
+ * 
+ * \author USAMI KOSHI
+ * \date   2021/05/14　課題爆発エフェクトクラス作成
+ *********************************************************************/
 
 
 //====== インクルード部 ======
@@ -67,14 +62,14 @@ void ExplosionScript::Start()
 	gameObject().lock()->SetName("Explosin");
 	gameObject().lock()->SetTag("Explosin");
 
-	transform().lock()->m_pos = Vector3(0, 0, 1000);
-	transform().lock()->m_scale = Vector3(10, 10, 10);
+	transform().lock()->m_pos = Vector3(0, 300, 1000);
+	transform().lock()->m_scale = Vector3(1, 1, 1);
 
 	// コンポーネントの追加
 
 	// レンダラー
 	const auto& renderer = gameObject().lock()->AddComponent<AssimpRenderer>();
-	renderer->ModelLoad("data/model/cub obj.obj");
+	renderer->ModelLoad("data/model/JAS39.fbx");
 	m_renderer = renderer;
 
 	// 時間
