@@ -99,11 +99,11 @@ void TestWorld::Start()
 	//sky->transform().lock()->m_scale = Vector3{ VIEW_FAR_Z * 1.5f, VIEW_FAR_Z * 1.5f, VIEW_FAR_Z * 1.5f };
 	sky->transform().lock()->m_scale = 
 		Vector3{ camera->GetFogFarZ() * 2.5f, camera->GetFogFarZ() * 2.5f, camera->GetFogFarZ() * 2.5f };
-	sky->AddComponent<SkyDomeScript>()->SetTarget(player);
+	sky->AddComponent<SkyDomeScript>()->SetTarget(cameraObj);
 
 	// °
 	const auto& plane = GetEntityManager()->CreateEntity<GameObject>();
-	plane->AddComponent<FieldScript>()->SetTarget(player);
+	plane->AddComponent<FieldScript>()->SetTarget(cameraObj);
 	
 	//// ƒJ[ƒ\ƒ‹
 	//const auto& cursor = GetEntityManager()->CreateEntity<GameObject>();

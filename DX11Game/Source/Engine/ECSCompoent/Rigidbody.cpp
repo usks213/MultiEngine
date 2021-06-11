@@ -151,7 +151,10 @@ void Rigidbody::Update()
 	pTrans->m_rot *= m_angularVelocity;
 
 	// íÔçRÇ≈â¡ë¨ìxÇå∏ÇÁÇ∑	fDrag(0.0f Å` 1.0f)
-	m_torque *= (1.0f - m_torqueDrag);
+	Quaternion invTorque;
+	m_torque.Inverse(invTorque);
+	m_torque *= invTorque * m_torqueDrag;
+	if (m_torque.Length() < 0.01f) m_torque = Vector4(0, 0, 0, 1);
 	//m_torque.x *= (1.0f - m_torqueDrag.x);
 	//if (fabsf(m_torque.x) < 0.01f) m_torque.x = 0.0f;
 	//m_torque.y *= (1.0f - m_torqueDrag.y);

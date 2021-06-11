@@ -25,7 +25,17 @@ namespace ECS
 		float m_speed;
 		float m_rotSpeed;
 		int m_nShotCnt;
+		float m_rad;
+		enum ECameraMode
+		{
+			eConst,
+			eOne,
+			eTherd,
+			eRotate,
 
+			eMaxMode,
+		};
+		ECameraMode m_eMode;
 
 	protected:
 		// ----- ƒƒ\ƒbƒh -----

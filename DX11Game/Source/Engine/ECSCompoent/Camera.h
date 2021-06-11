@@ -82,6 +82,7 @@ namespace ECS
 		// プロジェクションマトリックス
 		Matrix m_mtxProj;
 
+		Vector3 m_up;					// UPベクトル
 		float m_fAspectRatio;			// 縦横比
 		float m_fFovY;					// 視野角(Degree)
 		float m_fNearZ;					// 前方クリップ距離

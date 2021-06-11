@@ -157,7 +157,8 @@ void BombCrystalScript::End()
 //========================================
 void BombCrystalScript::OnDeltaCollisionEnter(DeltaCollider* collider)
 {
-	if (collider->gameObject().lock()->tag() == "Player")
+	if (collider->gameObject().lock()->tag() == "Player" || 
+		collider->gameObject().lock()->tag() == "Bullet")
 	{
 		// ボムエフェクト生成
 		const int n = 24;

@@ -60,6 +60,24 @@ namespace ECS
 		//Vector3 m_rot;				// オブジェクトの回転角度
 		Quaternion m_rot;
 
+		void right(Vector3 right) {
+			Matrix mtx = Matrix::CreateFromQuaternion(m_rot);
+			mtx.Right(right);
+			m_rot = Quaternion::CreateFromRotationMatrix(mtx);
+		}
+		Vector3 right() {
+			return Matrix::CreateFromQuaternion(m_rot).Right();
+		}
+
+		void up(Vector3 up) {
+			Matrix mtx = Matrix::CreateFromQuaternion(m_rot);
+			mtx.Up(up);
+			m_rot = Quaternion::CreateFromRotationMatrix(mtx);
+		}
+		Vector3 up() {
+			return Matrix::CreateFromQuaternion(m_rot).Up();
+		}
+
 		void forward(Vector3 forward) {
 			Matrix mtx = Matrix::CreateFromQuaternion(m_rot);
 			mtx.Forward(forward);
