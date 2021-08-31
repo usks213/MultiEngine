@@ -41,6 +41,7 @@
 
 // スクリプト
 #include "BulletScript.h"
+#include "BombCrystalScript.h"
 
 
 // ネームスペース
@@ -74,7 +75,7 @@ void PlaneControlScript::Start()
 
 	// レンダラー
 	const auto& renderer = gameObject().lock()->AddComponent<AssimpRenderer>();
-	renderer->ModelLoad("data/model/JAS39.fbx");
+	renderer->ModelLoad("data/model/PlanePlane.fbx");
 
 	// コライダー
 	const auto& collider = gameObject().lock()->AddComponent<DeltaCollider>();
@@ -93,7 +94,7 @@ void PlaneControlScript::Start()
 	m_speed = 2.0f;
 	m_rotSpeed = 1.5f;
 	m_rad = 0;
-	m_eMode = ECameraMode::eConst;
+	m_eMode = ECameraMode::eTherd;
 
 }
 
@@ -111,7 +112,7 @@ void PlaneControlScript::Update()
 	Vector3 up = Matrix::CreateFromQuaternion(rot).Up();
 
 	// 前進
-	//if (GetKeyPress(VK_W))
+	if (GetKeyPress(VK_W))
 	{
 		rb->AddForce(forward * m_speed);
 	}
@@ -160,6 +161,29 @@ void PlaneControlScript::Update()
 		CSound::PlaySE("Shot.wav", 0.3f);
 		m_nShotCnt = 6;
 	}
+
+	// ボム
+	if (GetKeyTrigger(VK_Z))
+	{
+		const auto& test = Instantiate<GameObject>();
+		test->AddComponent<BombCrystalScript>();
+		const auto& rb = test->AddComponent<Rigidbody>();
+		rb->SetUseGravity(false);
+		rb->SetDrag(Vector3(0, 0, 0));
+		rb->SetTorqueDrag(0);
+		const auto& col = test->GetComponent<DeltaCollider>();
+		col->SetMain(true);
+
+		Vector3 dir = Mathf::Normalize(forward);
+
+		test->transform().lock()->m_pos = transform().lock()->m_pos + dir * 500;
+		rb->AddForce(dir * 100 + Mathf::WallVerticalVector(m_rb.lock()->GetForce(), dir));
+		rb->AddTorque(Quaternion::CreateFromAxisAngle(dir, XMConvertToRadians(dir.Length() * 10)));
+
+		// サウンド
+		CSound::PlaySE("Jump.wav", 0.7f);
+	}
+
 }
 
 //========================================

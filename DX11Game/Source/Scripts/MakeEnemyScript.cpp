@@ -48,13 +48,13 @@
 #include "../Engine/ECSSystem/DeltaCollisionSystem.h"
 
 // スクリプト
-#include "StraightMoveEnemyScript.h"
-#include "GroupMoveEnemyScript.h"
-#include "TrackingMoveEnemyHostScript.h"
+#include "BalanceEnemyScript.h"
+#include "AttackEnemyScript.h"
+#include "SpeedEnemyScript.h"
+#include "SkiilEnemyScript.h"
+#include "PhysicalEnemyScript.h"
 #include "PlayerScript.h"
-#include "BombCrystalScript.h"
-
-
+#include "DeltaUIScript.h"
 
 // ネームスペース
 using namespace ECS;
@@ -76,13 +76,9 @@ using namespace ECS;
 //========================================
 void MakeEnemyScript::Start()
 {
-	// 初期の生成タイミング
-	m_nSpawnInterval = 60;
-	m_nSpawnCount = m_nSpawnInterval;
-	// 初期の生成数
-	m_nSpawnNum = 1;
-	// 生成タイプ
-	m_nType = 0;
+	const auto& deltaUi = GetEntityManager()->CreateEntity<GameObject>();
+	deltaUi->AddComponent<DeltaUIScript>()->
+		SetMaker(gameObject().lock()->GetComponent<MakeEnemyScript>());
 }
 
 //========================================
@@ -104,139 +100,62 @@ void MakeEnemyScript::Update()
 	// 座標の同期
 	transform().lock()->m_pos = playerPos;
 
-
 	//----- エネミーの生成 -----
 
-	// 生成カウント
-	m_nSpawnCount--;
-	if (m_nSpawnCount >= 0) return;
+	// 経過時間
+	m_nTime++;
+	if (m_nTime % (60 * 60) != 0 && m_nEnemyCount > 0) return;
+	m_nWave++;
 
-	// カウント初期化
-	m_nSpawnCount = m_nSpawnInterval;
-
-	// デルタ数を取得
-	int nDelta;
-	const auto& ps = player->GetComponent<PlayerScript>();
-	if (ps)
-	{
-		nDelta = ps->GetDeltaCount();
-	}
-	else
-	{
-		nDelta = 10000;
-	}
-
-	for(int i = 1; i < m_nSpawnNum; i++)
-		nDelta -= i * 5;
 	// 生成数を計算
-	if (nDelta / (m_nSpawnNum * 5))
-	{
-		m_nSpawnNum += 2;
-	}
-	if (m_nSpawnNum > MAX_SPAWN_NUM) m_nSpawnNum = MAX_SPAWN_NUM;
+	int nSpawnNum = m_nWave  * 3 + 3;
+	if (nSpawnNum > MAX_SPAWN_NUM) nSpawnNum = MAX_SPAWN_NUM;
+	m_nEnemyCount = nSpawnNum;
 
 	// 生成するエネミーの種類
-	//int type = rand() % eMaxType;
-	//m_nType = (m_nType +1) % 3;
-	for (m_nType = 0; m_nType < eMaxType; m_nType++)
+	for (int i = 0; i < nSpawnNum; ++i)
 	{
 		//--- エネミーを生成する座標
 		float height = (rand() % 5 - 2) * 100;
 		if (playerPos.y < 600) playerPos.y = 100;
-		Vector3 spawnPos = { 3000, height, 0 };
+		Vector3 spawnPos = { 4000, height, 0 };
 		Vector3 temp = playerPos;
-		//temp.y = 0;
+		temp.y = rand() % 500 + 100;
 		spawnPos = Mathf::RotationY(spawnPos, rand() % 360) + temp;
-
-		//--- ボムクリスタルの生成
-		if (rand() % 100 < 50)
-		{
-			float bombRand = 1.0f - (rand() % 26 / 100.0f);
-			Vector3 bombPos = spawnPos * bombRand;
-			bombPos.y = playerPos.y + (7) * 100;
-			const auto& bomb = Instantiate<GameObject>(bombPos);
-			bomb->AddComponent<BombCrystalScript>();
-		}
 
 		// エンティティの数
 		if (GetEntityManager()->GetEntityCount() > MAX_ENETETY_NUM) continue;
 
+		// エネミー生成
+		const auto& obj = Instantiate<GameObject>(spawnPos);
+		// コンポーネントの追加
+		const auto& enemy = obj->AddComponent<EnemyBaseScript>();
+		enemy->SetPlayer(player);
+		enemy->m_maker = gameObject().lock()->GetComponent<MakeEnemyScript>();
+
 		//--- タイプで分ける
-		switch (m_nType)
+		int type = rand() % (int)EnemyBaseScript::Type::Max;
+		switch (type)
 		{
-			// 直進タイプ 波紋
-		case ECS::MakeEnemyScript::eStraightCircle:
-		{
-			// 生成数
-			int SpawnNum = m_nSpawnNum + 3;
-
-			// 生成座標
-			Vector3 pos = Mathf::Normalize(playerPos - spawnPos) * SpawnNum * 200;
-			pos.y = 0;
-			Vector3 backPos = pos;
-			// 生成数の半分だけ角度をずらす
-			float addAngle = 45.0f / SpawnNum;
-			pos = Mathf::RotationY(pos ,-addAngle * (SpawnNum / 2));
-			Vector3 center = spawnPos;
-			center.y = 0;
-
-			for (int i = 0; i < SpawnNum; i++)
-			{
-				// エネミー生成
-				const auto& obj = Instantiate<GameObject>(Mathf::RotationY(pos, addAngle * i) - backPos + spawnPos);
-				// コンポーネントの追加
-				obj->AddComponent<StraightMoveEnemyScript>()->SetPlayer(player);
-				// 進む向き
-				const auto& rb = obj->GetComponent<Rigidbody>();
-				Vector3 dir = Mathf::Normalize(temp - center);
-				rb->AddForce(dir * 20);
-			}
-		}
-		break;
-		// 直進タイプ タワー
-		case ECS::MakeEnemyScript::eGroup:
-		{
-			// 生成数
-			int SpawnNum = m_nSpawnNum / 2 + 6;
-
-			for (int y = 0; y < SpawnNum / 3; y++)
-				for (int x = 0; x < SpawnNum; x += 6)
-					for (int i = 0; i < x; i++)
-					{
-						// 生成座標
-						Vector3 pos = { x * 40.0f, 0, 0 };
-						float angle = 360.0f / x * i;
-						pos = Mathf::RotationY(pos, angle);
-						Vector3 center = spawnPos;
-						center.y += y * 200;
-						// エネミー生成
-						const auto& obj = Instantiate<GameObject>(pos + center);
-						// コンポーネントの追加
-						obj->AddComponent<GroupMoveEnemyScript>()->SetPlayer(player);
-						// 進む向き
-						const auto& rb = obj->GetComponent<Rigidbody>();
-						center.y = 0;
-						Vector3 dir = Mathf::Normalize(temp - center);
-						rb->AddForce(dir * 20);
-					}
-		}
-		break;
-		case ECS::MakeEnemyScript::eTracking:
-		{
-			// エネミー生成
-			const auto& obj = Instantiate<GameObject>(spawnPos);
-			// コンポーネントの追加
-			const auto& tracking = obj->AddComponent<TrackingMoveEnemyHostScript>();
-			tracking->SetPlayer(player);
-
-			// 生成数
-			int SpawnNum = m_nSpawnNum * 1.5f + 3;
-
-			// 子の生成
-			tracking->CreateChild(SpawnNum);
-		}
-		break;
-		case ECS::MakeEnemyScript::eMaxType:
+		case (int)ECS::EnemyBaseScript::Type::Attack:
+			obj->AddComponent<AttackEnemyScript>();
+			enemy->SetUpStatus(EnemyBaseScript::Type::Attack, m_nWave);
+			break;
+		case (int)ECS::EnemyBaseScript::Type::Physical:
+			obj->AddComponent<PhysicalEnemyScript>();
+			enemy->SetUpStatus(EnemyBaseScript::Type::Physical, m_nWave);
+			break;
+		case (int)ECS::EnemyBaseScript::Type::Skiil:
+			obj->AddComponent<SkiilEnemyScript>();
+			enemy->SetUpStatus(EnemyBaseScript::Type::Skiil, m_nWave);
+			break;
+		case (int)ECS::EnemyBaseScript::Type::Speed:
+			obj->AddComponent<SpeedEnemyScript>();
+			enemy->SetUpStatus(EnemyBaseScript::Type::Speed, m_nWave);
+			break;
+		case (int)ECS::EnemyBaseScript::Type::Balance:
+			obj->AddComponent<BalanceEnemyScript>();
+			enemy->SetUpStatus(EnemyBaseScript::Type::Balance, m_nWave);
 			break;
 		}
 	}
@@ -250,7 +169,8 @@ void MakeEnemyScript::Update()
 void MakeEnemyScript::LateUpdate()
 {
 	// デバック表示
-	PrintDebugProc("SpawnNum:%d\n\n", m_nSpawnNum);
+	PrintDebugProc("Wave:%d\n\n", m_nWave);
+	PrintDebugProc("EnemyCount:%d\n", m_nEnemyCount);
 	PrintDebugProc("EntityNum:%d\n", GetEntityManager()->GetEntityCount());
 }
 
@@ -261,4 +181,34 @@ void MakeEnemyScript::LateUpdate()
 //========================================
 void MakeEnemyScript::End()
 {
+	// スコアのロード
+	FILE* fp;
+	int nScore = 0;
+
+	// 前回のスコアを読み込む
+	fopen_s(&fp, "data/score.bin", "rb");
+
+	if (fp)
+	{
+		fread(&nScore, sizeof(int), 1, fp);
+
+		fclose(fp);
+	}
+
+	if (m_nWave > nScore)
+	{
+		// スコアの書き出し
+		FILE* fp;
+		nScore = m_nWave;
+
+		// 前回のスコアを読み込む
+		fopen_s(&fp, "data/score.bin", "wb");
+
+		if (fp)
+		{
+			fwrite(&nScore, sizeof(int), 1, fp);
+
+			fclose(fp);
+		}
+	}
 }

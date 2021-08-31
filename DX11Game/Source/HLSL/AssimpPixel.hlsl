@@ -61,9 +61,11 @@ float4 main(VS_OUTPUT input) : SV_Target0
 {
 	float3 Diff = g_Diffuse.rgb;
 	float Alpha = g_Diffuse.a;
+	float4 Tex = float4(1, 1, 1, 1);
 	if (g_Flags.x != 0.0f) {		// テクスチャ有無
 		float4 TexDiff = g_texture.Sample(g_sampler, input.Tex);
 		Diff *= TexDiff.rgb;
+		Tex = TexDiff;
 		Alpha *= TexDiff.a;
 	}
 	if (g_Flags.z != 0.0f) {		// テクスチャ有無
@@ -127,19 +129,21 @@ float4 main(VS_OUTPUT input) : SV_Target0
         float val = max(dot(N, L), 0.0f) * 0.5f + 0.5f;
         val = val * val; // * (3.0f / (4.0f * PI));
 		
-		// ハーフランバート
-        Diff = g_vLightAmbient.rgb * g_Ambient.rgb +
-			g_vLightDiffuse.rgb * Diff * val; // 拡散色 + 環境色
-		
-        // ライティング
-   //     Diff = g_vLightAmbient.rgb * g_Ambient.rgb +
-			//g_vLightDiffuse.rgb * Diff * saturate(dot(L, N)); // 拡散色 + 環境色
-		
-		
-        Spec = Spec * g_vLightSpecular.rgb *
-			pow(saturate(dot(N, H)), g_Specular.a); // 鏡面反射色
-        Diff += Spec;
-    }
+		      // ハーフランバート
+		Diff = g_vLightDiffuse.rgb * Diff * val * sc * 2; // 拡散色
+        //Diff = g_vLd.rgb * Diff * val * sc * N * 2; // 拡散色
+       // Diff = g_vLd.rgb * Diff * val * sc + N; // 拡散色
+        
+        // ランバート
+        //Diff = g_vLd.rgb * Diff * saturate(dot(L, N)) * sc; // 拡散色
+        //Diff = g_vLd.rgb * Diff * N; // 拡散色
+        
+        
+		Diff += g_vLightAmbient.rgb * g_Ambient.rgb * Tex.rgb * sc; // 環境光
+		float3 Spec = g_vLightSpecular.rgb * g_Specular.rgb *
+			pow(saturate(dot(N, H)), g_Specular.a) * sc * Tex.rgb; // 鏡面反射色
+		Diff += Spec;
+	}
 
 	float3 Emis = g_Emissive.rgb;
 	if (g_Flags.y != 0.0f) {		// テクスチャ有無

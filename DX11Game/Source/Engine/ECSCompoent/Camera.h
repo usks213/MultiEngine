@@ -59,6 +59,9 @@ namespace ECS
 		float GetFogNearZ() { return m_fFogNearZ; }
 		float GetFogFarZ() { return m_fFogFarZ; }
 
+		void SetShake(float frame) { m_shakeCount = frame; }
+		void SetShakeOffset(Vector2 offset) { m_offset = offset; }
+
 	public:
 		static void SetMainCamera(const std::shared_ptr<Camera>& camera) 
 		{ m_mainCamera = camera; }
@@ -90,6 +93,8 @@ namespace ECS
 		float m_fFogNearZ;				// フォグのかかり始める距離
 		float m_fFogFarZ;				// フォグのかかり終わる距離
 
+		Vector2 m_offset;
+		int m_shakeCount;
 
 		static std::weak_ptr<Camera> m_mainCamera;
 	};

@@ -28,7 +28,10 @@ namespace ECS
 	private:
 		// ----- メンバ -----
 		int m_nExitTime;	// 生存時間
-
+		float m_damage;		// ダメージ
+	public:
+		void SetDamage(float damage) { m_damage = damage; }
+		float GetDamage() { return m_damage; }
 	protected:
 		// ----- メソッド -----
 

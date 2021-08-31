@@ -17,7 +17,7 @@ using namespace ECS;
 // マクロ定義
 //*****************************************************************************
 #define M_DIFFUSE		XMFLOAT4(1.0f,1.0f,1.0f,1.0f)
-#define M_SPECULAR		XMFLOAT4(0.1f,0.1f,0.1f,1.0f)
+#define M_SPECULAR		XMFLOAT4(0.2f,0.2f,0.2f,1.0f)
 #define M_AMBIENT		XMFLOAT4(1.0f,1.0f,1.0f,1.0f)
 #define M_EMISSIVE		XMFLOAT4(0.0f,0.0f,0.0f,1.0f)
 #define MAX_INSTANCE (1024)
@@ -243,16 +243,31 @@ void DrawInstancingMeshShadow(ID3D11DeviceContext* pDeviceContext, InstancingMes
 
 		//================== インスタンシングデータ ==================
 		// カメラ行列取得
-		XMFLOAT4X4& mtxView = Camera::GetMainCamera()->GetViewMatrix();
+		auto* camera = Camera::GetMainCamera();
+		XMFLOAT4X4& mtxView = camera->GetViewMatrix();
+		// カメラフラスタム
+		Frustum frustum(camera->GetFarZ(), camera->GetViewMatrix(), camera->GetProjMatrix());
 
 		int count = (int)InstancingList.size();
 		int n = (count - 1) / MAX_INSTANCE + 1;
+		int cullNum = 0;
 		for (int i = 0; i < n; i++) 
 		{
 			int m = (i < n - 1 ? MAX_INSTANCE : count - i * MAX_INSTANCE);
 			for (int j = 0; j < m; ++j)
 			{
 				InstancingMeshData* pData = InstancingList[i * MAX_INSTANCE + j];
+
+				// カリング
+				AABB aabb;
+				Matrix worldMtrix = XMLoadFloat4x4(pData->mtxWorld);
+				AABB::transformAABB(worldMtrix, aabb, aabb);
+				if (!frustum.CheckAABB(aabb))
+				{
+					++cullNum;
+					continue;
+				}
+
 
 				if (pInstancingMesh->bBillboard)
 				{
@@ -285,18 +300,18 @@ void DrawInstancingMeshShadow(ID3D11DeviceContext* pDeviceContext, InstancingMes
 
 					// ワールドマトリックスの設定
 					XMStoreFloat4x4(m_mtxWorld, mtxWorld);
-					icb.aInstancing[j].mWorld = XMMatrixTranspose(XMLoadFloat4x4(m_mtxWorld));
+					icb.aInstancing[j - cullNum].mWorld = XMMatrixTranspose(XMLoadFloat4x4(m_mtxWorld));
 				}
 				else
 				{
-					icb.aInstancing[j].mWorld = XMMatrixTranspose(XMLoadFloat4x4(pData->mtxWorld));
+					icb.aInstancing[j - cullNum].mWorld = XMMatrixTranspose(XMLoadFloat4x4(pData->mtxWorld));
 					//icb.aInstancing[j].mTexture = XMLoadFloat4x4(pData->mtxTexture);
 				}
 			}
 			pDeviceContext->UpdateSubresource(g_pConstantBuffer[2], 0, nullptr, &icb, 0, 0);
 			pDeviceContext->VSSetConstantBuffers(2, 1, &g_pConstantBuffer[2]);
 			// ポリゴンの描画
-			pDeviceContext->DrawIndexedInstanced(pInstancingMesh->nNumIndex, m, 0, 0, 0);
+			pDeviceContext->DrawIndexedInstanced(pInstancingMesh->nNumIndex, m - cullNum, 0, 0, 0);
 		}
 	}
 }

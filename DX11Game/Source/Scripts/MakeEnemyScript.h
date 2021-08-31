@@ -27,26 +27,17 @@ namespace ECS
 	{
 	private:
 		// ----- メンバ -----
-		enum EEnemyType
-		{
-			eStraightCircle,
-			eTracking,
-			eGroup,
-
-			eMaxType,
-		};
-
 		// プレイヤーオブジェクト
 		std::weak_ptr<GameObject> m_player;
 
-		// 生成タイミング
-		int m_nSpawnInterval;
-		// 生成カウント
-		int m_nSpawnCount;
-		// 生成数
-		int m_nSpawnNum;
-		// タイプ
-		int m_nType;
+		// 経過時間
+		int m_nTime = 0;
+
+	public:
+		// レベル
+		int m_nWave = 0;
+		// エネミーカウント
+		int m_nEnemyCount = 0;
 
 	protected:
 		// ----- メソッド -----

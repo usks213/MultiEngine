@@ -35,6 +35,7 @@
 #include "../Engine/ECSCompoent/BoxCollider.h"
 #include "../Engine/ECSCompoent/SphereCollider.h"
 #include "../Engine/ECSCompoent/DeltaCollider.h"
+#include "../Engine/ECSCompoent/InstancingMeshRenderer.h"
 
 // レンダラー
 #include "../Engine/ECSCompoent/Camera.h"
@@ -49,8 +50,12 @@
 
 // スクリプト
 #include "BulletScript.h"
-#include "DropDeltaScript.h"
+#include "EnemyBaseScript.h"
 #include "GameOverScript.h"
+#include "BombCrystalScript.h"
+#include "BombEffectScript.h"
+#include "SkillUIScript.h"
+#include "PlayerHPUIScript.h"
 
 
 #include <iostream>
@@ -80,6 +85,7 @@ void PlayerScript::Start()
 
 	transform().lock()->m_pos = Vector3(0, 1000, 0);
 	transform().lock()->m_scale = Vector3(300, 600, 300);
+	transform().lock()->m_rot = Quaternion();
 
 	// コンポーネントの追加
 
@@ -87,6 +93,7 @@ void PlayerScript::Start()
 	const auto& rb = gameObject().lock()->AddComponent<Rigidbody>();
 	m_rb = rb;
 	rb->SetMass(2);
+	//rb->SetUseGravity(false);
 
 	//// レンダラー
 	//const auto& renderer = gameObject().lock()->AddComponent<MeshRenderer>();
@@ -98,32 +105,26 @@ void PlayerScript::Start()
 	//collider->SetRadius(50);
 	const auto& collider = gameObject().lock()->AddComponent<DeltaCollider>();
 
-	// カメラ
-	//Camera::GetMainCamera()->SetCameraTarget(gameObject().lock()->transform().lock());
-	// ライト
-	CLight::GetMainLight()->SetLightTarget(gameObject().lock()->transform().lock());
+	// UI
+	const auto& ui = gameObject().lock()->AddComponent<SkillUIScript>();
+	ui->SetPlayer(gameObject().lock()->GetComponent<PlayerScript>());
+	const auto& hp = gameObject().lock()->AddComponent<PlayerHPUIScript>();
+	hp->SetPlayer(gameObject().lock()->GetComponent<PlayerScript>());
 
-
-	// ジャンプ
-	m_nJump = 0;
-	// デルタカウンター
-	m_nDeltaCount = 0;
-	// ショット
-	m_bShot = false;
-
-	//HP
-	m_fHP = m_fMaxHP;
-
-	// ヒール
-	m_fHeel = 5.0f / 60.0f;
-	m_nHeelCnt = m_nHeelInteral;
-
-	// ダメージ
-	m_fDamage = 30.0f;
-	m_nDamageCnt = m_nDamageInteral;
+	// マウス
+	SetCursorPos(SCREEN_CENTER_X, SCREEN_CENTER_Y);
 
 	// アクティブ
 	m_bActive = true;
+	// ジャンプ
+	m_nJump = 0;
+	// ショット
+	m_bShot = false;
+	// ステータス
+	m_HP = 100;
+
+	Update();
+	LateUpdate();
 }
 
 //========================================
@@ -136,36 +137,78 @@ void PlayerScript::Update()
 	// アクティブ
 	if (!m_bActive) return;
 
-	const float speed = 1.0f;
-	const float jump = 20.0f;
+	const float speed = getMoveSpeed();
+	const float jump = getJumpForce();
+	const float rotSpeed = 3.141592f / 60.0f;
 
-	const auto& camera = Camera::main();
-	Vector3 forward = 
-		Matrix::CreateFromQuaternion(camera->transform().lock()->m_rot).Forward() * speed;
-	forward.y = 0.0f;
-	Vector3 right = Mathf::RotationY(forward , -90);
+	// 向き
+	const auto& trans = transform().lock();
+	Matrix matR = Matrix::CreateFromQuaternion(trans->m_rot);
+	Vector3 vPos = matR.Translation();
+	Vector3 right = matR.Right();
+	Vector3 up = Vector3(0, 1, 0);
+	Vector3 forward = matR.Forward();
+	Vector3 vLook = vPos + forward;
+	float focus = 0.0f;
 
 	// 移動
 	if (GetKeyPress(VK_W))
 	{
 		//transform().lock()->m_pos.z += 1.0f;
-		m_rb.lock()->AddForce(forward);
+		m_rb.lock()->AddForce(forward * Vector3(1,0,1));
 	}
 	if (GetKeyPress(VK_S))
 	{
 		//transform().lock()->m_pos.z -= 1.0f;
-		m_rb.lock()->AddForce(forward * -1.0f);
+		m_rb.lock()->AddForce(-forward * Vector3(1, 0, 1));
 	}
 	if (GetKeyPress(VK_D))
 	{
 		//transform().lock()->m_pos.x += 1.0f;
-		m_rb.lock()->AddForce(right);
+		m_rb.lock()->AddForce(-right);
 	}
 	if (GetKeyPress(VK_A))
 	{
 		//transform().lock()->m_pos.x -= 1.0f;
-		m_rb.lock()->AddForce(right * -1.0f);
+		m_rb.lock()->AddForce(right);
 	}
+
+	// 視点移動
+	static POINT m_oldMousePos;
+	POINT* mousePos = GetMousePosition();
+	POINT mouseDist = {
+		mousePos->x - m_oldMousePos.x,
+		mousePos->y - m_oldMousePos.y,
+	};
+	m_oldMousePos = *mousePos;
+
+	// 左ボタン(カメラ回り込み
+	static bool isRot = true;
+	if (GetKeyTrigger(VK_MBUTTON))
+	{
+		isRot ^= 1;
+		SetShowCursor(!isRot);
+	}
+	if(isRot)
+	{
+		// マウス固定
+		SetCursorPos(SCREEN_CENTER_X, SCREEN_CENTER_Y);
+		m_oldMousePos = POINT{ SCREEN_CENTER_X, SCREEN_CENTER_Y };
+		SetShowCursor(false);
+
+		// 回転量
+		float angleX = 360.f * mouseDist.x / SCREEN_WIDTH * 0.5f;	// 画面一周で360度回転(画面サイズの半分で180度回転)
+		float angleY = 180.f * mouseDist.y / SCREEN_HEIGHT * 0.5f;	// 画面一周で180度回転(画面サイズの半分で90度回転)
+
+		//Vector3::Transform(right, Matrix::CreateFromAxisAngle(up, XMConvertToRadians(angleX)));
+		trans->m_rot *= Quaternion::CreateFromAxisAngle(right, XMConvertToRadians(-angleY));
+		trans->m_rot *= Quaternion::CreateFromAxisAngle(up, XMConvertToRadians(angleX));
+	}
+	else
+	{
+		SetShowCursor(true);
+	}
+
 
 	// ジャンプ
 	if (GetKeyTrigger(VK_SPACE) && 
@@ -175,34 +218,153 @@ void PlayerScript::Update()
 		// サウンド
 		CSound::PlaySE("Jump.wav", 0.7f);
 		// 画面揺れ
-		//Camera::GetMainCamera()->SetShakeFrame(8);
+		Camera::main()->SetShakeOffset(Vector2(0, 20));
+		Camera::main()->SetShake(8);
 		m_bGround = false;
 	}
 	m_nJump--;
 	if (m_nJump < 0) m_nJump = 0;
 
+	// ステップ
+	m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Step)]--;
+	if (m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Step)] < 0) 
+		m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Step)] = 0;
+	Vector3 force = m_rb.lock()->GetForce();
+	if (GetKeyTrigger(VK_RBUTTON) && m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Step)] <= 0 &&
+		force.Length() > 1.0f)
+	{
+		// ステップリキャスト
+		m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Step)] = 
+			getSkiilRecast(static_cast<int>(PlayerSkill::Step));
+		// 無敵時間
+		m_nStepInvCount = getStepTime();
+		// 画面揺れ
+		Camera::main()->SetShakeOffset(Vector2(7, 5));
+		Camera::main()->SetShake(m_nStepInvCount);
+	}
+	// 無敵時間
+	m_nStepInvCount--;
+	if (m_nStepInvCount < 0) m_nStepInvCount = 0;
+	// ステップエフェクト生成
+	if (m_nStepInvCount > 0 && m_nStepInvCount % 4 == 0)
+	{
+		force.y = 0;
+		force.Normalize();
+		m_rb.lock()->SetForce(force * 50);
+
+		const int n = 10;
+		//const float f = rand() % 314 / 100.0f;
+		for (int i = 0; i < n; ++i)
+		{
+			float phi = 360.0f / n * i * (XM_PI / 180.0f);
+
+			for (int j = 0; j < n; ++j)
+			{
+				float theta = 360.0f / n * j * (XM_PI / 180.0f);
+				// 座標
+				Vector3 pos;
+				pos.x = cosf(phi) * cosf(theta);
+				pos.y = cosf(phi) * sinf(theta);
+				pos.z = sinf(phi);
+				pos *= 50;
+
+				// エフェクト生成
+				const auto& obj = Instantiate<GameObject>(pos + transform().lock()->m_pos);
+				// コンポーネントの追加
+				const auto& effect = obj->AddComponent<BombEffectScript>();
+				// リジッドボディ
+				const auto& rb = obj->GetComponent<Rigidbody>();
+				rb->AddForce(Mathf::Normalize(pos) * 5);
+				// レンダラ
+				const auto& render = obj->GetComponent<InstancingMeshRenderer>();
+				render->SetDiffuseColor(Vector4(0, 1, 1, 1));
+			}
+		}
+	}
+
 	// ショット
-	m_nShotCnt--;
-	if (m_bShot && m_nShotCnt < 0)
+	m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Shot)]--;
+	if (GetKeyPress(VK_LBUTTON) && m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Shot)] < 0)
 	{
 		//const auto& test = GetEntityManager()->CreateEntity<GameObject>();
 		const auto& test = Instantiate<GameObject>();
-		test->AddComponent<BulletScript>();
+		test->AddComponent<BulletScript>()->m_damage = getDamage();
 		const auto& rb = test->GetComponent<Rigidbody>();
 
 		const auto& camera = Camera::main();
 		Vector3 dir =
 			Mathf::Normalize(Matrix::CreateFromQuaternion(camera->transform().lock()->m_rot).Forward());
 
+		test->transform().lock()->m_pos = transform().lock()->m_pos + dir * 300;
+		rb->AddForce(dir * 100 + Mathf::WallVerticalVector(m_rb.lock()->GetForce(), dir));
+		rb->AddTorque(Quaternion::CreateFromAxisAngle(dir, XMConvertToRadians(dir.Length() * 10)));
+
+		m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Shot)] = 
+			getSkiilRecast(static_cast<int>(PlayerSkill::Shot));
+
+		// サウンド
+		CSound::PlaySE("Shot.wav", 0.12f);
+	}
+
+	// バースト
+	m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)]--;
+	if (m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] < 0)
+		m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] = 0;
+	if (GetKeyTrigger(VK_E) && m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] <= 0)
+	{
+		// ステップリキャスト
+		m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] =
+			getSkiilRecast(static_cast<int>(PlayerSkill::Burst));
+		// バースト
+		m_nBurstCount = 20;
+		// 画面揺れ
+		Camera::main()->SetShakeOffset(Vector2(10, 40));
+		Camera::main()->SetShake(m_nBurstCount);
+	}
+	// バーストカウンタ
+	m_nBurstCount--;
+	if (m_nBurstCount < 0) m_nBurstCount = 0;
+	// バースト弾生成
+	if (m_nBurstCount > 0 && m_nBurstCount % 4 == 0)
+	{
+		const auto& test = Instantiate<GameObject>();
+		test->AddComponent<BulletScript>()->m_damage = getDamage();
+		const auto& rb = test->GetComponent<Rigidbody>();
+		const auto& camera = Camera::main();
+		Vector3 dir =
+			Mathf::Normalize(Matrix::CreateFromQuaternion(camera->transform().lock()->m_rot).Forward());
+		test->transform().lock()->m_pos = transform().lock()->m_pos + dir * 300;
+		rb->AddForce(dir * 100 + Mathf::WallVerticalVector(m_rb.lock()->GetForce(), dir));
+		rb->AddTorque(Quaternion::CreateFromAxisAngle(dir, XMConvertToRadians(dir.Length() * 10)));
+		// サウンド
+		CSound::PlaySE("Shot.wav", 0.2f);
+	}
+
+
+
+	// ボム
+	m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Bom)]--;
+	if (GetKeyPress(VK_Q) && m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Bom)] < 0)
+	{
+		const auto& test = Instantiate<GameObject>();
+		test->AddComponent<BombCrystalScript>()->SetDamage(getDamage());
+		const auto& rb = test->AddComponent<Rigidbody>();
+		rb->SetUseGravity(false);
+		rb->SetDrag(Vector3(0, 0, 0));
+		rb->SetTorqueDrag(0);
+		const auto& col = test->GetComponent<DeltaCollider>();
+		col->SetMain(true);
+
+		Vector3 dir = Mathf::Normalize(forward);
 		test->transform().lock()->m_pos = transform().lock()->m_pos + dir * 500;
 		rb->AddForce(dir * 100 + Mathf::WallVerticalVector(m_rb.lock()->GetForce(), dir));
 		rb->AddTorque(Quaternion::CreateFromAxisAngle(dir, XMConvertToRadians(dir.Length() * 10)));
 
-		m_nShotCnt = 5;
+		m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Bom)] =
+			getSkiilRecast(static_cast<int>(PlayerSkill::Bom));
 
 		// サウンド
 		CSound::PlaySE("Shot.wav", 0.12f);
-
 	}
 }
 
@@ -216,38 +378,58 @@ void PlayerScript::LateUpdate()
 	// アクティブ
 	if (!m_bActive) return;
 
-	// デバック表示
-	PrintDebugProc("DeltaCount:%d\n", m_nDeltaCount);
+	/*Matrix mrot = Matrix::CreateFromQuaternion(transform().lock()->m_rot);
+	mrot.Up(Vector3(0, 1, 0));
+	transform().lock()->m_rot = Quaternion::CreateFromRotationMatrix(mrot);*/
+
+	// カメラを追尾
+	Quaternion rot = transform().lock()->m_rot;
+	const auto& camera = Camera::main();
+
+	//--- 一人称
+	camera->transform().lock()->m_rot = rot;
+	camera->transform().lock()->m_pos =
+		transform().lock()->m_pos;
+	//--- 三人称
+	//camera->transform().lock()->m_rot = rot;
+	//camera->transform().lock()->m_pos =
+	//	transform().lock()->m_pos + Vector3::Transform(Vector3(0, 500, 1000), rot) * 0.75f;
 
 	if (!m_bGround && transform().lock()->m_pos.y <= transform().lock()->m_scale.y / 2)
 	{
 		m_bGround = true;
 		// 画面揺れ
-		//Camera::GetMainCamera()->SetShakeFrame(6);
+		Camera::main()->SetShakeOffset(Vector2(0, 20));
+		Camera::main()->SetShake(6);
 		// サウンド
 		CSound::PlaySE("PlayerGround.wav", 1.0f);
 	}
 
 
-	// ステータス
-	m_nHeelCnt--;
-	if (m_nHeelCnt < 0)
+	// --- ステータス
+
+	// 無敵時間
+	m_nDamageInvCount--;
+	if (m_nDamageInvCount < 0) m_nDamageInvCount = 0;
+
+	// 回復
+	m_nHeelCount++;
+	if (m_nHeelCount > getHeelTime())
 	{
-		// 回復
-		m_fHP += m_fHeel;
+		m_HP += getMaxHP() * 0.1f;
+		m_nHeelCount = 0;
 	}
 	// 最大値
-	if (m_fHP > m_fMaxHP)
-		m_fHP = m_fMaxHP;
-
-	// ダメージ
-	m_nDamageCnt--;
+	if (m_HP > getMaxHP()) m_HP = getMaxHP();
 
 
 	// HPを画面に反映
-	auto post = PostProcessing::GetMain();
-	post->GetColor()->y = m_fHP / m_fMaxHP;
-	post->GetColor()->z = m_fHP / m_fMaxHP;
+	if (m_HP < getMaxHP() / 2)
+	{
+		auto post = PostProcessing::GetMain();
+		post->GetColor()->y = m_HP / (getMaxHP() / 2);
+		post->GetColor()->z = m_HP / (getMaxHP() / 2);
+	}
 }
 
 //========================================
@@ -257,31 +439,7 @@ void PlayerScript::LateUpdate()
 //========================================
 void PlayerScript::End()
 {
-	FILE* fp;
-	int nScore = 0;
 
-	// 前回のスコアを読み込む
-	fopen_s(&fp, "data/score.bin", "rb");
-
-	if (fp)
-	{
-		fread(&nScore, sizeof(int), 1, fp);
-
-		fclose(fp);
-	}
-
-	if (m_nDeltaCount > nScore)
-	{
-		// スコアの書き出し
-		fopen_s(&fp, "data/score.bin", "wb");
-
-		if (fp)
-		{
-			fwrite(&m_nDeltaCount, sizeof(int), 1, fp);
-
-			fclose(fp);
-		}
-	}
 }
 
 
@@ -297,10 +455,13 @@ void PlayerScript::OnDeltaCollisionEnter(DeltaCollider* collider)
 	// アクティブ
 	if (!m_bActive) return;
 
-	if (collider->gameObject().lock()->tag() == "DropDelta")
+	if (collider->gameObject().lock()->tag() == "StatusItem")
 	{
 		// カウンター加算
-		m_nDeltaCount++;
+		const auto& item = collider->gameObject().lock()->GetComponent<StatusItemScript>();
+		m_aItemCount[static_cast<int>(item->getType())]++;
+		if(item->getType() == ItemType::Physical)
+			m_HP += getMaxHP() * 0.1f;
 	}
 	else if (collider->gameObject().lock()->tag() == "BombCrystal")
 	{
@@ -308,7 +469,6 @@ void PlayerScript::OnDeltaCollisionEnter(DeltaCollider* collider)
 		// 画面揺れ
 		//Camera::GetMainCamera()->SetShakeFrame(6);
 		// 回復
-		m_fHP += m_fHeel * 60.0f;
 	}
 	else if (collider->gameObject().lock()->tag() == "StartCrystal")
 	{
@@ -319,39 +479,55 @@ void PlayerScript::OnDeltaCollisionEnter(DeltaCollider* collider)
 		CSound::PlayBGM("GameBGM.mp3", 0.3f);
 
 	}
-	else if (collider->gameObject().lock()->tag() == "Enemy")
+	else if (collider->gameObject().lock()->tag() == "Enemy" || 
+		collider->gameObject().lock()->tag() == "EnemyBullet")
 	{
-		// 当たった角度を計算
-		Vector3 vec = collider->transform().lock()->m_pos - transform().lock()->m_pos;
-		Vector3 forward = Camera::main()->transform().lock()->forward();
+		// 無敵時間
+		if (m_nStepInvCount > 0) return;
+		if (m_nDamageInvCount > 0) return;
+		m_nDamageInvCount = 60;
 
-		if (Mathf::Dot(Mathf::Normalize(vec), Mathf::Normalize(forward)) < -0.3f)
+		if (collider->gameObject().lock()->tag() == "Enemy")
 		{
+			// 取得
+			const auto& enemy = collider->gameObject().lock()->GetComponent<EnemyBaseScript>();
 			// ダメージ
-			if (m_nDamageCnt > 0) return;
-			m_nDamageCnt = m_nDamageInteral;
-
+			float damage = enemy->m_status.Damage;
 			// HP
-			m_fHP -= m_fDamage;
-			m_nHeelCnt = m_nHeelInteral;
-
-			// 画面揺れ
-			//Camera::GetMainCamera()->SetShakeFrame(16);
-
-			// サウンド
-			CSound::PlaySE("PlayerDamage.wav", 1.0f);
-
-			if (m_fHP > 0) return;
-			// ゲームオーバー
-			const auto& gameover = GetEntityManager()->CreateEntity<GameObject>();
-			gameover->AddComponent<GameOverScript>();
-
-			// アクティブ
-			m_bActive = false;
-
-			// 削除
-			Destroy(gameObject().lock());
+			m_HP -= damage;
 		}
+		else if (collider->gameObject().lock()->tag() == "EnemyBullet")
+		{
+			// 取得
+			const auto& enemy = collider->gameObject().lock()->GetComponent<BulletScript>();
+			// ダメージ
+			float damage = enemy->m_damage;
+			// HP
+			m_HP -= damage;
+		}
+
+		// ノックバック
+		Vector3 dir = transform().lock()->m_pos - collider->transform().lock()->m_pos;
+		dir.Normalize();
+		m_rb.lock()->SetForce(dir * 20);
+
+		// 画面揺れ
+		Camera::main()->SetShakeOffset(Vector2(20, 20));
+		Camera::main()->SetShake(16);
+
+		// サウンド
+		CSound::PlaySE("PlayerDamage.wav", 1.0f);
+
+		if (m_HP > 0) return;
+		// ゲームオーバー
+		const auto& gameover = GetEntityManager()->CreateEntity<GameObject>();
+		gameover->AddComponent<GameOverScript>();
+
+		// アクティブ
+		m_bActive = false;
+
+		// 削除
+		Destroy(gameObject().lock());
 	}
 }
 

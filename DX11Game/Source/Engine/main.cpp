@@ -673,7 +673,7 @@ HRESULT Init(HWND hWnd, BOOL bWindow)
 	WorldManager::Create();
 
 	// ゲームワールドの追加
-	WorldManager::GetInstance()->LoadWorld<TestWorld>("Test");
+	WorldManager::GetInstance()->LoadWorld<TitleWorld>("Title");
 	
 	return hr;
 }
@@ -762,22 +762,6 @@ void Update(void)
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-
-	//test
-	auto world = WorldManager::GetInstance()->GetCurrentWorld().lock();
-	if (world)
-	{
-		auto entityMnr = world->GetEntityManager();
-
-		ImGui::Begin("State", nullptr);
-		for (auto entity : entityMnr->GetEntityPool())
-		{
-			ImGui::LabelText("", "%p", entity.lock().get());
-		}
-		ImGui::Spacing();
-		ImGui::End();
-	}
-
 
 	// 入力処理更新
 	UpdateInput();	// 必ずUpdate関数の先頭で実行.

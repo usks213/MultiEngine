@@ -74,7 +74,7 @@ void GameOverScript::Start()
 	// スプライト
 	const auto& Spr = gameObject().lock()->AddComponent<SpriteRenderer>();
 	Spr->SetDiffuseTexture("data/texture/GameOver.png");
-	Spr->SetLayer(Spr->eUI3);
+	Spr->SetLayer(Spr->eUI5);
 	Spr->SetRendererBlendState(BS_ALPHABLEND);
 	m_sprite = Spr;
 

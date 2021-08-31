@@ -48,9 +48,9 @@ struct TAssimpMaterial {
 	ID3D11ShaderResourceView*	pTexAmbient;// 環境テクスチャ
 	TAssimpMaterial()
 	{
-		Ka = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 0);
+		Ka = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		Kd = DirectX::XMFLOAT4(1, 1, 1, 1);
-		Ks = DirectX::XMFLOAT4(0, 0, 0, 0);
+		Ks = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 		Ke = DirectX::XMFLOAT4(0, 0, 0, 0);
 		pTexture = nullptr;
 		pTexEmmisive = nullptr;

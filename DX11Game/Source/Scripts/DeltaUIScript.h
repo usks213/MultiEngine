@@ -15,7 +15,7 @@
 
 //====== インクルード部 ======
 #include "../Engine/ECSCompoent/Script.h"
-#include "PlayerScript.h"
+#include "MakeEnemyScript.h"
 #include "../Engine/ECSCompoent/SpriteRenderer.h"
 
 
@@ -49,14 +49,13 @@ namespace ECS
 		// ----- メンバ -----
 
 		// プレイヤー
-		std::weak_ptr<PlayerScript> m_player;
+		std::weak_ptr<MakeEnemyScript> m_maker;
 
 		// 数字
 		std::vector<std::weak_ptr<DeltaUIData>> m_data;
 
 	public:
-		// プレイヤーの取得
-		void SetPlayer(std::weak_ptr<PlayerScript> player) { m_player = player; }
+		void SetMaker(std::weak_ptr<MakeEnemyScript> maker) { m_maker = maker; }
 
 	protected:
 		// ----- メソッド -----

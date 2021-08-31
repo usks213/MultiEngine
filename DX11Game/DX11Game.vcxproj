@@ -336,6 +336,7 @@
     <ClCompile Include="Source\Scripts\BombCrystalScript.cpp" />
     <ClCompile Include="Source\Scripts\BombEffectScript.cpp" />
     <ClCompile Include="Source\Scripts\BulletScript.cpp" />
+    <ClCompile Include="Source\Scripts\DamageNumberScript.cpp" />
     <ClCompile Include="Source\Scripts\DeltaUIScript.cpp" />
     <ClCompile Include="Source\Scripts\DropDeltaScript.cpp" />
     <ClCompile Include="Source\Scripts\EnemyBaseScript.cpp" />
@@ -344,18 +345,23 @@
     <ClCompile Include="Source\Scripts\FadeScript.cpp" />
     <ClCompile Include="Source\Scripts\FieldScript.cpp" />
     <ClCompile Include="Source\Scripts\GameOverScript.cpp" />
-    <ClCompile Include="Source\Scripts\GroupMoveEnemyScript.cpp" />
+    <ClCompile Include="Source\Scripts\AttackEnemyScript.cpp" />
     <ClCompile Include="Source\Scripts\MakeEnemyScript.cpp" />
+    <ClCompile Include="Source\Scripts\NumberScript.cpp" />
+    <ClCompile Include="Source\Scripts\PhysicalEnemyScript.cpp" />
     <ClCompile Include="Source\Scripts\PlaneControlScript.cpp" />
+    <ClCompile Include="Source\Scripts\PlayerHPUIScript.cpp" />
     <ClCompile Include="Source\Scripts\PlayerScript.cpp" />
     <ClCompile Include="Source\Scripts\ScriptBaseLayout.cpp" />
+    <ClCompile Include="Source\Scripts\SkillUIScript.cpp" />
     <ClCompile Include="Source\Scripts\SkyDomeScript.cpp" />
     <ClCompile Include="Source\Scripts\StartCrystalScript.cpp" />
-    <ClCompile Include="Source\Scripts\StraightMoveEnemyScript.cpp" />
+    <ClCompile Include="Source\Scripts\BalanceEnemyScript.cpp" />
+    <ClCompile Include="Source\Scripts\StatusItemScript.cpp" />
     <ClCompile Include="Source\Scripts\TitleButtonScript.cpp" />
     <ClCompile Include="Source\Scripts\TitleScoreUIScript.cpp" />
-    <ClCompile Include="Source\Scripts\TrackingMoveEnemyScript.cpp" />
-    <ClCompile Include="Source\Scripts\TrackingMoveEnemyHostScript.cpp" />
+    <ClCompile Include="Source\Scripts\SkiilEnemyScript.cpp" />
+    <ClCompile Include="Source\Scripts\SpeedEnemyScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\imgui\imconfig.h" />
@@ -425,6 +431,7 @@
     <ClInclude Include="Source\Scripts\BombCrystalScript.h" />
     <ClInclude Include="Source\Scripts\BombEffectScript.h" />
     <ClInclude Include="Source\Scripts\BulletScript.h" />
+    <ClInclude Include="Source\Scripts\DamageNumberScript.h" />
     <ClInclude Include="Source\Scripts\DeltaUIScript.h" />
     <ClInclude Include="Source\Scripts\DropDeltaScript.h" />
     <ClInclude Include="Source\Scripts\EnemyBaseScript.h" />
@@ -433,18 +440,23 @@
     <ClInclude Include="Source\Scripts\FadeScript.h" />
     <ClInclude Include="Source\Scripts\FieldScript.h" />
     <ClInclude Include="Source\Scripts\GameOverScript.h" />
-    <ClInclude Include="Source\Scripts\GroupMoveEnemyScript.h" />
+    <ClInclude Include="Source\Scripts\AttackEnemyScript.h" />
     <ClInclude Include="Source\Scripts\MakeEnemyScript.h" />
+    <ClInclude Include="Source\Scripts\NumberScript.h" />
+    <ClInclude Include="Source\Scripts\PhysicalEnemyScript.h" />
     <ClInclude Include="Source\Scripts\PlaneControlScript.h" />
+    <ClInclude Include="Source\Scripts\PlayerHPUIScript.h" />
     <ClInclude Include="Source\Scripts\PlayerScript.h" />
+    <ClInclude Include="Source\Scripts\SkillUIScript.h" />
     <ClInclude Include="Source\Scripts\SkyDomeScript.h" />
     <ClInclude Include="Source\Scripts\StartCrystalScript.h" />
-    <ClInclude Include="Source\Scripts\StraightMoveEnemyScript.h" />
+    <ClInclude Include="Source\Scripts\BalanceEnemyScript.h" />
     <ClInclude Include="Source\Scripts\ScriptBaseLayout.h" />
+    <ClInclude Include="Source\Scripts\StatusItemScript.h" />
     <ClInclude Include="Source\Scripts\TitleButtonScript.h" />
     <ClInclude Include="Source\Scripts\TitleScoreUIScript.h" />
-    <ClInclude Include="Source\Scripts\TrackingMoveEnemyScript.h" />
-    <ClInclude Include="Source\Scripts\TrackingMoveEnemyHostScript.h" />
+    <ClInclude Include="Source\Scripts\SkiilEnemyScript.h" />
+    <ClInclude Include="Source\Scripts\SpeedEnemyScript.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />

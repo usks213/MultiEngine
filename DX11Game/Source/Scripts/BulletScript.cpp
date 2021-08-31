@@ -71,13 +71,15 @@ void BulletScript::Start()
 	gameObject().lock()->SetTag("Bullet");
 
 	// 大きさ
-	transform().lock()->m_scale = Vector3(300, 300, 300);
+	transform().lock()->m_scale = Vector3(50, 50, 50);
 
 	//--- コンポーネンの追加
 
 	// インスタンシングレンダラー
-	gameObject().lock()->AddComponent<InstancingMeshRenderer>()->MakeIcosahedron("Bullet");
-
+	const auto& renderer = gameObject().lock()->AddComponent<InstancingMeshRenderer>();
+	renderer->MakeIcosahedron("Bullet");
+	renderer->SetDiffuseColor(Vector4(0.8f, 0.2f, 0, 1));
+	renderer->SetBlendStateData(EBlendState::BS_ADDITIVE);
 	// ECSリジッドボディ
 	const auto& rb = gameObject().lock()->AddComponent<Rigidbody>();
 	rb->SetDrag({ 0,0,0 });
@@ -140,7 +142,7 @@ void BulletScript::OnDeltaCollisionEnter(DeltaCollider* collider)
 {
 	if (collider->gameObject().lock()->tag() == "Enemy")
 	{
-
+		Destroy(gameObject().lock());
 	}
 }
 
@@ -151,10 +153,7 @@ void BulletScript::OnDeltaCollisionEnter(DeltaCollider* collider)
 //========================================
 void BulletScript::OnDeltaCollisionStay(DeltaCollider* collider)
 {
-	if (collider->gameObject().lock()->tag() == "Enemy")
-	{
-
-	}
+	OnDeltaCollisionEnter(collider);
 }
 
 //========================================

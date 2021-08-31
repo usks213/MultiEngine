@@ -33,6 +33,11 @@
 #include "../../Scripts/SkyDomeScript.h"
 #include "../../Scripts/DeltaUIScript.h"
 #include "../../Scripts/FieldScript.h"
+#include "../../Scripts/BalanceEnemyScript.h"
+#include "../../Scripts/AttackEnemyScript.h"
+#include "../../Scripts/SpeedEnemyScript.h"
+#include "../../Scripts/PhysicalEnemyScript.h"
+#include "../../Scripts/SkiilEnemyScript.h"
 
 
 using namespace ECS;
@@ -84,19 +89,20 @@ void GameWorld::Start()
 	const auto& player = GetEntityManager()->CreateEntity<GameObject>();
 	const auto & playerScript = player->AddComponent<PlayerScript>();
 
-	// デルタUI
-	const auto& deltaUi = GetEntityManager()->CreateEntity<GameObject>();
-	deltaUi->AddComponent<DeltaUIScript>()->SetPlayer(playerScript);
-
 	//// エネミーメイカー
 	//const auto& enemyMaker = GetEntityManager()->CreateEntity<GameObject>();
-	//enemyMaker->AddComponent<MakeEnemyScript>()->SetPlayer(player);
+	//const auto& maker = enemyMaker->AddComponent<MakeEnemyScript>();
+	//maker->SetPlayer(player);
+
+	// デルタUI
+	//const auto& deltaUi = GetEntityManager()->CreateEntity<GameObject>();
+	//deltaUi->AddComponent<DeltaUIScript>()->SetMaker(maker);
 
 	// スタートクリスタル
 	const auto& crystal = GetEntityManager()->CreateEntity<GameObject>();
-	Vector3 dir = camera->GetViewMatrix().Forward();
+	Vector3 dir = camera->GetViewMatrix().Right();
 	dir *= 1500;
-	dir.y = 700;
+	dir.y = 400;
 	crystal->transform().lock()->m_pos = dir;
 	crystal->AddComponent<StartCrystalScript>()->SetPlayer(player);
 
@@ -138,7 +144,7 @@ void GameWorld::Start()
 	const auto& opSpr = opUI->AddComponent<SpriteRenderer>();
 	opSpr->SetDiffuseTexture("data/texture/OperationUI.png");
 	opSpr->SetLayer(opSpr->eUI1);
-	opUI->transform().lock()->m_pos = Vector3{ -SCREEN_CENTER_X / 3.0f * 2, -SCREEN_HEIGHT / 3.85f, 1 };
+	opUI->transform().lock()->m_pos = Vector3{ -SCREEN_CENTER_X / 3.0f * 2, -SCREEN_HEIGHT / 10, 1 };
 	opUI->transform().lock()->m_scale = Vector3{ 2400.0f / 6 * SCREEN_SCALE_X, 2100.0f / 6 * SCREEN_SCALE_Y, 1 };
 
 }

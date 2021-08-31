@@ -301,15 +301,6 @@
     <ClCompile Include="Source\Scripts\StartCrystalScript.cpp">
       <Filter>ソース\スクリプト\デルタ</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Scripts\StraightMoveEnemyScript.cpp">
-      <Filter>ソース\スクリプト\エネミー</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Scripts\TrackingMoveEnemyHostScript.cpp">
-      <Filter>ソース\スクリプト\エネミー</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Scripts\TrackingMoveEnemyScript.cpp">
-      <Filter>ソース\スクリプト\エネミー</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Scripts\TitleButtonScript.cpp">
       <Filter>ソース\スクリプト\タイトル</Filter>
     </ClCompile>
@@ -321,9 +312,6 @@
     </ClCompile>
     <ClCompile Include="Source\Scripts\GameOverScript.cpp">
       <Filter>ソース\スクリプト</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Scripts\GroupMoveEnemyScript.cpp">
-      <Filter>ソース\スクリプト\エネミー</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scripts\FieldScript.cpp">
       <Filter>ソース\スクリプト</Filter>
@@ -363,6 +351,36 @@
     </ClCompile>
     <ClCompile Include="Source\Engine\ECSSystem\CameraSystem.cpp">
       <Filter>ソース\エンジン\ECSSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\BalanceEnemyScript.cpp">
+      <Filter>ソース\スクリプト\エネミー</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\AttackEnemyScript.cpp">
+      <Filter>ソース\スクリプト\エネミー</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\SpeedEnemyScript.cpp">
+      <Filter>ソース\スクリプト\エネミー</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\PhysicalEnemyScript.cpp">
+      <Filter>ソース\スクリプト\エネミー</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\StatusItemScript.cpp">
+      <Filter>ソース\スクリプト\プレイヤー</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\SkiilEnemyScript.cpp">
+      <Filter>ソース\スクリプト\エネミー</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\SkillUIScript.cpp">
+      <Filter>ソース\スクリプト\プレイヤー</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\NumberScript.cpp">
+      <Filter>ソース\スクリプト</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\DamageNumberScript.cpp">
+      <Filter>ソース\スクリプト\エネミー</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\PlayerHPUIScript.cpp">
+      <Filter>ソース\スクリプト\プレイヤー</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -561,15 +579,6 @@
     <ClInclude Include="Source\Scripts\StartCrystalScript.h">
       <Filter>ソース\スクリプト\デルタ</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Scripts\StraightMoveEnemyScript.h">
-      <Filter>ソース\スクリプト\エネミー</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Scripts\TrackingMoveEnemyHostScript.h">
-      <Filter>ソース\スクリプト\エネミー</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Scripts\TrackingMoveEnemyScript.h">
-      <Filter>ソース\スクリプト\エネミー</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Scripts\TitleButtonScript.h">
       <Filter>ソース\スクリプト\タイトル</Filter>
     </ClInclude>
@@ -581,9 +590,6 @@
     </ClInclude>
     <ClInclude Include="Source\Scripts\GameOverScript.h">
       <Filter>ソース\スクリプト</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Scripts\GroupMoveEnemyScript.h">
-      <Filter>ソース\スクリプト\エネミー</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scripts\FieldScript.h">
       <Filter>ソース\スクリプト</Filter>
@@ -626,6 +632,36 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\ECSSystem\CameraSystem.h">
       <Filter>ソース\エンジン\ECSSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\BalanceEnemyScript.h">
+      <Filter>ソース\スクリプト\エネミー</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\AttackEnemyScript.h">
+      <Filter>ソース\スクリプト\エネミー</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\SpeedEnemyScript.h">
+      <Filter>ソース\スクリプト\エネミー</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\PhysicalEnemyScript.h">
+      <Filter>ソース\スクリプト\エネミー</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\StatusItemScript.h">
+      <Filter>ソース\スクリプト\プレイヤー</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\SkiilEnemyScript.h">
+      <Filter>ソース\スクリプト\エネミー</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\SkillUIScript.h">
+      <Filter>ソース\スクリプト\プレイヤー</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\NumberScript.h">
+      <Filter>ソース\スクリプト</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\DamageNumberScript.h">
+      <Filter>ソース\スクリプト\エネミー</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\PlayerHPUIScript.h">
+      <Filter>ソース\スクリプト\プレイヤー</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

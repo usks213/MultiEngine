@@ -47,6 +47,7 @@
 // ワールド
 #include "../Engine/ECS/World/WorldManager.h"
 #include "../Engine/ECSWorld/GameWorld.h"
+#include "../Engine/ECSWorld/TestWorld.h"
 
 // ネームスペース
 using namespace ECS;
@@ -67,12 +68,12 @@ using namespace ECS;
 void TitleButtonScript::Start()
 {
 	// サイズ
-	transform().lock()->m_scale = Vector3{ 1920 / 4 * SCREEN_SCALE_X, 320 / 4 * SCREEN_SCALE_Y, 1 };
+	transform().lock()->m_scale = Vector3{ 2500 / 4 * SCREEN_SCALE_X, 320 / 4 * SCREEN_SCALE_Y, 1 };
 
 	// スプライト
 	const auto& spr = gameObject().lock()->AddComponent<SpriteRenderer>();
 	spr->SetRendererBlendState(BS_ALPHABLEND);
-	spr->SetDiffuseTexture("data/texture/TitleButton.png");
+	spr->SetDiffuseTexture("data/texture/pushspace.png");
 	spr->SetLayer(spr->eUI1);
 	spr->SetAlpha(1);
 	
@@ -87,8 +88,7 @@ void TitleButtonScript::Start()
 void TitleButtonScript::Update()
 {
 	// シーン遷移
-	if (GetMouseRelease(MOUSEBUTTON_L) || GetMouseRelease(MOUSEBUTTON_R) ||
-		GetKeyRelease(VK_RETURN) || GetKeyRelease(VK_SPACE))
+	if (GetKeyRelease(VK_SPACE))
 	{
 		// ゲームスタート
 		WorldManager::GetInstance()->LoadWorld<GameWorld>("Game");

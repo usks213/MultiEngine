@@ -63,10 +63,12 @@ using namespace ECS;
 void FieldScript::Start()
 {
 	const auto& renderer = gameObject().lock()->AddComponent<MeshRenderer>();
-	renderer->MakePlane("plane", 20, 20, 500, 500, 1, 1);
+	renderer->MakePlane("plane", 40, 40, 500, 500, 1, 1);
 	//renderer->SetDiffuseTexture("data/texture/grid.png");
 	renderer->SetNormalTexture("data/texture/sampledNormals.jpg");
 	renderer->SetAmbientTexture("data/texture/skydome.png");
+	renderer->SetUpdateLayer(false);
+	renderer->SetLayer(9999999999999999999);
 	m_renderer = renderer;
 	//renderer->SetTexSize({ 100, 100, 0 });
 	//renderer->UpdateTexMatrix();

@@ -47,15 +47,15 @@ using namespace ECS;
 #define ANIM_DELTA_SPLIT_X (10)  // 画像の分割数(横)
 #define ANIM_DELTA_SPLIT_Y (1)  // 画像の分割数(縦)
 
-#define DELTA_SIZE_X	(64 * SCREEN_SCALE_X)
-#define DELTA_SIZE_Y	(64*2 * SCREEN_SCALE_Y)
+#define DELTA_SIZE_X	(72 * SCREEN_SCALE_X)
+#define DELTA_SIZE_Y	(72*2 * SCREEN_SCALE_Y)
 #define DELTA_OFFSET_X	(DELTA_SIZE_X * 0.85f)
 #define DELTA_OFFSET_Y	(DELTA_SIZE_Y * 0.85f)
 
 #define MAX_DELTA (6)
 
-#define BEST_SCORE_SIZE_X (2400 / 5 * SCREEN_SCALE_X)
-#define BEST_SCORE_SIZE_Y (DELTA_SIZE_Y)
+#define BEST_SCORE_SIZE_X (1400 / 4 * SCREEN_SCALE_X)
+#define BEST_SCORE_SIZE_Y (64*2 * SCREEN_SCALE_Y)
 
 //******************** スクリプトメソッド ********************
 
@@ -97,18 +97,18 @@ void TitleScoreUIScript::Start()
 		-SCREEN_CENTER_Y + DELTA_OFFSET_Y, 1 };
 	transform().lock()->m_scale = Vector3{ DELTA_SIZE_X, DELTA_SIZE_Y, 1 };
 
-	// レンダラー
-	const auto& renderer = gameObject().lock()->AddComponent<SpriteRenderer>();
-	renderer->SetDiffuseTexture("data/texture/DeltaLogo.png");
-	renderer->SetLayer(renderer->eUI1);
-	renderer->SetRendererBlendState(BS_ALPHABLEND);
+	//// レンダラー
+	//const auto& renderer = gameObject().lock()->AddComponent<SpriteRenderer>();
+	//renderer->SetDiffuseTexture("data/texture/DeltaLogo.png");
+	//renderer->SetLayer(renderer->eUI1);
+	//renderer->SetRendererBlendState(BS_ALPHABLEND);
 	
 
 	// 数字データの生成
 	for (int i = 0; i < MAX_DELTA; i++)
 	{
-		Vector3 pos = transform().lock()->m_pos;
-		pos.x -= (MAX_DELTA - i) * DELTA_OFFSET_X;
+		Vector3 pos = transform().lock()->m_pos + Vector3(0,8,0);
+		pos.x -= (MAX_DELTA - i) * DELTA_OFFSET_X * 1.5f;
 
 		const auto& obj = Instantiate<GameObject>(pos);
 		m_data.push_back(obj->AddComponent<TitleScoreUIData>());
@@ -117,10 +117,10 @@ void TitleScoreUIScript::Start()
 
 	// BestScore
 	Vector3 pos = transform().lock()->m_pos;
-	pos.x -= (MAX_DELTA) * DELTA_OFFSET_X + BEST_SCORE_SIZE_X / 2 + DELTA_OFFSET_X / 2;
+	pos.x -= (MAX_DELTA) * DELTA_OFFSET_X + BEST_SCORE_SIZE_X / 4;
 	const auto& best = Instantiate<GameObject>(pos);
 	const auto& bestSpr = best->AddComponent<SpriteRenderer>();
-	bestSpr->SetDiffuseTexture("data/texture/BestScore.png");
+	bestSpr->SetDiffuseTexture("data/texture/bestwave.png");
 	bestSpr->SetLayer(bestSpr->eUI1);
 	bestSpr->SetRendererBlendState(BS_ALPHABLEND);
 	best->transform().lock()->m_scale = Vector3{ BEST_SCORE_SIZE_X, BEST_SCORE_SIZE_Y, 1 };

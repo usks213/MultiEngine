@@ -77,7 +77,7 @@ void TitleWorld::Start()
 	// ƒ^ƒCƒgƒ‹
 	const auto& title = GetEntityManager()->CreateEntity<GameObject>();
 	const auto& titleSpr = title->AddComponent<SpriteRenderer>();
-	titleSpr->SetDiffuseTexture("data/texture/FadeDelta.png");
+	titleSpr->SetDiffuseTexture("data/texture/Delta2.png");
 	titleSpr->SetLayer(titleSpr->eBG1);
 	title->transform().lock()->m_pos.y = SCREEN_CENTER_Y / 6;
 	title->transform().lock()->m_scale = Vector3{ SCREEN_WIDTH, SCREEN_HEIGHT, 1 };

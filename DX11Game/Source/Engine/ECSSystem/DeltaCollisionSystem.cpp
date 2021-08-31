@@ -66,7 +66,7 @@ DeltaCollisionSystem::~DeltaCollisionSystem()
 void DeltaCollisionSystem::OnCreate()
 {
 	// マップサイズ // 何故か二倍になってる？　現状4000x4000
-	CCell<DeltaCollider>::SetMapSize(100.0f * 5 * 10, 100.0f * 5 * 10);
+	CCell<DeltaCollider>::SetMapSize(100.0f * 10 * 10, 100.0f * 10 * 10);
 }
 
 //===================================
@@ -82,6 +82,7 @@ void DeltaCollisionSystem::OnUpdate()
 
 	// 空間の作成
 	CCell<DeltaCollider> mainMainCell[MAX_CELL];
+	CCell<DeltaCollider> mainSubCell[MAX_CELL];
 	CCell<DeltaCollider> mainCell[MAX_CELL];
 	CCell<DeltaCollider> subCell[MAX_CELL];
 	// モートン番号
@@ -145,6 +146,14 @@ void DeltaCollisionSystem::OnUpdate()
 			{
 				// 今いる空間のメインリストに格納
 				mainMainCell[SpaceNum].GetList().push_back(collider);
+				// 今いる空間の親のサブに格納
+				while (SpaceNum > 0)
+				{
+					SpaceNum--;
+					SpaceNum /= 4;
+
+					mainSubCell[SpaceNum].GetList().push_back(collider);
+				}
 			}
 			else
 			{
@@ -187,6 +196,17 @@ void DeltaCollisionSystem::OnUpdate()
 			{
 				// 当たり判定
 				Collision(collider, subCell[i].GetList());
+			});
+	}
+
+	// サブ空間の当たり判定
+	for (int i = 0; i < nMaxCell; ++i)
+	{
+		std::for_each(mainCell[i].GetList().begin(), mainCell[i].GetList().end(),
+			[&mainSubCell, &i](DeltaCollider* collider)
+			{
+				// 当たり判定
+				Collision(collider, mainSubCell[i].GetList());
 			});
 	}
 }

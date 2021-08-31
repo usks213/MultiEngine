@@ -67,8 +67,8 @@ using namespace ECS;
 void BombCollisionScript::Start()
 {
 	// 名前・タグ
-	gameObject().lock()->SetName("Bullet");
-	gameObject().lock()->SetTag("Bullet");
+	gameObject().lock()->SetName("Bomb");
+	gameObject().lock()->SetTag("Bomb");
 
 	// 大きさ
 	transform().lock()->m_scale = Vector3(2000, 2000, 2000);

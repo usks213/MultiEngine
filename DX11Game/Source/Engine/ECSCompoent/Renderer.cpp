@@ -70,6 +70,8 @@ void Renderer::OnCreate()
 
 	// トランスフォームから取得
 	m_transform = m_Parent.lock()->GetComponent<Transform>();
+	// ゲームオブジェクト取得
+	m_gameObject = m_transform.lock()->gameObject();
 }
 
 //========================================

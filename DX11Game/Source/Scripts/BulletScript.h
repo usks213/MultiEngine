@@ -29,6 +29,9 @@ namespace ECS
 		// ----- メンバ -----
 		int m_nExitTime;	// 生存時間
 
+	public:
+		float m_damage = 0.0f;
+
 	protected:
 		// ----- メソッド -----
 

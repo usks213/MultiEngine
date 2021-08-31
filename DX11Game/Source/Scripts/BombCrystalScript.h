@@ -30,6 +30,12 @@ namespace ECS
 		int m_nExitTime;	// 生存時間
 		// スケール
 		float m_fScale;
+		// ダメージ
+		float m_damage;
+
+	public:
+		// ダメージ
+		void SetDamage(float damage) { m_damage = damage; }
 	protected:
 		// ----- メソッド -----
 

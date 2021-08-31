@@ -84,8 +84,12 @@ void TestWorld::Start()
 
 	// プレイヤー
 	const auto& player = GetEntityManager()->CreateEntity<GameObject>();
-	//const auto & playerScript = player->AddComponent<PlayerScript>();
+	const auto & playerScript = player->AddComponent<PlayerScript>();
 	player->AddComponent<PlaneControlScript>();
+
+	//// デルタUI
+	//const auto& deltaUi = GetEntityManager()->CreateEntity<GameObject>();
+	//deltaUi->AddComponent<DeltaUIScript>()->SetPlayer(playerScript);
 
 	// スカイドーム
 	const auto& sky = GetEntityManager()->CreateEntity<GameObject>();
@@ -105,12 +109,13 @@ void TestWorld::Start()
 	const auto& plane = GetEntityManager()->CreateEntity<GameObject>();
 	plane->AddComponent<FieldScript>()->SetTarget(cameraObj);
 	
-	//// カーソル
-	//const auto& cursor = GetEntityManager()->CreateEntity<GameObject>();
-	//const auto& cursorRn = cursor->AddComponent<SpriteRenderer>();
-	//cursorRn->SetDiffuseTexture("data/texture/Cursor.png");
-	//cursorRn->SetLayer(cursorRn->eUI1);
-	//cursor->transform().lock()->m_scale = Vector3{ 64 * SCREEN_SCALE_X,64 * SCREEN_SCALE_Y,32 };
+	// カーソル
+	const auto& cursor = GetEntityManager()->CreateEntity<GameObject>();
+	const auto& cursorRn = cursor->AddComponent<SpriteRenderer>();
+	cursorRn->SetDiffuseTexture("data/texture/Cursor.png");
+	cursorRn->SetLayer(cursorRn->eUI1);
+	cursor->transform().lock()->m_pos.y = -64 * SCREEN_SCALE_Y * 0.5f;
+	cursor->transform().lock()->m_scale = Vector3{ 64 * SCREEN_SCALE_X,64 * SCREEN_SCALE_Y,32 };
 
 	//// 爆発
 	//const auto& ex = GetEntityManager()->CreateEntity<GameObject>();
@@ -121,6 +126,7 @@ void TestWorld::Start()
 	const auto& maker = makerobj->AddComponent<MakeEnemyScript>();
 	maker->SetPlayer(player);
 
+	CSound::PlayBGM("GameBGM.mp3", 0.3f);
 }
 
 //===================================

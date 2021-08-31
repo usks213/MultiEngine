@@ -25,8 +25,8 @@ using namespace DirectX;
 #define	VIEW_ASPECT			((float)SCREEN_WIDTH/SCREEN_HEIGHT)	// ビュー平面のアスペクト比
 #define	VIEW_NEAR_Z			(50.0f)								// ビュー平面のNearZ値
 #define	VIEW_FAR_Z			(5000.0f * 1.5f)					// ビュー平面のFarZ値
-#define FOG_NEAR_Z	(VIEW_FAR_Z * 0.3f)
-#define FOG_FAR_Z	(VIEW_FAR_Z * 0.6f)
+#define FOG_NEAR_Z	(VIEW_FAR_Z * 0.4f)
+#define FOG_FAR_Z	(VIEW_FAR_Z * 0.8f)
 
 
 //===== グローバル変数 =====
@@ -47,6 +47,9 @@ Camera::Camera()
 	m_fFogNearZ = FOG_NEAR_Z;
 	m_fFogFarZ = FOG_FAR_Z;
 	m_up = Vector3(0, 1, 0);
+
+	m_offset = Vector2(5, 5);
+	m_shakeCount = 0;
 }
 
 //========================================
@@ -118,13 +121,28 @@ void Camera::UpdateCameraMatrix()
 	const auto& trans = transform().lock();
 	if (!trans) return;
 
-	const Vector3& pos = trans->m_pos;
+	// 画面揺れ
+	Vector2 offset;
+	m_shakeCount--;
+	if (m_shakeCount < 0) m_shakeCount = 0;
+	if (m_shakeCount > 0)
+	{
+		offset.x = -m_offset.x + rand() % ((int)m_offset.x + 1) * 2;
+		offset.y = -m_offset.y + rand() % ((int)m_offset.y + 1) * 2;
+	}
+
+	Vector3 pos = trans->m_pos;
 	const Vector3& sca = trans->m_scale;
 	const Quaternion& rot = trans->m_rot;
 
+	Vector3 right = Mathf::Normalize(Matrix::CreateFromQuaternion(rot).Right());
+	Vector3 up = Mathf::Normalize(Matrix::CreateFromQuaternion(rot).Up());
+
+	pos += right * offset.x;
+	pos += up * offset.y;
+
 	Vector3 target = pos + Matrix::CreateFromQuaternion(rot).Forward();
 
-	Vector3 up = Mathf::Normalize(Matrix::CreateFromQuaternion(rot).Up());
 	//Vector3 up = Mathf::Normalize(Mathf::Cross(
 	//	Matrix::CreateFromQuaternion(rot).Right(),
 	//	Matrix::CreateFromQuaternion(rot).Forward()));

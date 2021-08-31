@@ -39,6 +39,8 @@ namespace ECS
 		void EarlyDraw(ID3D11DeviceContext* pDC) override;
 		void LateDraw(ID3D11DeviceContext* pDC) override;
 
+		// スプライトメッシュ
+		HRESULT MakeSprite(const std::string tag);
 		// 平面メッシュの生成
 		HRESULT MakePlane(const std::string tag, int nNumBlockX, int nNumBlockZ, float fSizeBlockX, float fSizeBlockZ,
 			float fTexSizeX = 1.0f, float fTexSizeZ = 1.0f);

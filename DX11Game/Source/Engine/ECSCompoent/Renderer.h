@@ -25,6 +25,7 @@
 namespace ECS
 {
 	class Transform;
+	class GameObject;
 
 	class Renderer : public IComponent
 	{
@@ -67,8 +68,16 @@ namespace ECS
 		void SetLayer(float fLayer) { m_fLayer = fLayer; }
 		void SetUpdateLayer(bool bUpdate) { m_bUpdateLayer = bUpdate; }
 
+		// ゲームオブジェクト取得
+		const std::weak_ptr<GameObject>& gameObject() { return m_gameObject; }
+		// トランスフォーム取得
+		const std::weak_ptr<Transform>& transform() { return m_transform; }
 	protected:
+		// トランスフォーム
 		std::weak_ptr<Transform> m_transform;
+		// ゲームオブジェクト
+		std::weak_ptr<GameObject> m_gameObject;
+
 		XMFLOAT4X4 m_mtxTexture;				// テクスチャ マトリックス
 
 		Vector3 m_texPos;

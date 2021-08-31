@@ -223,7 +223,7 @@ HRESULT PostProcessing::Init(ID3D11Device* pDevice)
 	// 深度ステンシルテクスチャ
 	D3D11_TEXTURE2D_DESC shadowMapDesc;
 	ZeroMemory(&shadowMapDesc, sizeof(D3D11_TEXTURE2D_DESC));
-	shadowMapDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+	shadowMapDesc.Format = DXGI_FORMAT_R32_TYPELESS;
 	shadowMapDesc.MipLevels = 1;
 	shadowMapDesc.ArraySize = 1;
 	shadowMapDesc.SampleDesc = GetMSAA();
@@ -243,7 +243,7 @@ HRESULT PostProcessing::Init(ID3D11Device* pDevice)
 	// 深度ステンシルビュー
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	ZeroMemory(&depthStencilViewDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
-	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilViewDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	//depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
@@ -262,7 +262,7 @@ HRESULT PostProcessing::Init(ID3D11Device* pDevice)
 	ZeroMemory(&DSshaderResourceViewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
 	//DSshaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	DSshaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMS;
-	DSshaderResourceViewDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	DSshaderResourceViewDesc.Format = DXGI_FORMAT_R32_FLOAT;
 	DSshaderResourceViewDesc.Texture2D.MipLevels = 1;
 
 	hr = pDevice->CreateShaderResourceView(

@@ -16,7 +16,7 @@
 
 //====== インクルード部 ======
 #include "../Engine/ECSCompoent/Script.h"
-
+#include "StatusItemScript.h"
 
 //===== マクロ定義 =====
 
@@ -24,40 +24,104 @@
 //===== クラス定義 =====
 namespace ECS
 {
+	// プレイヤースキル
+	enum class PlayerSkill {
+		Shot,	// 通常
+		Step,	// 回避
+		Burst,	// 連射
+		Bom,	// 爆発
+		Max,
+	};
+
 	class PlayerScript : public Script
 	{
 	private:
 		// ----- メンバ -----
 		std::weak_ptr<Rigidbody> m_rb;
-		int m_nShotCnt;
+
+		// アクティブ
+		bool m_bActive = true;
 		// ジャンプフラグ
-		int m_nJump;
-		// デルタカウンター
-		int m_nDeltaCount;
+		int m_nJump = 0;
 		// ショット
-		bool m_bShot;
+		bool m_bShot = false;
 		// 地面
-		bool m_bGround;
+		bool m_bGround = false;
 
-		// ステータス
-		float m_fHP;
-		const float m_fMaxHP = 100.0f;
-
-		// ヒール
-		const int m_nHeelInteral = 480;
-		int	  m_nHeelCnt;
-		float m_fHeel;
-
-		// ダメージ
-		const int m_nDamageInteral = 300;
-		int	  m_nDamageCnt;
-		float m_fDamage;
-
-		bool m_bActive;
+		// カウンタ
+		int m_nStepInvCount = 0;
+		int m_nDamageInvCount = 0;
+		int m_nBurstCount = 0;
+		int m_nHeelCount = 0;
 
 	public:
-		// デルタ数取得
-		int GetDeltaCount() { return m_nDeltaCount; }
+		// HP
+		float m_HP = 100;
+		// ステータスアイテム
+		int m_aItemCount[static_cast<std::size_t>(ItemType::Max)];
+		// スキル
+		int m_aSkillRecastCnt[static_cast<std::size_t>(PlayerSkill::Max)];
+
+		//--- ステータス ---
+
+		float getMaxHP() {
+			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Physical)];
+			return 100 + cnt * 10;
+		}
+		float getHeelTime() {
+			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Physical)];
+			float heel = 300 - cnt * 0.1f;
+			if (heel < 0) heel = 0;
+			return heel + 60;
+		}
+
+		float getDamage() {
+			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Attack)];
+			return 5 + cnt * 0.5f;
+		}
+		float getAttackSpeed() {
+			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Attack)];
+			float speed = 15 - cnt * 0.01f;
+			if (speed < 0) speed = 0;
+			return speed + 2;
+		}
+
+		float getMoveSpeed() {
+			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Speed)];
+			return 0.5f + cnt * 0.02f;
+		}
+		float getJumpForce() {
+			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Speed)];
+			return 10 + cnt * 0.01f;
+		}
+		float getStepTime() {
+			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Speed)];
+			return 10 + cnt * 0.05f;
+		}
+
+		float getSkiilRecast(int skillIndex) {
+			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Skiil)];
+			float recast = 180 - cnt;
+			if (recast < 0) recast = 0;
+
+			int skillTime = 0;
+			switch (skillIndex)
+			{
+			case (int)ECS::PlayerSkill::Shot:
+				return getAttackSpeed();
+				break;
+			case (int)ECS::PlayerSkill::Step:
+				skillTime = 120;
+				break;
+			case (int)ECS::PlayerSkill::Burst:
+				skillTime = 60;
+				break;
+			case (int)ECS::PlayerSkill::Bom:
+				skillTime = 240;
+				break;
+			}
+			return recast + skillTime;
+		}
 
 	protected:
 		// ----- メソッド -----

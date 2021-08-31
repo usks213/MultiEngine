@@ -157,8 +157,8 @@ void BombCrystalScript::End()
 //========================================
 void BombCrystalScript::OnDeltaCollisionEnter(DeltaCollider* collider)
 {
-	if (collider->gameObject().lock()->tag() == "Player" || 
-		collider->gameObject().lock()->tag() == "Bullet")
+	if (collider->gameObject().lock()->tag() == "Enemy" || 
+		collider->gameObject().lock()->tag() == "Player")
 	{
 		// ボムエフェクト生成
 		const int n = 24;
@@ -190,7 +190,7 @@ void BombCrystalScript::OnDeltaCollisionEnter(DeltaCollider* collider)
 		// 当たり判定範囲生成
 		const auto& obj = Instantiate<GameObject>(transform().lock()->m_pos);
 		// コンポーネントの追加
-		const auto& col = obj->AddComponent<BombCollisionScript>();
+		obj->AddComponent<BombCollisionScript>()->SetDamage(m_damage);
 
 		// 自身の破棄
 		Destroy(gameObject().lock());
@@ -207,7 +207,7 @@ void BombCrystalScript::OnDeltaCollisionEnter(DeltaCollider* collider)
 //========================================
 void BombCrystalScript::OnDeltaCollisionStay(DeltaCollider* collider)
 {
-	if (collider->gameObject().lock()->tag() == "Player")
+	if (collider->gameObject().lock()->tag() == "Enemy")
 	{
 		// ボムエフェクト生成
 		const int n = 24;
