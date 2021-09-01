@@ -303,7 +303,7 @@ void PlayerScript::Update()
 			getSkiilRecast(static_cast<int>(PlayerSkill::Shot));
 
 		// サウンド
-		CSound::PlaySE("Shot.wav", 0.12f);
+		CSound::PlaySE("Shot.wav", 0.2f);
 	}
 
 	// バースト
@@ -364,7 +364,7 @@ void PlayerScript::Update()
 			getSkiilRecast(static_cast<int>(PlayerSkill::Bom));
 
 		// サウンド
-		CSound::PlaySE("Shot.wav", 0.12f);
+		CSound::PlaySE("Shot.wav", 0.2f);
 	}
 }
 
