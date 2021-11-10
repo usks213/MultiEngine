@@ -34,6 +34,9 @@
 #include "../../Scripts/FieldScript.h"
 #include "../../Scripts/ExplosionScript.h"
 #include "../../Scripts/PlaneControlScript.h"
+#include "../../Scripts/OBBTestScript.h"
+#include "../../Scripts/CameraControlScript.h"
+#include "../../Scripts/TestMoveScript.h"
 
 
 using namespace ECS;
@@ -78,14 +81,28 @@ void TestWorld::Start()
 
 	// カメラ
 	const auto& cameraObj = GetEntityManager()->CreateEntity<GameObject>();
-	cameraObj->transform().lock()->m_pos = Vector3(0, 500, 300);
+	cameraObj->transform().lock()->m_pos = Vector3(0, 300, 500);
 	const auto& camera = cameraObj->AddComponent<Camera>();
 	camera->SetMainCamera(camera);
+	cameraObj->AddComponent<CameraControlScript>();
 
-	// プレイヤー
-	const auto& player = GetEntityManager()->CreateEntity<GameObject>();
-	const auto & playerScript = player->AddComponent<PlayerScript>();
-	player->AddComponent<PlaneControlScript>();
+	//// プレイヤー
+	//const auto& player = GetEntityManager()->CreateEntity<GameObject>();
+	//const auto & playerScript = player->AddComponent<PlayerScript>();
+	//player->AddComponent<PlaneControlScript>();
+	//player->AddComponent<OBBTestScript>();
+
+	const auto& obb = GetEntityManager()->CreateEntity<GameObject>();
+	obb->transform().lock()->m_pos = Vector3(-200, 300, 0);
+	obb->transform().lock()->m_scale = Vector3(200, 200, 200);
+	obb->AddComponent<OBBTestScript>();
+
+	const auto& obb2 = GetEntityManager()->CreateEntity<GameObject>();
+	obb2->transform().lock()->m_pos = Vector3(200, 300, 0);
+	obb2->transform().lock()->m_scale = Vector3(200, 200, 200);
+	obb2->AddComponent<OBBTestScript>();
+	obb2->AddComponent<TestMoveScript>();
+
 
 	//// デルタUI
 	//const auto& deltaUi = GetEntityManager()->CreateEntity<GameObject>();
@@ -109,24 +126,24 @@ void TestWorld::Start()
 	const auto& plane = GetEntityManager()->CreateEntity<GameObject>();
 	plane->AddComponent<FieldScript>()->SetTarget(cameraObj);
 	
-	// カーソル
-	const auto& cursor = GetEntityManager()->CreateEntity<GameObject>();
-	const auto& cursorRn = cursor->AddComponent<SpriteRenderer>();
-	cursorRn->SetDiffuseTexture("data/texture/Cursor.png");
-	cursorRn->SetLayer(cursorRn->eUI1);
-	cursor->transform().lock()->m_pos.y = -64 * SCREEN_SCALE_Y * 0.5f;
-	cursor->transform().lock()->m_scale = Vector3{ 64 * SCREEN_SCALE_X,64 * SCREEN_SCALE_Y,32 };
+	//// カーソル
+	//const auto& cursor = GetEntityManager()->CreateEntity<GameObject>();
+	//const auto& cursorRn = cursor->AddComponent<SpriteRenderer>();
+	//cursorRn->SetDiffuseTexture("data/texture/Cursor.png");
+	//cursorRn->SetLayer(cursorRn->eUI1);
+	//cursor->transform().lock()->m_pos.y = -64 * SCREEN_SCALE_Y * 0.5f;
+	//cursor->transform().lock()->m_scale = Vector3{ 64 * SCREEN_SCALE_X,64 * SCREEN_SCALE_Y,32 };
 
 	//// 爆発
 	//const auto& ex = GetEntityManager()->CreateEntity<GameObject>();
 	//const auto& exsc = ex->AddComponent<PlaneControlScript>();
 
-	// エネミー
-	const auto& makerobj = GetEntityManager()->CreateEntity<GameObject>();
-	const auto& maker = makerobj->AddComponent<MakeEnemyScript>();
-	maker->SetPlayer(player);
+	//// エネミー
+	//const auto& makerobj = GetEntityManager()->CreateEntity<GameObject>();
+	//const auto& maker = makerobj->AddComponent<MakeEnemyScript>();
+	//maker->SetPlayer(player);
 
-	CSound::PlayBGM("GameBGM.mp3", 0.3f);
+	//CSound::PlayBGM("GameBGM.mp3", 0.3f);
 }
 
 //===================================

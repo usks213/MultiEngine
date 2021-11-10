@@ -61,7 +61,7 @@ namespace ECS
 		{
 			eBox,
 			eSphere,
-
+			eOBB,
 			eMaxColliderType,
 		};
 
@@ -124,6 +124,7 @@ namespace ECS
 		static bool BoxToSphere(Collider* collider, Collider* other);
 		static bool SphereToBox(Collider* collider, Collider* other);
 		static bool SphereToSphere(Collider* collider, Collider* other);
+		static bool OBBtoOBB(Collider* collider, Collider* other);
 	};
 
 

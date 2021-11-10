@@ -542,6 +542,87 @@ bool Collider::SphereToSphere(Collider* collider, Collider* other)
 
 }
 
+//========================================
+//
+//	OBBとOBB
+//
+//========================================
+bool Collider::OBBtoOBB(Collider* collider, Collider* other)
+{
+	// 中心座標
+	Vector3 boxPos1 = collider->m_transform.lock()->m_pos;
+	Vector3 boxPos2 = other->m_transform.lock()->m_pos;
+	// サイズ
+	Vector3 boxSize1 = collider->m_transform.lock()->m_scale;
+	Vector3 boxSize2 = other->m_transform.lock()->m_scale;
+	// 回転
+	Quaternion& rot1 = collider->transform().lock()->m_rot;
+	Quaternion& rot2 = other->transform().lock()->m_rot;
+
+	// ワールド マトリックス取得
+	Matrix mW1 = Matrix::CreateScale(boxSize1) * Matrix::CreateFromQuaternion(rot1) * Matrix::CreateTranslation(boxPos1);
+	Matrix mW2 = Matrix::CreateScale(boxSize2) * Matrix::CreateFromQuaternion(rot2) * Matrix::CreateTranslation(boxPos2);
+	// 中心座標取得
+	XMFLOAT3 vP1, vP2;
+	XMStoreFloat3(&vP1, XMVector3TransformCoord(collider->m_bound.GetCenter(), mW1));
+	XMStoreFloat3(&vP2, XMVector3TransformCoord(other->m_bound.GetCenter(), mW2));
+	// 中心座標間のベクトルを求める
+	XMVECTOR vD;
+	vD = XMVectorSet(vP2.x - vP1.x, vP2.y - vP1.y, vP2.z - vP1.z, 0.0f);
+	// モデル座標軸を求める
+	XMVECTOR vN[8];
+	vN[0] = XMVectorSet(mW1._11, mW1._12, mW1._13, 0.0f);
+	vN[1] = XMVectorSet(mW1._21, mW1._22, mW1._23, 0.0f);
+	vN[2] = XMVectorSet(mW1._31, mW1._32, mW1._33, 0.0f);
+	vN[4] = XMVectorSet(mW2._11, mW2._12, mW2._13, 0.0f);
+	vN[5] = XMVectorSet(mW2._21, mW2._22, mW2._23, 0.0f);
+	vN[6] = XMVectorSet(mW2._31, mW2._32, mW2._33, 0.0f);
+	// OBBの大きさ(半分)を掛けたベクトルを求める
+	XMFLOAT3 vBB1 = collider->m_bound.GetHalfSize();
+	XMFLOAT3 vBB2 = other->m_bound.GetHalfSize();
+	XMVECTOR vL[8];
+	vL[0] = XMVectorSet(mW1._11 * vBB1.x, mW1._12 * vBB1.x, mW1._13 * vBB1.x, 0.0f);
+	vL[1] = XMVectorSet(mW1._21 * vBB1.y, mW1._22 * vBB1.y, mW1._23 * vBB1.y, 0.0f);
+	vL[2] = XMVectorSet(mW1._31 * vBB1.z, mW1._32 * vBB1.z, mW1._33 * vBB1.z, 0.0f);
+	vL[3] = XMVectorSet(mW2._11 * vBB2.x, mW2._12 * vBB2.x, mW2._13 * vBB2.x, 0.0f);
+	vL[4] = XMVectorSet(mW2._21 * vBB2.y, mW2._22 * vBB2.y, mW2._23 * vBB2.y, 0.0f);
+	vL[5] = XMVectorSet(mW2._31 * vBB2.z, mW2._32 * vBB2.z, mW2._33 * vBB2.z, 0.0f);
+	// 分離軸候補が面の法線ベクトル(モデル座標軸)
+	float fL, f, fD;
+	for (int i = 0; i < 6; ++i) {
+		XMVECTOR& vS = vN[i];//分離軸候補
+		// OBBの影(の半分)の合計
+		fL = 0.0f;
+		for (int j = 0; j < 6; ++j) {
+			XMStoreFloat(&f, XMVector3Dot(vS, vL[j]));
+			fL += fabsf(f);
+		}
+		// 中心座標間の距離と比較
+		XMStoreFloat(&fD, XMVector3Dot(vS, vD));
+		fD = fabsf(fD);
+		if (fL < fD) return false;// 当たっていない
+	}
+	// 分離軸候補がそれぞれの辺に垂直なベクトル
+	XMVECTOR vS;
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 3; j < 6; ++j) {
+			// 分離軸候補を求める
+			vS = XMVector3Normalize(XMVector3Cross(vN[i], vN[j]));
+			// OBBの影(の半分)の合計
+			fL = 0.0f;
+			for (int k = 0; k < 6; ++k) {
+				XMStoreFloat(&f, XMVector3Dot(vS, vL[k]));
+				fL += fabsf(f);
+			}
+			// 中心座標間の距離と比較
+			XMStoreFloat(&fD, XMVector3Dot(vS, vD));
+			fD = fabsf(fD);
+			if (fL < fD) return false;// 当たっていない
+		}
+	}
+	return true;// 当たっている
+}
+
 // AABBと点の最短距離
 float LenAABBToPoint(Bounds& box, Vector3& p)
 {

@@ -382,6 +382,15 @@
     <ClCompile Include="Source\Scripts\PlayerHPUIScript.cpp">
       <Filter>ソース\スクリプト\プレイヤー</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scripts\OBBTestScript.cpp">
+      <Filter>ソース\スクリプト\テスト</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\CameraControlScript.cpp">
+      <Filter>ソース\スクリプト\テスト</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripts\TestMoveScript.cpp">
+      <Filter>ソース\スクリプト\テスト</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Engine\main.h">
@@ -662,6 +671,15 @@
     </ClInclude>
     <ClInclude Include="Source\Scripts\PlayerHPUIScript.h">
       <Filter>ソース\スクリプト\プレイヤー</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\OBBTestScript.h">
+      <Filter>ソース\スクリプト\テスト</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\CameraControlScript.h">
+      <Filter>ソース\スクリプト\テスト</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\TestMoveScript.h">
+      <Filter>ソース\スクリプト\テスト</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

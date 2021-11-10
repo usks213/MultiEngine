@@ -137,7 +137,7 @@
 // マクロ定義
 //*****************************************************************************
 #define CLASS_NAME		_T("AppClass")					// ウインドウのクラス名
-#define WINDOW_NAME		_T(" DELTA Δ")			// ウインドウのキャプション名
+#define WINDOW_NAME		_T("AT13C04宇佐美晃之")			// ウインドウのキャプション名
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -673,7 +673,7 @@ HRESULT Init(HWND hWnd, BOOL bWindow)
 	WorldManager::Create();
 
 	// ゲームワールドの追加
-	WorldManager::GetInstance()->LoadWorld<TitleWorld>("Title");
+	WorldManager::GetInstance()->LoadWorld<TestWorld>("Test");
 	
 	return hr;
 }

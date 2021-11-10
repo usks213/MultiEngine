@@ -47,7 +47,10 @@ namespace ECS
 
 		// ソート用
 		static bool swapR(Renderer* lhs, Renderer* rhs) {
-			return lhs->m_fLayer > rhs->m_fLayer; // 降順にしてみる
+			return lhs->m_fLayer > rhs->m_fLayer; // 降順
+		}
+		static bool swapL(Renderer* lhs, Renderer* rhs) {
+			return lhs->m_fLayer < rhs->m_fLayer; // 昇順
 		}
 
 		// テクスチャマトリックスの更新
@@ -67,6 +70,10 @@ namespace ECS
 		float GetLayer() { return m_fLayer; }
 		void SetLayer(float fLayer) { m_fLayer = fLayer; }
 		void SetUpdateLayer(bool bUpdate) { m_bUpdateLayer = bUpdate; }
+
+		// 透過
+		bool GetTransparent() { return m_isTransparent; }
+		void SetTransparent(bool flag) { m_isTransparent = flag; }
 
 		// ゲームオブジェクト取得
 		const std::weak_ptr<GameObject>& gameObject() { return m_gameObject; }
@@ -88,5 +95,6 @@ namespace ECS
 
 		float m_fLayer;
 		bool m_bUpdateLayer = true;
+		bool m_isTransparent = false;
 	};
 }

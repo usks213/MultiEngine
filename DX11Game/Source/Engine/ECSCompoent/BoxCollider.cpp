@@ -53,7 +53,7 @@ bool BoxCollider::Judgment(Collider* other)
 	switch (other->GetColliderType())
 	{
 	case EColliderType::eBox:
-		return BoxToBox(this, other);
+		return OBBtoOBB(this, other);
 		break;
 	case EColliderType::eSphere:
 		return BoxToSphere(this, other);

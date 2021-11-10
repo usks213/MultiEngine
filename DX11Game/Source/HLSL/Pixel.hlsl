@@ -205,7 +205,7 @@ float4 main(VS_OUTPUT input) : SV_Target0
         float3 FogColor = float3(0.557f, 0.631f, 0.6f);
        // float3 FogColor = float3(0.0f, 0.51f, 0.51f);
         Diff = lerp(FogColor, Diff, input.Fog);
-        Alpha = lerp(1, Alpha, input.Fog);
+       // Alpha = lerp(1, Alpha, input.Fog);
     }
 
 

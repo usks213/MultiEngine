@@ -348,6 +348,7 @@
     <ClCompile Include="Source\Scripts\AttackEnemyScript.cpp" />
     <ClCompile Include="Source\Scripts\MakeEnemyScript.cpp" />
     <ClCompile Include="Source\Scripts\NumberScript.cpp" />
+    <ClCompile Include="Source\Scripts\OBBTestScript.cpp" />
     <ClCompile Include="Source\Scripts\PhysicalEnemyScript.cpp" />
     <ClCompile Include="Source\Scripts\PlaneControlScript.cpp" />
     <ClCompile Include="Source\Scripts\PlayerHPUIScript.cpp" />
@@ -358,6 +359,8 @@
     <ClCompile Include="Source\Scripts\StartCrystalScript.cpp" />
     <ClCompile Include="Source\Scripts\BalanceEnemyScript.cpp" />
     <ClCompile Include="Source\Scripts\StatusItemScript.cpp" />
+    <ClCompile Include="Source\Scripts\CameraControlScript.cpp" />
+    <ClCompile Include="Source\Scripts\TestMoveScript.cpp" />
     <ClCompile Include="Source\Scripts\TitleButtonScript.cpp" />
     <ClCompile Include="Source\Scripts\TitleScoreUIScript.cpp" />
     <ClCompile Include="Source\Scripts\SkiilEnemyScript.cpp" />
@@ -443,6 +446,7 @@
     <ClInclude Include="Source\Scripts\AttackEnemyScript.h" />
     <ClInclude Include="Source\Scripts\MakeEnemyScript.h" />
     <ClInclude Include="Source\Scripts\NumberScript.h" />
+    <ClInclude Include="Source\Scripts\OBBTestScript.h" />
     <ClInclude Include="Source\Scripts\PhysicalEnemyScript.h" />
     <ClInclude Include="Source\Scripts\PlaneControlScript.h" />
     <ClInclude Include="Source\Scripts\PlayerHPUIScript.h" />
@@ -453,6 +457,8 @@
     <ClInclude Include="Source\Scripts\BalanceEnemyScript.h" />
     <ClInclude Include="Source\Scripts\ScriptBaseLayout.h" />
     <ClInclude Include="Source\Scripts\StatusItemScript.h" />
+    <ClInclude Include="Source\Scripts\CameraControlScript.h" />
+    <ClInclude Include="Source\Scripts\TestMoveScript.h" />
     <ClInclude Include="Source\Scripts\TitleButtonScript.h" />
     <ClInclude Include="Source\Scripts\TitleScoreUIScript.h" />
     <ClInclude Include="Source\Scripts\SkiilEnemyScript.h" />

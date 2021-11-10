@@ -265,7 +265,7 @@ void CollisionSystem::Collision(Collider* main, const std::list<Collider*>& m_pS
 		//if (itr != main->m_aIsHit.end()) continue;
 
 		//--- “–‚½‚è”»’èˆ— ---
-		if (Collider::AABBtoAABB(main, sub))
+		//if (Collider::AABBtoAABB(main, sub))
 		{
 			// Ú×”»’è
 			if (main->Judgment(sub))

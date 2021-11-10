@@ -68,6 +68,7 @@ namespace ECS
 		//--- マテリアル
 		// カラー変更
 		void SetDiffuseColor(XMFLOAT4 color) { m_material.Diffuse = color; }
+		void SetEmissiveColor(XMFLOAT4 color) { m_material.Emissive = color; }
 
 		// ベースカラーテクスチャのセット
 		void SetDiffuseTexture(const char* filename);
