@@ -139,13 +139,13 @@ void GameWorld::Start()
 	//cursorRn->SetLayer(cursorRn->eUI1);
 	//cursor->transform().lock()->m_scale = Vector3{ 64 * SCREEN_SCALE_X,64 * SCREEN_SCALE_Y,32 };
 
-	//// ‘€ìUI
-	//const auto& opUI = GetEntityManager()->CreateEntity<GameObject>();
-	//const auto& opSpr = opUI->AddComponent<SpriteRenderer>();
-	//opSpr->SetDiffuseTexture("data/texture/OperationUI.png");
-	//opSpr->SetLayer(opSpr->eUI1);
-	//opUI->transform().lock()->m_pos = Vector3{ -SCREEN_CENTER_X / 3.0f * 2, -SCREEN_HEIGHT / 10, 1 };
-	//opUI->transform().lock()->m_scale = Vector3{ 2400.0f / 6 * SCREEN_SCALE_X, 2100.0f / 6 * SCREEN_SCALE_Y, 1 };
+	// ‘€ìUI
+	const auto& opUI = GetEntityManager()->CreateEntity<GameObject>();
+	const auto& opSpr = opUI->AddComponent<SpriteRenderer>();
+	opSpr->SetDiffuseTexture("data/texture/OperationUI.png");
+	opSpr->SetLayer(opSpr->eUI1);
+	opUI->transform().lock()->m_pos = Vector3{ -SCREEN_CENTER_X / 3.0f * 2, -SCREEN_HEIGHT / 10, 1 };
+	opUI->transform().lock()->m_scale = Vector3{ 2400.0f / 6 * SCREEN_SCALE_X, 2100.0f / 6 * SCREEN_SCALE_Y, 1 };
 
 }
 

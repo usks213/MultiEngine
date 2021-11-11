@@ -197,7 +197,7 @@ void PlayerScript::Update()
 		Vector3 velo = rb->GetVelocity();
 		velo.y = 0;
 		float len = velo.Length() * 0.1f;
-		if (len > 0.1f)
+		if (len > 0.3f)
 		{
 			// 歩行アニメーション
 			if (m_assimp.lock()->GetCurrentAnimIndex() != ANIM_RUN)
@@ -218,11 +218,33 @@ void PlayerScript::Update()
 		}
 	}
 
+	// ジャンプ
+	m_jumpCount--;
+	if (GetKeyTrigger(VK_SPACE) &&
+		m_jumpCount < 0 &&
+		m_bGround == true &&
+		m_assimp.lock()->GetCurrentAnimIndex() != ANIM_JUMP)
+	{
+		m_jumpCount = 50;
+		m_assimp.lock()->SetAnimIndex(ANIM_JUMP);
+
+		// ジャンプ力から逆算して、アニメーションのスピードを
+		m_assimp.lock()->SetAnimSpeed(1.0f);
+		rb->AddForceY(getJumpForce());
+
+		// サウンド
+		CSound::PlaySE("Jump.wav", 0.7f);
+		// 画面揺れ
+		Camera::main()->SetShakeOffset(Vector2(0, 20));
+		Camera::main()->SetShake(8);
+		m_bGround = false;
+	}
+
 	// 攻撃
 	m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Shot)]--;
 	if (m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Shot)] < 0)
 		m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Shot)] = 0;
-	if ((GetKeyTrigger(VK_C) || GetKeyTrigger(MK_LBUTTON)) &&
+	if (GetKeyTrigger(MK_LBUTTON) &&
 		m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Shot)] <= 0 &&
 		m_assimp.lock()->GetCurrentAnimIndex() != ANIM_SLASH)
 	{
@@ -243,52 +265,86 @@ void PlayerScript::Update()
 			Mathf::Normalize(transform().lock()->forward());
 
 		test->transform().lock()->m_pos = transform().lock()->m_pos + dir;
-		test->transform().lock()->m_scale = Vector3(500, 500, 500);
+		test->transform().lock()->m_scale = Vector3(300, 300, 300);
 		rb->AddForce(dir * 100 + Mathf::WallVerticalVector(m_rb.lock()->GetForce(), dir));
 		rb->AddTorque(Quaternion::CreateFromAxisAngle(dir, XMConvertToRadians(dir.Length() * 10)));
+
+		// サウンド
+		CSound::PlaySE("Shot.wav", 0.2f);
+		// 画面揺れ
+		Camera::main()->SetShakeOffset(Vector2(40, 20));
+		Camera::main()->SetShake(4);
 	}
+
+	//// キック
+	//m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)]--;
+	//if (m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] < 0)
+	//	m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] = 0;
+	//if (GetKeyTrigger(VK_E) &&
+	//	m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] <= 0 &&
+	//	m_assimp.lock()->GetCurrentAnimIndex() != ANIM_KICK)
+	//{
+	//	m_assimp.lock()->SetAnimIndex(ANIM_KICK);
+	//	m_assimp.lock()->SetAnimSpeed(75 / getSkiilRecast(static_cast<int>(PlayerSkill::Burst)));
+
+	//	m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] =
+	//		getSkiilRecast(static_cast<int>(PlayerSkill::Burst));
+	//}
+	//if (m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] == 
+	//	(int)(getSkiilRecast(static_cast<int>(PlayerSkill::Burst)) / 2))
+	//{
+	//	const auto& test = Instantiate<GameObject>();
+	//	test->AddComponent<BulletScript>()->m_damage = getDamage();
+	//	const auto& rb = test->GetComponent<Rigidbody>();
+
+	//	Vector3 dir =
+	//		Mathf::Normalize(transform().lock()->forward());
+
+	//	test->transform().lock()->m_pos = transform().lock()->m_pos + dir;
+	//	test->transform().lock()->m_scale = Vector3(500, 500, 500);
+	//	rb->AddForce(dir * 100 + Mathf::WallVerticalVector(m_rb.lock()->GetForce(), dir));
+	//	rb->AddTorque(Quaternion::CreateFromAxisAngle(dir, XMConvertToRadians(dir.Length() * 10)));
+	//}
 
 	// キック
 	m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)]--;
 	if (m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] < 0)
 		m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] = 0;
-	if ((GetKeyTrigger(VK_X) || GetKeyTrigger(VK_E)) &&
+	if (GetKeyTrigger(VK_E) &&
 		m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] <= 0 &&
 		m_assimp.lock()->GetCurrentAnimIndex() != ANIM_KICK)
 	{
 		m_assimp.lock()->SetAnimIndex(ANIM_KICK);
 		m_assimp.lock()->SetAnimSpeed(75 / getSkiilRecast(static_cast<int>(PlayerSkill::Burst)));
-
 		m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] =
-			getSkiilRecast(static_cast<int>(PlayerSkill::Burst));
+					getSkiilRecast(static_cast<int>(PlayerSkill::Burst));
 	}
 	if (m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] == 
-		(int)(getSkiilRecast(static_cast<int>(PlayerSkill::Burst)) / 2))
+		(int)(getSkiilRecast(static_cast<int>(PlayerSkill::Burst)) / 3 * 2))
+	{
+		// バースト
+		m_nBurstCount = 20;
+		// 画面揺れ
+		Camera::main()->SetShakeOffset(Vector2(10, 40));
+		Camera::main()->SetShake(m_nBurstCount);
+	}
+	// バーストカウンタ
+	m_nBurstCount--;
+	if (m_nBurstCount < 0) m_nBurstCount = 0;
+	// バースト弾生成
+	if (m_nBurstCount > 0 && m_nBurstCount % 4 == 0)
 	{
 		const auto& test = Instantiate<GameObject>();
 		test->AddComponent<BulletScript>()->m_damage = getDamage();
 		const auto& rb = test->GetComponent<Rigidbody>();
-
-		Vector3 dir =
-			Mathf::Normalize(transform().lock()->forward());
-
-		test->transform().lock()->m_pos = transform().lock()->m_pos + dir;
-		test->transform().lock()->m_scale = Vector3(500, 500, 500);
+		const auto& camera = Camera::main();
+		Vector3 dir = Mathf::Normalize(transform().lock()->forward());
+		test->transform().lock()->m_pos = transform().lock()->m_pos + dir * 300;
+		test->transform().lock()->m_scale = Vector3(300, 300, 300);
 		rb->AddForce(dir * 100 + Mathf::WallVerticalVector(m_rb.lock()->GetForce(), dir));
 		rb->AddTorque(Quaternion::CreateFromAxisAngle(dir, XMConvertToRadians(dir.Length() * 10)));
-	}
-
-	// ジャンプ
-	m_jumpCount--;
-	if ((GetKeyTrigger(VK_Z) || GetKeyTrigger(VK_SPACE)) &&
-		m_jumpCount < 0 &&
-		m_assimp.lock()->GetCurrentAnimIndex() != ANIM_JUMP)
-	{
-		m_jumpCount = 50;
-		m_assimp.lock()->SetAnimIndex(ANIM_JUMP);
-		m_assimp.lock()->SetAnimSpeed(1.0f);
-
-		rb->AddForceY(getJumpForce());
+		// サウンド
+		CSound::PlaySE("Shot.wav", 0.2f);
 	}
 
 	// ステップ
@@ -317,7 +373,7 @@ void PlayerScript::Update()
 	{
 		force.y = 0;
 		force.Normalize();
-		m_rb.lock()->SetForce(force * 50);
+		m_rb.lock()->SetForce(force * 100);
 
 		const int n = 10;
 		//const float f = rand() % 314 / 100.0f;

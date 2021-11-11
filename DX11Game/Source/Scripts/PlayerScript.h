@@ -70,7 +70,7 @@ namespace ECS
 
 		float getMaxHP() {
 			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Physical)];
-			return 200 + cnt * 10;
+			return 500 + cnt * 50;
 		}
 		float getHeelTime() {
 			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Physical)];
@@ -85,22 +85,22 @@ namespace ECS
 		}
 		float getAttackSpeed() {
 			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Attack)];
-			float speed = 1.2f + cnt * 0.1f;
+			float speed = 10 + cnt * 2;
 			if (speed < 0) speed = 0;
 			return speed;
 		}
 
 		float getMoveSpeed() {
 			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Speed)];
-			return 1.2f + cnt * 0.2f;
+			return 1.2f + cnt * 0.5f;
 		}
 		float getJumpForce() {
 			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Speed)];
-			return 15 + cnt * 0.1f;
+			return 15 + cnt * 0.5f;
 		}
 		float getStepTime() {
 			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Speed)];
-			return 10 + cnt * 0.05f;
+			return 10 + cnt * 0.5f;
 		}
 
 		float getSkiilRecast(int skillIndex) {
@@ -115,7 +115,7 @@ namespace ECS
 				return 90 - getAttackSpeed();
 				break;
 			case (int)ECS::PlayerSkill::Step:
-				skillTime = 120;
+				skillTime = 0;
 				break;
 			case (int)ECS::PlayerSkill::Burst:
 				return 75 - getAttackSpeed();
