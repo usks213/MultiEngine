@@ -47,6 +47,8 @@ SpriteRenderer::SpriteRenderer()
 
 	// ブレンドステート
 	m_eState = BS_ALPHABLEND;
+
+	m_isTransparent = true;
 }
 
 //========================================

@@ -108,7 +108,7 @@ void MakeEnemyScript::Update()
 	m_nWave++;
 
 	// 生成数を計算
-	int nSpawnNum = m_nWave  * 3 + 3;
+	int nSpawnNum = m_nWave  * 1 + 3;
 	if (nSpawnNum > MAX_SPAWN_NUM) nSpawnNum = MAX_SPAWN_NUM;
 	m_nEnemyCount = nSpawnNum;
 
@@ -118,7 +118,7 @@ void MakeEnemyScript::Update()
 		//--- エネミーを生成する座標
 		float height = (rand() % 5 - 2) * 100;
 		if (playerPos.y < 600) playerPos.y = 100;
-		Vector3 spawnPos = { 4000, height, 0 };
+		Vector3 spawnPos = { 2000, height, 0 };
 		Vector3 temp = playerPos;
 		temp.y = rand() % 500 + 100;
 		spawnPos = Mathf::RotationY(spawnPos, rand() % 360) + temp;

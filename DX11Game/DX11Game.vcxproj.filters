@@ -391,6 +391,9 @@
     <ClCompile Include="Source\Scripts\TestMoveScript.cpp">
       <Filter>ソース\スクリプト\テスト</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Scripts\AnimPlayerScript.cpp">
+      <Filter>ソース\スクリプト\テスト</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Engine\main.h">
@@ -679,6 +682,9 @@
       <Filter>ソース\スクリプト\テスト</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scripts\TestMoveScript.h">
+      <Filter>ソース\スクリプト\テスト</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scripts\AnimPlayerScript.h">
       <Filter>ソース\スクリプト\テスト</Filter>
     </ClInclude>
   </ItemGroup>

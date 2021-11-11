@@ -71,7 +71,7 @@ namespace ECS
 		void LateDraw(ID3D11DeviceContext* pDC) override;
 
 		// カメラからの距離を格納
-		virtual void LayerUpdate(){}
+		void LayerUpdate() override {}
 
 		//--- マテリアル
 		// カラー変更

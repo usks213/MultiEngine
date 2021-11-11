@@ -65,7 +65,7 @@ namespace ECS
 		std::weak_ptr<Transform> m_transform;
 
 	public:
-		// à⁄ìÆ
+		// óÕ
 		Vector3 GetForce() { return m_force; }
 		void SetForce(Vector3 force) { m_force = force; }
 		void SetForceX(float forceX) { m_force.x = forceX; }
@@ -75,6 +75,16 @@ namespace ECS
 		void AddForceX(float forceX) { m_force.x += forceX; }
 		void AddForceY(float forceY) { m_force.y += forceY; }
 		void AddForceZ(float forceZ) { m_force.z += forceZ; }
+		// ë¨ìx
+		Vector3 GetVelocity() { return m_velocity; }
+		void SetVelocity(Vector3 velocity) { m_velocity = velocity; }
+		void SetVelocityX(float velocityX) { m_velocity.x = velocityX; }
+		void SetVelocityY(float velocityY) { m_velocity.y = velocityY; }
+		void SetVelocityZ(float velocityZ) { m_velocity.z = velocityZ; }
+		void AddVelocity(Vector3 velocity) { m_velocity += velocity; }
+		void AddVelocityX(float velocityX) { m_velocity.x += velocityX; }
+		void AddVelocityY(float velocityY) { m_velocity.y += velocityY; }
+		void AddVelocityZ(float velocityZ) { m_velocity.z += velocityZ; }
 		// ãÛãCíÔçR
 		Vector3 GetDrag() { return m_drag; }
 		void SetDrag(Vector3 fDrag) { m_drag = fDrag; }

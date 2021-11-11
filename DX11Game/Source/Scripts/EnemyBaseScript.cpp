@@ -231,6 +231,11 @@ void EnemyBaseScript::OnDeltaCollisionEnter(DeltaCollider* collider)
 		camera->SetShake(4);
 		Vector3 cameraBack = Matrix::CreateFromQuaternion(camera->transform().lock()->m_rot).Backward();
 
+		// ノックバック
+		Vector3 forcedir = transform().lock()->m_pos - collider->transform().lock()->m_pos;
+		forcedir.Normalize();
+		m_rb.lock()->AddForce(forcedir * 2);
+
 		// ダメージ
 		float damage = 0.0f;
 		if(collider->gameObject().lock()->tag() == "Bullet")

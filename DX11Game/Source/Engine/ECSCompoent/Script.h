@@ -33,6 +33,11 @@ namespace ECS
 	class DeltaCollider;
 	class Rigidbody;
 	class Animator2D;
+	class MeshRenderer;
+	class InstancingMeshRenderer;
+	class AssimpRenderer;
+	class BillboardRenderer;
+	class SpriteRenderer;
 
 	class Script : public IComponent
 	{

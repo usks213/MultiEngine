@@ -136,7 +136,8 @@ void Camera::UpdateCameraMatrix()
 	const Quaternion& rot = trans->m_rot;
 
 	Vector3 right = Mathf::Normalize(Matrix::CreateFromQuaternion(rot).Right());
-	Vector3 up = Mathf::Normalize(Matrix::CreateFromQuaternion(rot).Up());
+	//Vector3 up = Mathf::Normalize(Matrix::CreateFromQuaternion(rot).Up());
+	Vector3 up = Vector3(0, 1, 0);
 
 	pos += right * offset.x;
 	pos += up * offset.y;
@@ -146,7 +147,6 @@ void Camera::UpdateCameraMatrix()
 	//Vector3 up = Mathf::Normalize(Mathf::Cross(
 	//	Matrix::CreateFromQuaternion(rot).Right(),
 	//	Matrix::CreateFromQuaternion(rot).Forward()));
-	//Vector3 up = Vector3(0, 1, 0);
 
 	XMStoreFloat4x4(&m_mtxView, XMMatrixLookAtLH(
 		XMLoadFloat3(&pos), XMLoadFloat3(&target), XMLoadFloat3(&up)));

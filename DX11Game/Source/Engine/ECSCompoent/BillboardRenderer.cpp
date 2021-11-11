@@ -47,6 +47,8 @@ BillboardRenderer::BillboardRenderer()
 
 	// ƒƒbƒVƒ…‚Ìæ“¾
 	m_mesh = GetBillboardMesh();
+	m_isTransparent = true;
+
 }
 
 //========================================

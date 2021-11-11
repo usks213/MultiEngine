@@ -101,8 +101,8 @@ void GameWorld::Start()
 	// スタートクリスタル
 	const auto& crystal = GetEntityManager()->CreateEntity<GameObject>();
 	Vector3 dir = camera->GetViewMatrix().Right();
-	dir *= 1500;
-	dir.y = 400;
+	dir *= 500;
+	dir.y = 100;
 	crystal->transform().lock()->m_pos = dir;
 	crystal->AddComponent<StartCrystalScript>()->SetPlayer(player);
 
@@ -132,20 +132,20 @@ void GameWorld::Start()
 	////renderer->UpdateTexMatrix();
 	//plane->transform().lock()->m_pos.y = -1;
 	
-	// カーソル
-	const auto& cursor = GetEntityManager()->CreateEntity<GameObject>();
-	const auto& cursorRn = cursor->AddComponent<SpriteRenderer>();
-	cursorRn->SetDiffuseTexture("data/texture/Cursor.png");
-	cursorRn->SetLayer(cursorRn->eUI1);
-	cursor->transform().lock()->m_scale = Vector3{ 64 * SCREEN_SCALE_X,64 * SCREEN_SCALE_Y,32 };
+	//// カーソル
+	//const auto& cursor = GetEntityManager()->CreateEntity<GameObject>();
+	//const auto& cursorRn = cursor->AddComponent<SpriteRenderer>();
+	//cursorRn->SetDiffuseTexture("data/texture/Cursor.png");
+	//cursorRn->SetLayer(cursorRn->eUI1);
+	//cursor->transform().lock()->m_scale = Vector3{ 64 * SCREEN_SCALE_X,64 * SCREEN_SCALE_Y,32 };
 
-	// 操作UI
-	const auto& opUI = GetEntityManager()->CreateEntity<GameObject>();
-	const auto& opSpr = opUI->AddComponent<SpriteRenderer>();
-	opSpr->SetDiffuseTexture("data/texture/OperationUI.png");
-	opSpr->SetLayer(opSpr->eUI1);
-	opUI->transform().lock()->m_pos = Vector3{ -SCREEN_CENTER_X / 3.0f * 2, -SCREEN_HEIGHT / 10, 1 };
-	opUI->transform().lock()->m_scale = Vector3{ 2400.0f / 6 * SCREEN_SCALE_X, 2100.0f / 6 * SCREEN_SCALE_Y, 1 };
+	//// 操作UI
+	//const auto& opUI = GetEntityManager()->CreateEntity<GameObject>();
+	//const auto& opSpr = opUI->AddComponent<SpriteRenderer>();
+	//opSpr->SetDiffuseTexture("data/texture/OperationUI.png");
+	//opSpr->SetLayer(opSpr->eUI1);
+	//opUI->transform().lock()->m_pos = Vector3{ -SCREEN_CENTER_X / 3.0f * 2, -SCREEN_HEIGHT / 10, 1 };
+	//opUI->transform().lock()->m_scale = Vector3{ 2400.0f / 6 * SCREEN_SCALE_X, 2100.0f / 6 * SCREEN_SCALE_Y, 1 };
 
 }
 

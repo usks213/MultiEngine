@@ -31,6 +31,7 @@
 // コンポーネント
 #include "../Engine/ECSCompoent/Transform.h"
 #include "../Engine/ECSCompoent/MeshRenderer.h"
+#include "../Engine/ECSCompoent/AssimpRenderer.h"
 #include "../Engine/ECSCompoent/Rigidbody.h"
 #include "../Engine/ECSCompoent/BoxCollider.h"
 #include "../Engine/ECSCompoent/SphereCollider.h"
@@ -66,7 +67,12 @@ using namespace ECS;
 
 
 //===== マクロ定義 =====
-
+#define ANIM_IDLE			(0)
+#define ANIM_JUMP			(1)
+#define ANIM_KICK			(2)
+#define ANIM_RUN			(3)
+#define ANIM_SLASH			(4)
+#define ANIM_WALK			(5)
 
 
 //******************** スクリプトメソッド ********************
@@ -83,8 +89,8 @@ void PlayerScript::Start()
 	gameObject().lock()->SetName("Player");
 	gameObject().lock()->SetTag("Player");
 
-	transform().lock()->m_pos = Vector3(0, 1000, 0);
-	transform().lock()->m_scale = Vector3(300, 600, 300);
+	transform().lock()->m_pos = Vector3(0, 0, 0);
+	transform().lock()->m_scale = Vector3(2, 2, 2);
 	transform().lock()->m_rot = Quaternion();
 
 	// コンポーネントの追加
@@ -95,24 +101,24 @@ void PlayerScript::Start()
 	rb->SetMass(2);
 	//rb->SetUseGravity(false);
 
-	//// レンダラー
-	//const auto& renderer = gameObject().lock()->AddComponent<MeshRenderer>();
-	//renderer->MakeSphere("Player", 100, 50);
-	//renderer->SetDiffuseColor({ 0,1,0,1 });
+	// レンダラー
+	const auto& renderer = gameObject().lock()->AddComponent<AssimpRenderer>();
+	renderer->ModelLoad("data/model/Sword And Shield.fbx");
+	renderer->SetAnimIndex(ANIM_IDLE);
+	renderer->SetAnimSpeed(1.0f);
+	m_assimp = renderer;
 
 	// コライダー
 	//const auto& collider = gameObject().lock()->AddComponent<SphereCollider>();
 	//collider->SetRadius(50);
 	const auto& collider = gameObject().lock()->AddComponent<DeltaCollider>();
+	collider->SetRadius(50);
 
 	// UI
 	const auto& ui = gameObject().lock()->AddComponent<SkillUIScript>();
 	ui->SetPlayer(gameObject().lock()->GetComponent<PlayerScript>());
 	const auto& hp = gameObject().lock()->AddComponent<PlayerHPUIScript>();
 	hp->SetPlayer(gameObject().lock()->GetComponent<PlayerScript>());
-
-	// マウス
-	SetCursorPos(SCREEN_CENTER_X, SCREEN_CENTER_Y);
 
 	// アクティブ
 	m_bActive = true;
@@ -121,10 +127,9 @@ void PlayerScript::Start()
 	// ショット
 	m_bShot = false;
 	// ステータス
-	m_HP = 100;
+	m_HP = getMaxHP();
 
-	Update();
-	LateUpdate();
+	m_rotSpeed = 0.1f;
 }
 
 //========================================
@@ -137,234 +142,143 @@ void PlayerScript::Update()
 	// アクティブ
 	if (!m_bActive) return;
 
-	const float speed = getMoveSpeed();
-	const float jump = getJumpForce();
-	const float rotSpeed = 3.141592f / 60.0f;
-
-	// 向き
-	const auto& trans = transform().lock();
-	Matrix matR = Matrix::CreateFromQuaternion(trans->m_rot);
-	Vector3 vPos = matR.Translation();
-	Vector3 right = matR.Right();
+	const auto& rb = m_rb.lock();
+	Quaternion rot = transform().lock()->m_rot;
+	Vector3 forward = Matrix::CreateFromQuaternion(rot).Forward();
+	Vector3 right = Matrix::CreateFromQuaternion(rot).Right();
 	Vector3 up = Vector3(0, 1, 0);
-	Vector3 forward = matR.Forward();
-	Vector3 vLook = vPos + forward;
-	float focus = 0.0f;
 
-	// 移動
-	if (GetKeyPress(VK_W))
+	const auto& camera = Camera::main();
+	auto& cameraTrans = camera->transform();
+	Vector3 inputDir;
+	if (m_attackCount < 0 && m_kickCount < 0 && m_jumpCount < 0)
 	{
-		//transform().lock()->m_pos.z += 1.0f;
-		m_rb.lock()->AddForce(forward * Vector3(1,0,1));
-	}
-	if (GetKeyPress(VK_S))
-	{
-		//transform().lock()->m_pos.z -= 1.0f;
-		m_rb.lock()->AddForce(-forward * Vector3(1, 0, 1));
-	}
-	if (GetKeyPress(VK_D))
-	{
-		//transform().lock()->m_pos.x += 1.0f;
-		m_rb.lock()->AddForce(-right);
-	}
-	if (GetKeyPress(VK_A))
-	{
-		//transform().lock()->m_pos.x -= 1.0f;
-		m_rb.lock()->AddForce(right);
-	}
-
-	// 視点移動
-	static POINT m_oldMousePos;
-	POINT* mousePos = GetMousePosition();
-	POINT mouseDist = {
-		mousePos->x - m_oldMousePos.x,
-		mousePos->y - m_oldMousePos.y,
-	};
-	m_oldMousePos = *mousePos;
-
-	// 左ボタン(カメラ回り込み
-	static bool isRot = true;
-	if (GetKeyTrigger(VK_MBUTTON))
-	{
-		isRot ^= 1;
-		SetShowCursor(!isRot);
-	}
-	if(isRot)
-	{
-		// マウス固定
-		SetCursorPos(SCREEN_CENTER_X, SCREEN_CENTER_Y);
-		m_oldMousePos = POINT{ SCREEN_CENTER_X, SCREEN_CENTER_Y };
-		SetShowCursor(false);
-
-		// 回転量
-		float angleX = 360.f * mouseDist.x / SCREEN_WIDTH * 0.5f;	// 画面一周で360度回転(画面サイズの半分で180度回転)
-		float angleY = 180.f * mouseDist.y / SCREEN_HEIGHT * 0.5f;	// 画面一周で180度回転(画面サイズの半分で90度回転)
-
-		//Vector3::Transform(right, Matrix::CreateFromAxisAngle(up, XMConvertToRadians(angleX)));
-		trans->m_rot *= Quaternion::CreateFromAxisAngle(right, XMConvertToRadians(-angleY));
-		trans->m_rot *= Quaternion::CreateFromAxisAngle(up, XMConvertToRadians(angleX));
-	}
-	else
-	{
-		SetShowCursor(true);
-	}
-
-
-	// ジャンプ
-	if (GetKeyTrigger(VK_SPACE) && 
-		(transform().lock()->m_pos.y <= transform().lock()->m_scale.y / 2 || m_nJump > 0))
-	{
-		m_rb.lock()->SetForceY(jump + m_nJump);
-		// サウンド
-		CSound::PlaySE("Jump.wav", 0.7f);
-		// 画面揺れ
-		Camera::main()->SetShakeOffset(Vector2(0, 20));
-		Camera::main()->SetShake(8);
-		m_bGround = false;
-	}
-	m_nJump--;
-	if (m_nJump < 0) m_nJump = 0;
-
-	// ステップ
-	m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Step)]--;
-	if (m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Step)] < 0) 
-		m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Step)] = 0;
-	Vector3 force = m_rb.lock()->GetForce();
-	if (GetKeyTrigger(VK_RBUTTON) && m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Step)] <= 0 &&
-		force.Length() > 1.0f)
-	{
-		// ステップリキャスト
-		m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Step)] = 
-			getSkiilRecast(static_cast<int>(PlayerSkill::Step));
-		// 無敵時間
-		m_nStepInvCount = getStepTime();
-		// 画面揺れ
-		Camera::main()->SetShakeOffset(Vector2(7, 5));
-		Camera::main()->SetShake(m_nStepInvCount);
-	}
-	// 無敵時間
-	m_nStepInvCount--;
-	if (m_nStepInvCount < 0) m_nStepInvCount = 0;
-	// ステップエフェクト生成
-	if (m_nStepInvCount > 0 && m_nStepInvCount % 4 == 0)
-	{
-		force.y = 0;
-		force.Normalize();
-		m_rb.lock()->SetForce(force * 50);
-
-		const int n = 10;
-		//const float f = rand() % 314 / 100.0f;
-		for (int i = 0; i < n; ++i)
+		// 前後
+		if (GetKeyPress(VK_UP) || GetKeyPress(VK_W))
 		{
-			float phi = 360.0f / n * i * (XM_PI / 180.0f);
+			inputDir.z -= 1.0f;
+		}
+		if (GetKeyPress(VK_DOWN) || GetKeyPress(VK_S))
+		{
+			inputDir.z += 1.0f;
+		}
+		// 左右
+		if (GetKeyPress(VK_RIGHT) || GetKeyPress(VK_D))
+		{
+			inputDir.x += 1.0f;
+		}
+		if (GetKeyPress(VK_LEFT) || GetKeyPress(VK_A))
+		{
+			inputDir.x -= 1.0f;
+		}
 
-			for (int j = 0; j < n; ++j)
+		// 回転を反映
+		if (inputDir.x != 0.0f || inputDir.z != 0.0f)
+		{
+			inputDir.Normalize();
+			Vector3 moveForce = Vector3::Transform(inputDir, Matrix::CreateFromQuaternion(cameraTrans.lock()->m_rot));
+			moveForce.y = 0;
+			moveForce.Normalize();
+			moveForce.x *= -1;
+			Quaternion moveRot = Quaternion::CreateFromRotationMatrix(Matrix::CreateLookAt(Vector3(), moveForce, up));
+			rot = Quaternion::Slerp(rot, moveRot, m_rotSpeed);
+			rot.Normalize();
+			transform().lock()->m_rot = rot;
+			// 力を反映
+			moveForce.x *= -1;
+			moveForce *= getMoveSpeed();
+			rb->AddForce(moveForce);
+
+		}
+
+		// 速度を元にアニメーション
+		Vector3 velo = rb->GetVelocity();
+		velo.y = 0;
+		float len = velo.Length() * 0.1f;
+		if (len > 0.1f)
+		{
+			// 歩行アニメーション
+			if (m_assimp.lock()->GetCurrentAnimIndex() != ANIM_RUN)
 			{
-				float theta = 360.0f / n * j * (XM_PI / 180.0f);
-				// 座標
-				Vector3 pos;
-				pos.x = cosf(phi) * cosf(theta);
-				pos.y = cosf(phi) * sinf(theta);
-				pos.z = sinf(phi);
-				pos *= 50;
-
-				// エフェクト生成
-				const auto& obj = Instantiate<GameObject>(pos + transform().lock()->m_pos);
-				// コンポーネントの追加
-				const auto& effect = obj->AddComponent<BombEffectScript>();
-				// リジッドボディ
-				const auto& rb = obj->GetComponent<Rigidbody>();
-				rb->AddForce(Mathf::Normalize(pos) * 5);
-				// レンダラ
-				const auto& render = obj->GetComponent<InstancingMeshRenderer>();
-				render->SetDiffuseColor(Vector4(0, 1, 1, 1));
+				m_assimp.lock()->SetAnimIndex(ANIM_RUN);
+			}
+			len = len > 1.0f ? 1.0f : len;
+			m_assimp.lock()->SetAnimSpeed(len);
+		}
+		else
+		{
+			// 待機アニメーション
+			if (m_assimp.lock()->GetCurrentAnimIndex() != ANIM_IDLE)
+			{
+				m_assimp.lock()->SetAnimIndex(ANIM_IDLE);
+				m_assimp.lock()->SetAnimSpeed(1.0f);
 			}
 		}
 	}
 
-	// ショット
-	m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Shot)]--;
-	if (GetKeyPress(VK_LBUTTON) && m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Shot)] < 0)
+	// 攻撃
+	if ((GetKeyTrigger(VK_C) || GetMouseButton(MK_LBUTTON)) &&
+		m_attackCount < 0 &&
+		m_assimp.lock()->GetCurrentAnimIndex() != ANIM_SLASH)
 	{
-		//const auto& test = GetEntityManager()->CreateEntity<GameObject>();
+		m_attackCount = 180 - 90 * getAttackSpeed();
+		m_assimp.lock()->SetAnimIndex(ANIM_SLASH);
+		m_assimp.lock()->SetAnimSpeed(getAttackSpeed());
+
+	}
+	m_attackCount--;
+	if (m_attackCount == (int)(180 - 90 * getAttackSpeed()) / 2)
+	{
 		const auto& test = Instantiate<GameObject>();
 		test->AddComponent<BulletScript>()->m_damage = getDamage();
 		const auto& rb = test->GetComponent<Rigidbody>();
 
-		const auto& camera = Camera::main();
 		Vector3 dir =
-			Mathf::Normalize(Matrix::CreateFromQuaternion(camera->transform().lock()->m_rot).Forward());
+			Mathf::Normalize(transform().lock()->forward());
 
-		test->transform().lock()->m_pos = transform().lock()->m_pos + dir * 300;
+		test->transform().lock()->m_pos = transform().lock()->m_pos + dir;
+		test->transform().lock()->m_scale = Vector3(500, 500, 500);
 		rb->AddForce(dir * 100 + Mathf::WallVerticalVector(m_rb.lock()->GetForce(), dir));
 		rb->AddTorque(Quaternion::CreateFromAxisAngle(dir, XMConvertToRadians(dir.Length() * 10)));
-
-		m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Shot)] = 
-			getSkiilRecast(static_cast<int>(PlayerSkill::Shot));
-
-		// サウンド
-		CSound::PlaySE("Shot.wav", 0.2f);
 	}
 
-	// バースト
-	m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)]--;
-	if (m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] < 0)
-		m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] = 0;
-	if (GetKeyTrigger(VK_E) && m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] <= 0)
+	// キック
+	if ((GetKeyTrigger(VK_X) || GetMouseButton(MK_RBUTTON)) &&
+		m_kickCount < 0 &&
+		m_assimp.lock()->GetCurrentAnimIndex() != ANIM_KICK)
 	{
-		// ステップリキャスト
-		m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Burst)] =
-			getSkiilRecast(static_cast<int>(PlayerSkill::Burst));
-		// バースト
-		m_nBurstCount = 20;
-		// 画面揺れ
-		Camera::main()->SetShakeOffset(Vector2(10, 40));
-		Camera::main()->SetShake(m_nBurstCount);
+		m_kickCount = 180 - 100 * getAttackSpeed();
+		m_assimp.lock()->SetAnimIndex(ANIM_KICK);
+		m_assimp.lock()->SetAnimSpeed(getAttackSpeed());
+
 	}
-	// バーストカウンタ
-	m_nBurstCount--;
-	if (m_nBurstCount < 0) m_nBurstCount = 0;
-	// バースト弾生成
-	if (m_nBurstCount > 0 && m_nBurstCount % 4 == 0)
+	m_kickCount--;
+	if (m_kickCount == (int)(180 - 100 * getAttackSpeed()) / 2)
 	{
 		const auto& test = Instantiate<GameObject>();
 		test->AddComponent<BulletScript>()->m_damage = getDamage();
 		const auto& rb = test->GetComponent<Rigidbody>();
-		const auto& camera = Camera::main();
+
 		Vector3 dir =
-			Mathf::Normalize(Matrix::CreateFromQuaternion(camera->transform().lock()->m_rot).Forward());
-		test->transform().lock()->m_pos = transform().lock()->m_pos + dir * 300;
+			Mathf::Normalize(transform().lock()->forward());
+
+		test->transform().lock()->m_pos = transform().lock()->m_pos + dir;
+		test->transform().lock()->m_scale = Vector3(500, 500, 500);
 		rb->AddForce(dir * 100 + Mathf::WallVerticalVector(m_rb.lock()->GetForce(), dir));
 		rb->AddTorque(Quaternion::CreateFromAxisAngle(dir, XMConvertToRadians(dir.Length() * 10)));
-		// サウンド
-		CSound::PlaySE("Shot.wav", 0.2f);
 	}
 
-
-
-	// ボム
-	m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Bom)]--;
-	if (GetKeyPress(VK_Q) && m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Bom)] < 0)
+	// ジャンプ
+	m_jumpCount--;
+	if ((GetKeyTrigger(VK_Z) || GetKeyTrigger(VK_SPACE)) &&
+		m_jumpCount < 0 &&
+		m_assimp.lock()->GetCurrentAnimIndex() != ANIM_JUMP)
 	{
-		const auto& test = Instantiate<GameObject>();
-		test->AddComponent<BombCrystalScript>()->SetDamage(getDamage());
-		const auto& rb = test->AddComponent<Rigidbody>();
-		rb->SetUseGravity(false);
-		rb->SetDrag(Vector3(0, 0, 0));
-		rb->SetTorqueDrag(0);
-		const auto& col = test->GetComponent<DeltaCollider>();
-		col->SetMain(true);
+		m_jumpCount = 50;
+		m_assimp.lock()->SetAnimIndex(ANIM_JUMP);
+		m_assimp.lock()->SetAnimSpeed(1.0f);
 
-		Vector3 dir = Mathf::Normalize(forward);
-		test->transform().lock()->m_pos = transform().lock()->m_pos + dir * 500;
-		rb->AddForce(dir * 100 + Mathf::WallVerticalVector(m_rb.lock()->GetForce(), dir));
-		rb->AddTorque(Quaternion::CreateFromAxisAngle(dir, XMConvertToRadians(dir.Length() * 10)));
-
-		m_aSkillRecastCnt[static_cast<int>(PlayerSkill::Bom)] =
-			getSkiilRecast(static_cast<int>(PlayerSkill::Bom));
-
-		// サウンド
-		CSound::PlaySE("Shot.wav", 0.2f);
+		rb->AddForceY(getJumpForce());
 	}
 }
 
@@ -378,22 +292,13 @@ void PlayerScript::LateUpdate()
 	// アクティブ
 	if (!m_bActive) return;
 
-	/*Matrix mrot = Matrix::CreateFromQuaternion(transform().lock()->m_rot);
-	mrot.Up(Vector3(0, 1, 0));
-	transform().lock()->m_rot = Quaternion::CreateFromRotationMatrix(mrot);*/
-
-	// カメラを追尾
-	Quaternion rot = transform().lock()->m_rot;
 	const auto& camera = Camera::main();
+	auto cameraTrans = camera->transform().lock();
 
-	//--- 一人称
-	camera->transform().lock()->m_rot = rot;
-	camera->transform().lock()->m_pos =
-		transform().lock()->m_pos;
-	//--- 三人称
-	//camera->transform().lock()->m_rot = rot;
-	//camera->transform().lock()->m_pos =
-	//	transform().lock()->m_pos + Vector3::Transform(Vector3(0, 500, 1000), rot) * 0.75f;
+	cameraTrans->m_pos = transform().lock()->m_pos + Vector3(0, 10, -5) * 75 * 2;
+	Vector3 dir = transform().lock()->m_pos - cameraTrans->m_pos;
+	dir.Normalize();
+	cameraTrans->forward(dir);
 
 	if (!m_bGround && transform().lock()->m_pos.y <= transform().lock()->m_scale.y / 2)
 	{

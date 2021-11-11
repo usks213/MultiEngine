@@ -38,6 +38,12 @@ namespace ECS
 	private:
 		// ----- メンバ -----
 		std::weak_ptr<Rigidbody> m_rb;
+		std::weak_ptr<AssimpRenderer> m_assimp;
+		float m_speed;
+		float m_rotSpeed;
+		int m_jumpCount = 0;
+		int m_attackCount = 0;
+		int m_kickCount = 0;
 
 		// アクティブ
 		bool m_bActive = true;
@@ -66,7 +72,7 @@ namespace ECS
 
 		float getMaxHP() {
 			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Physical)];
-			return 100 + cnt * 10;
+			return 200 + cnt * 10;
 		}
 		float getHeelTime() {
 			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Physical)];
@@ -77,22 +83,22 @@ namespace ECS
 
 		float getDamage() {
 			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Attack)];
-			return 5 + cnt * 0.5f;
+			return 10 + cnt * 5.0f;
 		}
 		float getAttackSpeed() {
 			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Attack)];
-			float speed = 15 - cnt * 0.01f;
+			float speed = 1.2f + cnt * 0.1f;
 			if (speed < 0) speed = 0;
-			return speed + 2;
+			return speed;
 		}
 
 		float getMoveSpeed() {
 			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Speed)];
-			return 0.5f + cnt * 0.02f;
+			return 1.2f + cnt * 0.2f;
 		}
 		float getJumpForce() {
 			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Speed)];
-			return 10 + cnt * 0.01f;
+			return 15 + cnt * 0.1f;
 		}
 		float getStepTime() {
 			int cnt = m_aItemCount[static_cast<std::size_t>(ItemType::Speed)];

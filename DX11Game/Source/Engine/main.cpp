@@ -596,7 +596,7 @@ HRESULT Init(HWND hWnd, BOOL bWindow)
 	BlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 	g_pDevice->CreateBlendState(&BlendDesc, &g_pBlendState[0]);
 	// ブレンド ステート生成 (アルファ ブレンド用)
-	//BlendDesc.AlphaToCoverageEnable = TRUE;
+	BlendDesc.AlphaToCoverageEnable = TRUE;
 	BlendDesc.RenderTarget[0].BlendEnable = TRUE;
 	g_pDevice->CreateBlendState(&BlendDesc, &g_pBlendState[1]);
 	// ブレンド ステート生成 (加算合成用)
@@ -673,7 +673,7 @@ HRESULT Init(HWND hWnd, BOOL bWindow)
 	WorldManager::Create();
 
 	// ゲームワールドの追加
-	WorldManager::GetInstance()->LoadWorld<TestWorld>("Test");
+	WorldManager::GetInstance()->LoadWorld<TitleWorld>("Test");
 	
 	return hr;
 }

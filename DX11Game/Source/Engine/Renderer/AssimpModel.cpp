@@ -997,8 +997,12 @@ bool CAssimpModel::Draw(ID3D11DeviceContext* pDC, XMFLOAT4X4& mtxWorld, EByOpaci
 	bool bExitFlg = false;
 
 	// アニメーション更新
-	if (m_pAnimator && !m_pAnimator->m_bStopAnim) {
-		m_pAnimator->m_dCurrent += (m_pAnimator->m_dAnimTime * m_pAnimator->m_dAnimSpeed) / double(CLOCKS_PER_SEC) - m_pAnimator->m_dLastPlaying;
+	if (m_pAnimator && !m_pAnimator->m_bStopAnim) 
+	{
+		double addTime = (m_pAnimator->m_dAnimTime * m_pAnimator->m_dAnimSpeed) / double(CLOCKS_PER_SEC) - m_pAnimator->m_dLastPlaying;
+		if (addTime < 0.0f)
+			addTime = 0.01f;
+		m_pAnimator->m_dCurrent += addTime;
 		double time = m_pAnimator->m_dCurrent;
 
 		bExitFlg = m_pAnimator->Calculate(time);

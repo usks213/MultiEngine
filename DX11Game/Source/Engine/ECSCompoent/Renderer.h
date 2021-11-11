@@ -91,7 +91,7 @@ namespace ECS
 		Vector3 m_texSize;
 
 		// ブレンドステート
-		EBlendState m_eState;
+		EBlendState m_eState = BS_ALPHABLEND;
 
 		float m_fLayer;
 		bool m_bUpdateLayer = true;

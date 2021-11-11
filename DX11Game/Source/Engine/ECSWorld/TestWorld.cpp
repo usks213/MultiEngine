@@ -37,6 +37,7 @@
 #include "../../Scripts/OBBTestScript.h"
 #include "../../Scripts/CameraControlScript.h"
 #include "../../Scripts/TestMoveScript.h"
+#include "../../Scripts/AnimPlayerScript.h"
 
 
 using namespace ECS;
@@ -84,25 +85,31 @@ void TestWorld::Start()
 	cameraObj->transform().lock()->m_pos = Vector3(0, 300, 500);
 	const auto& camera = cameraObj->AddComponent<Camera>();
 	camera->SetMainCamera(camera);
-	cameraObj->AddComponent<CameraControlScript>();
+	//cameraObj->AddComponent<CameraControlScript>();
 
-	//// プレイヤー
-	//const auto& player = GetEntityManager()->CreateEntity<GameObject>();
-	//const auto & playerScript = player->AddComponent<PlayerScript>();
-	//player->AddComponent<PlaneControlScript>();
-	//player->AddComponent<OBBTestScript>();
+	// プレイヤー
+	const auto& player = GetEntityManager()->CreateEntity<GameObject>();
+	player->AddComponent<AnimPlayerScript>();
+	player->AddComponent<OBBTestScript>();
 
-	const auto& obb = GetEntityManager()->CreateEntity<GameObject>();
-	obb->transform().lock()->m_pos = Vector3(-200, 300, 0);
-	obb->transform().lock()->m_scale = Vector3(200, 200, 200);
-	obb->AddComponent<OBBTestScript>();
+	//const auto& obb = GetEntityManager()->CreateEntity<GameObject>();
+	//obb->transform().lock()->m_pos = Vector3(-200, 300, 0);
+	//obb->transform().lock()->m_scale = Vector3(200, 200, 200);
+	//obb->AddComponent<OBBTestScript>();
 
-	const auto& obb2 = GetEntityManager()->CreateEntity<GameObject>();
-	obb2->transform().lock()->m_pos = Vector3(200, 300, 0);
-	obb2->transform().lock()->m_scale = Vector3(200, 200, 200);
-	obb2->AddComponent<OBBTestScript>();
-	obb2->AddComponent<TestMoveScript>();
+	//const auto& obb2 = GetEntityManager()->CreateEntity<GameObject>();
+	//obb2->transform().lock()->m_pos = Vector3(200, 300, 0);
+	//obb2->transform().lock()->m_scale = Vector3(200, 200, 200);
+	//obb2->AddComponent<OBBTestScript>();
+	////obb2->AddComponent<TestMoveScript>();
 
+		// スタートクリスタル
+	const auto& crystal = GetEntityManager()->CreateEntity<GameObject>();
+	Vector3 dir = camera->GetViewMatrix().Right();
+	dir *= 1000;
+	dir.y = 100;
+	crystal->transform().lock()->m_pos = dir;
+	crystal->AddComponent<StartCrystalScript>()->SetPlayer(player);
 
 	//// デルタUI
 	//const auto& deltaUi = GetEntityManager()->CreateEntity<GameObject>();
