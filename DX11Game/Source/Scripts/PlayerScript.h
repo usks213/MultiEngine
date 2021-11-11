@@ -42,8 +42,6 @@ namespace ECS
 		float m_speed;
 		float m_rotSpeed;
 		int m_jumpCount = 0;
-		int m_attackCount = 0;
-		int m_kickCount = 0;
 
 		// アクティブ
 		bool m_bActive = true;
@@ -114,13 +112,13 @@ namespace ECS
 			switch (skillIndex)
 			{
 			case (int)ECS::PlayerSkill::Shot:
-				return getAttackSpeed();
+				return 90 - getAttackSpeed();
 				break;
 			case (int)ECS::PlayerSkill::Step:
 				skillTime = 120;
 				break;
 			case (int)ECS::PlayerSkill::Burst:
-				skillTime = 60;
+				return 75 - getAttackSpeed();
 				break;
 			case (int)ECS::PlayerSkill::Bom:
 				skillTime = 240;
