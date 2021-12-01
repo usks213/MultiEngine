@@ -95,7 +95,7 @@ void SpeedEnemyScript::Update()
 
 	Vector3 vec = player->transform().lock()->m_pos - transform().lock()->m_pos;
 	Vector3 dir; vec.Normalize(dir);
-	float moveSpeed = enemy->m_status.MoveSpeed * 0.01f;
+	float moveSpeed = enemy->m_status.MoveSpeed * 0.005f;
 
 	if (vec.Length() > rand() % 300 + 100)
 	{
@@ -126,7 +126,7 @@ void SpeedEnemyScript::Update()
 		const auto& rb = test->GetComponent<Rigidbody>();
 		const auto& col = test->GetComponent<DeltaCollider>();
 		test->transform().lock()->m_pos = transform().lock()->m_pos + dir * 100;
-		rb->AddForce(dir * 50);
+		rb->AddForce(dir * 40);
 		rb->AddTorque(Quaternion::CreateFromAxisAngle(dir, XMConvertToRadians(dir.Length() * 10)));
 		col->SetMain(false);
 

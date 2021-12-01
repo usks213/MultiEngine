@@ -129,7 +129,7 @@ void PlayerScript::Start()
 	// ステータス
 	m_HP = getMaxHP();
 
-	m_rotSpeed = 0.1f;
+	m_rotSpeed = 0.2f;
 }
 
 //========================================

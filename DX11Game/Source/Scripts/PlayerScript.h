@@ -112,14 +112,22 @@ namespace ECS
 			switch (skillIndex)
 			{
 			case (int)ECS::PlayerSkill::Shot:
-				return 90 - getAttackSpeed();
+			{
+				int frame = 90 - getAttackSpeed();
+				if (frame < 6) frame = 6;
+				return frame;
 				break;
+			}
 			case (int)ECS::PlayerSkill::Step:
 				skillTime = 0;
 				break;
 			case (int)ECS::PlayerSkill::Burst:
-				return 75 - getAttackSpeed();
+			{
+				int frame = 75 - getAttackSpeed();
+				if (frame < 6) frame = 6;
+				return frame;
 				break;
+			}
 			case (int)ECS::PlayerSkill::Bom:
 				skillTime = 240;
 				break;

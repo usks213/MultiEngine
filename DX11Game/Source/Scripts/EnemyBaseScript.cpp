@@ -312,6 +312,7 @@ void EnemyBaseScript::SetUpStatus(Type type, float level)
 	const int baseParam = 10;
 	const int randParam = 5;
 	m_type = type;
+	level *= 0.5f;
 	m_status.Level = level;
 
 	switch (type)
@@ -326,7 +327,7 @@ void EnemyBaseScript::SetUpStatus(Type type, float level)
 		m_status.HP = m_status.MaxHP	= (rand() % randParam + baseParam - 5) * level;
 		m_status.Damage					= (rand() % randParam + baseParam - 5) * level;
 		m_status.AttackSpeed			= (rand() % randParam + baseParam + 5) * level;
-		m_status.MoveSpeed				= (rand() % randParam + baseParam + 10) * level;
+		m_status.MoveSpeed				= (rand() % randParam + baseParam + 5) * level;
 		break;
 	case ECS::EnemyBaseScript::Type::Skiil:
 		m_status.HP = m_status.MaxHP	= (rand() % randParam + baseParam + 0) * level;
