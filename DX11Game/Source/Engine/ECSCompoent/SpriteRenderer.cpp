@@ -44,6 +44,7 @@ SpriteRenderer::SpriteRenderer()
 	// 色
 	m_color = Vector3{ 1,1,1 };
 	m_fAlpha = 1.0f;
+	m_isTransparent = true;
 
 	// ブレンドステート
 	m_eState = BS_ALPHABLEND;

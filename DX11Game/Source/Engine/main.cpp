@@ -673,7 +673,7 @@ HRESULT Init(HWND hWnd, BOOL bWindow)
 	WorldManager::Create();
 
 	// ƒQ[ƒ€ƒ[ƒ‹ƒh‚Ì’Ç‰Á
-	WorldManager::GetInstance()->LoadWorld<TestWorld>("Test");
+	WorldManager::GetInstance()->LoadWorld<TitleWorld>("Test");
 	
 	return hr;
 }

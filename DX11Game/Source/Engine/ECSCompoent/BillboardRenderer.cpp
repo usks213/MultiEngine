@@ -44,6 +44,7 @@ BillboardRenderer::BillboardRenderer()
 
 	m_diffuseTexture = nullptr;
 	m_eTranslucentType = eTranslucentType::TT_NOAFFECT;
+	m_isTransparent = true;
 
 	// ƒƒbƒVƒ…‚Ìæ“¾
 	m_mesh = GetBillboardMesh();
